@@ -13,8 +13,24 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        hgrapheditormainwindow.cpp
+        hgrapheditormainwindow.cpp \
+    hgrapheditormgr.cpp \
+    hgrapheditordoc.cpp \
+    hgrapheditorview.cpp \
+    hgrapheditorscene.cpp \
+    hgraphtreewidget.cpp \
+    hicontabwidget.cpp \
+    hicontreewidget.cpp \
+    hiconlistwidget.cpp
 
-HEADERS  += hgrapheditormainwindow.h
+HEADERS  += hgrapheditormainwindow.h \
+    hgrapheditormgr.h \
+    hgrapheditordoc.h \
+    hgrapheditorview.h \
+    hgrapheditorscene.h \
+    hgraphtreewidget.h \
+    hicontabwidget.h \
+    hicontreewidget.h \
+    hiconlistwidget.h
 
 FORMS    += grapheditormainwindow.ui

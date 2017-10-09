@@ -8,13 +8,13 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = drawGraph
+TARGET = graphEditor
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        hdrawgraphmainwindow.cpp
+        hgrapheditormainwindow.cpp
 
-HEADERS  += hdrawgraphmainwindow.h
+HEADERS  += hgrapheditormainwindow.h
 
-FORMS    += hdrawgraphmainwindow.ui
+FORMS    += grapheditormainwindow.ui

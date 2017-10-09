@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>HDrawGraphMainWindow</class>
- <widget class="QMainWindow" name="HDrawGraphMainWindow">
+ <class>GraphEditorMainWindow</class>
+ <widget class="QMainWindow" name="GraphEditorMainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1273</width>
-    <height>1052</height>
+    <width>1580</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1091</width>
-      <height>971</height>
+      <width>1401</width>
+      <height>731</height>
      </rect>
     </property>
     <layout class="QHBoxLayout"/>
@@ -31,7 +31,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1273</width>
+     <width>1580</width>
      <height>23</height>
     </rect>
    </property>

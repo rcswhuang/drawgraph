@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>1580</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile_F">
@@ -43,7 +43,7 @@
     <addaction name="actionOpen_O"/>
     <addaction name="separator"/>
     <addaction name="actionSave_S"/>
-    <addaction name="actionSave_As_A"/>
+    <addaction name="actionSave_As"/>
     <addaction name="actionPrint_P"/>
     <addaction name="separator"/>
     <addaction name="actionExit_E"/>
@@ -68,14 +68,6 @@
    <addaction name="menuFile_F"/>
    <addaction name="menuEdit_E"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="fileDockWidget">
    <property name="windowTitle">
@@ -95,22 +87,54 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2"/>
   </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew_N"/>
+   <addaction name="actionOpen_O"/>
+   <addaction name="actionSave_S"/>
+   <addaction name="separator"/>
+   <addaction name="actionUndo_U"/>
+   <addaction name="actionRedo_R"/>
+  </widget>
   <action name="actionNew_N">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/new.png</normaloff>:/images/new.png</iconset>
+   </property>
    <property name="text">
     <string>New(&amp;N)</string>
    </property>
   </action>
   <action name="actionOpen_O">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/open.png</normaloff>:/images/open.png</iconset>
+   </property>
    <property name="text">
     <string>Open(&amp;O)</string>
    </property>
   </action>
   <action name="actionSave_S">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
+   </property>
    <property name="text">
     <string>Save(&amp;S)</string>
    </property>
   </action>
-  <action name="actionSave_As_A">
+  <action name="actionSave_As">
    <property name="text">
     <string>Save As(&amp;A)</string>
    </property>
@@ -126,11 +150,19 @@
    </property>
   </action>
   <action name="actionUndo_U">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/edit-undo.png</normaloff>:/images/edit-undo.png</iconset>
+   </property>
    <property name="text">
     <string>Undo(&amp;U)</string>
    </property>
   </action>
   <action name="actionRedo_R">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/edit-redo.png</normaloff>:/images/edit-redo.png</iconset>
+   </property>
    <property name="text">
     <string>Redo(&amp;R)</string>
    </property>
@@ -172,6 +204,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -34,3 +34,6 @@ HEADERS  += hgrapheditormainwindow.h \
     hiconlistwidget.h
 
 FORMS    += grapheditormainwindow.ui
+
+RESOURCES += \
+    images.qrc

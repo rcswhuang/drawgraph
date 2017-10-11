@@ -5,5 +5,49 @@
         <file>images/save.png</file>
         <file>images/edit-redo.png</file>
         <file>images/edit-undo.png</file>
+        <file>images/shape_align_top.png</file>
+        <file>images/shape_align_middle.png</file>
+        <file>images/shape_align_bottom.png</file>
+        <file>images/shape_align_left.png</file>
+        <file>images/shape_align_center.png</file>
+        <file>images/shape_align_right.png</file>
+        <file>images/shape_rotate_anticlockwise.png</file>
+        <file>images/shape_flip_horizontal.png</file>
+        <file>images/shape_flip_vertical.png</file>
+        <file>images/text_bold.png</file>
+        <file>images/text_italic.png</file>
+        <file>images/text_underline.png</file>
+        <file>images/rotate.png</file>
+        <file>images/format_fill_color.png</file>
+        <file>images/format_stroke_color.png</file>
+        <file>images/games_config_background.png</file>
+        <file>images/shape_rotate_clockwise.png</file>
+        <file>images/copy.png</file>
+        <file>images/cut.png</file>
+        <file>images/delete.png</file>
+        <file>images/paste.png</file>
+        <file>images/shape_group.png</file>
+        <file>images/shape_move_back.png</file>
+        <file>images/shape_move_front.png</file>
+        <file>images/shape_ungroup.png</file>
+        <file>images/config.png</file>
+        <file>images/select.png</file>
+        <file>images/zoom.png</file>
+        <file>images/zoom_in.png</file>
+        <file>images/zoom_out.png</file>
+        <file>images/text.png</file>
+        <file>images/zoom_same.png</file>
+        <file>images/arc.png</file>
+        <file>images/circle.png</file>
+        <file>images/line.png</file>
+        <file>images/pie.png</file>
+        <file>images/polygon.png</file>
+        <file>images/polyline.png</file>
+        <file>images/rectangle.png</file>
+        <file>images/edit_align_samespace_h.png</file>
+        <file>images/edit_align_samespace_v.png</file>
+        <file>images/edit_sameheight.png</file>
+        <file>images/edit_samesize.png</file>
+        <file>images/edit_samewidth.png</file>
     </qresource>
 </RCC>

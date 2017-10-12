@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     hicontreewidget.cpp \
     hiconlistwidget.cpp
 
-HEADERS  += hgrapheditormainwindow.h \
+HEADERS  += ../include/hiconapi.h \
+    hgrapheditormainwindow.h \
     hgrapheditormgr.h \
     hgrapheditordoc.h \
     hgrapheditorview.h \

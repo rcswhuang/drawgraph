@@ -9,8 +9,14 @@ class HGraphTreeWidgetItem:public QTreeWidgetItem
 {
     Q_OBJECT
 public:
-    HGraphTreeWidgetItem(HGraphTreeWidget * parent, int type = Type);
-    HGraphTreeWidgetItem(HGraphTreeWidgetItem * parent, int type = Type);
+    HGraphTreeWidgetItem(HGraphTreeWidget * parent, int type = UserType);
+    HGraphTreeWidgetItem(HGraphTreeWidgetItem * parent, int type = UserType);
+
+public:
+    void setGraphTreeID(unsigned short graphTreeID);
+    unsigned short getGraphTreeID();
+private:
+    unsigned short wGraphTreeID;
 };
 
 class HGraphTreeWidget : public QTreeWidget

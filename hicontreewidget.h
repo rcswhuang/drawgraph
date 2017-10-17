@@ -9,7 +9,7 @@ class HIconViewEditor;
 
 class HIconTreeWidgetItem : public QTreeWidgetItem
 {
-    Q_OBJECT
+
 public:
     HIconTreeWidgetItem(QTreeWidget* parent,int type = 0);
     HIconTreeWidgetItem(QTreeWidgetItem* parnet);

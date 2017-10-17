@@ -11,3 +11,8 @@ void HIconTabWidget::initIconTabWiget()
 {
 
 }
+
+void HIconTabWidget::iconTemplateSelected(QString const&, QString const&, QString const&, int)
+{
+
+}

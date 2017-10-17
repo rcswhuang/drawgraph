@@ -2,11 +2,13 @@
 #include <QListWidgetItem>
 
 HIconListWidgetItem::HIconListWidgetItem(QListWidget * parent , int type )
+    :QListWidgetItem(parent,type)
 {
 }
 
 
 HIconListWidget::HIconListWidget(QWidget* parent)
+    :QListWidget(parent)
 {
 
 }

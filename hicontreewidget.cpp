@@ -3,7 +3,7 @@
 #include <QTreeWidgetItem>
 #include "hiconlistwidget.h"
 
-HIconTreeWidgetItem::HIconTreeWidgetItem(QTreeWidget* parent,int type )
+HIconTreeWidgetItem::HIconTreeWidgetItem(QTreeWidget* parent,int type ):QTreeWidgetItem(parent)
 {
 
 }
@@ -33,6 +33,10 @@ void HIconTreeWidget::setIconListWidget(QListWidget* pList)
     pIconListWidget = static_cast<HIconListWidget*>(pList);
 }
 
+void HIconTreeWidget::initIconTypes()
+{
+
+}
 
 void HIconTreeWidget::treeItemClicked(QTreeWidgetItem* pItem,int column)
 {

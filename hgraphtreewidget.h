@@ -2,15 +2,15 @@
 #define HGRAPHTREEWIDGET_H
 //左边的树结构
 #include <QTreeWidget>
-class QTreeWidgetItem;
+#include <QTreeWidgetItem>
+
 class HGraphEditorMgr;
 class QContextMenuEvent;
 class HGraphTreeWidgetItem:public QTreeWidgetItem
 {
-    Q_OBJECT
 public:
-    HGraphTreeWidgetItem(HGraphTreeWidget * parent, int type = UserType);
-    HGraphTreeWidgetItem(HGraphTreeWidgetItem * parent, int type = UserType);
+    HGraphTreeWidgetItem(QTreeWidget * parent, int type = UserType);
+    HGraphTreeWidgetItem(QTreeWidgetItem * parent, int type = UserType);
 
 public:
     void setGraphTreeID(unsigned short graphTreeID);

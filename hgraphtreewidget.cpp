@@ -1,12 +1,12 @@
 ﻿#include "hgraphtreewidget.h"
-#include <QTreeWidgetItem>
-/*HGraphTreeWidgetItem::HGraphTreeWidgetItem(QTreeWidget * parent, int type )
+#include <QContextMenuEvent>
+HGraphTreeWidgetItem::HGraphTreeWidgetItem(QTreeWidget * parent, int type ):QTreeWidgetItem(parent,type)
 {
 
-}*/
+}
 
-HGraphTreeWidgetItem::HGraphTreeWidgetItem(HGraphTreeWidgetItem * parent, int type)
-    :HGraphTreeWidgetItem (parent)
+HGraphTreeWidgetItem::HGraphTreeWidgetItem(QTreeWidgetItem * parent, int type)
+    :QTreeWidgetItem (parent,type)
 {
 
 }
@@ -34,6 +34,11 @@ HGraphTreeWidget::~HGraphTreeWidget()
 }
 
 void HGraphTreeWidget::initGraphTreeWidget()
+{
+
+}
+
+void HGraphTreeWidget::contextMenuEvent(QContextMenuEvent *event)
 {
 
 }

@@ -43,10 +43,12 @@ void HGraphEditorMainWindow::initGraphEditorMgr()
 
 void HGraphEditorMainWindow::initMainWindow()
 {
-   /* pIconTabWidget = new HIconTabWidget(pGraphEditorMgr);
+    pIconTabWidget = new HIconTabWidget(pGraphEditorMgr);
     pIconTabWidget->setTabPosition(QTabWidget::West);
     connect(pIconTabWidget,SIGNAL(iconSelected(const QString&,const QString&,const QString&,int)),SLOT(iconTemplateSelected(const QString&,const QString&,const QString&,int)));
     pIconViewEditor = new HIconViewEditor(pIconTabWidget);
     pIconTabWidget->removeTab(0);
-    pIconTabWidget->addTab(pIconViewEditor,QStringLiteral("图元"));*/
+    pIconTabWidget->addTab(pIconViewEditor,QStringLiteral("图元"));
+
+    ui->resDockWidget->setWidget(pIconTabWidget);
 }

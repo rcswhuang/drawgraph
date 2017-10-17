@@ -6,7 +6,6 @@
 class HGraphEditorMgr;
 class HIconListWidgetItem:public QListWidgetItem
 {
-    Q_OBJECT
 public:
     HIconListWidgetItem(QListWidget * parent = 0, int type = Type);
 };

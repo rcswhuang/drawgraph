@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     hgraphtreewidget.cpp \
     hicontabwidget.cpp \
     hicontreewidget.cpp \
-    hiconlistwidget.cpp
+    hiconlistwidget.cpp \
+    hiconvieweditor.cpp
 
 HEADERS  += ../include/hiconapi.h \
     hgrapheditormainwindow.h \
@@ -32,7 +33,8 @@ HEADERS  += ../include/hiconapi.h \
     hgraphtreewidget.h \
     hicontabwidget.h \
     hicontreewidget.h \
-    hiconlistwidget.h
+    hiconlistwidget.h \
+    hiconvieweditor.h
 
 FORMS    += grapheditormainwindow.ui
 

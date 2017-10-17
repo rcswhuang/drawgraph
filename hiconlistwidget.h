@@ -8,18 +8,20 @@ class HIconListWidgetItem:public QListWidgetItem
 {
     Q_OBJECT
 public:
-    HIconListWidgetItem(QListWidget * parent = 0, int type = UserType);
+    HIconListWidgetItem(QListWidget * parent = 0, int type = Type);
 };
 
 class HIconListWidget :public QListWidget
 {
     Q_OBJECT
 public:
-    HIconListWidget(HGraphEditorMgr* pMgr);
+    HIconListWidget(QWidget* parent = 0);
     ~HIconListWidget();
 public:
     void initIconListWidget();
     void clearIconListWidget();//切换需要先清除
+    void RefreshIconType(int ntype);
+
 protected:
     HGraphEditorMgr* pGraphEditorMgr;
     QString strUuid;

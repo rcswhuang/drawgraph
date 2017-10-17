@@ -1,4 +1,4 @@
-#ifndef HGRAPHEDITORMAINWINDOW_H
+﻿#ifndef HGRAPHEDITORMAINWINDOW_H
 #define HGRAPHEDITORMAINWINDOW_H
 
 #include <QMainWindow>
@@ -10,12 +10,13 @@ class HGraphEditorMgr;
 class HGraphTreeWidget;
 class HIconTabWidget;
 class HGraphEditorDoc;
+class HIconViewEditor;
 class HGraphEditorMainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit HGraphEditorMainWindow(HGraphEditorMgr *mgr,QWidget *parent = 0);
+    HGraphEditorMainWindow(HGraphEditorMgr *mgr,QWidget *parent = Q_NULLPTR);
     ~HGraphEditorMainWindow();
 
 public:
@@ -30,6 +31,7 @@ private:
     HGraphEditorDoc* pGraphEditorDoc;
     HGraphTreeWidget* pGraphTreeWiget;//左边树结构
     HIconTabWidget* pIconTabWidget;//右边tab结构
+    HIconViewEditor* pIconViewEditor;//tab上面的view
     Ui::GraphEditorMainWindow *ui;
 };
 

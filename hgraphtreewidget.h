@@ -1,4 +1,4 @@
-#ifndef HGRAPHTREEWIDGET_H
+﻿#ifndef HGRAPHTREEWIDGET_H
 #define HGRAPHTREEWIDGET_H
 //左边的树结构
 #include <QTreeWidget>

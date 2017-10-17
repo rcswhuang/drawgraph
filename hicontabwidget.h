@@ -1,12 +1,10 @@
-#ifndef HICONTABWIDGET_H
+﻿#ifndef HICONTABWIDGET_H
 #define HICONTABWIDGET_H
 
 //右边Tab结构
 #include <QTabWidget>
 class HGraphEditorMgr;
-class HIconTreeWidget;
-class HIconListWidget;
-class QVBoxLayout;
+
 class HIconTabWidget : public QTabWidget
 {
     Q_OBJECT
@@ -16,11 +14,13 @@ public:
 public:
     void initIconTabWiget();
 
+signals:
+    void iconSelected(const QString&,const QString&,const QString&,int);
+public slots:
+    void iconTemplateSelected(const QString&,const QString&,const QString&,int);
 protected:
     HGraphEditorMgr* pGraphEditorMgr;
-    HIconListWidget* pIconListWidget;
-    HIconTreeWidget* pIconTreeWidget;
-    QVBoxLayout* pVBoxLayout;
+
 };
 
 #endif // HICONTABWIDGET_H

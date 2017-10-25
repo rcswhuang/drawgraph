@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = graphEditor
 TEMPLATE = app
-
+INCLUDEPATH += ../include
 
 SOURCES += main.cpp\
         hgrapheditormainwindow.cpp \
@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     hicontabwidget.cpp \
     hicontreewidget.cpp \
     hiconlistwidget.cpp \
-    hiconvieweditor.cpp
+    hiconvieweditor.cpp \
+    hgraph.cpp
 
 HEADERS  += ../include/hiconapi.h \
     hgrapheditormainwindow.h \
@@ -34,7 +35,8 @@ HEADERS  += ../include/hiconapi.h \
     hicontabwidget.h \
     hicontreewidget.h \
     hiconlistwidget.h \
-    hiconvieweditor.h
+    hiconvieweditor.h \
+    hgraph.h
 
 FORMS    += grapheditormainwindow.ui
 

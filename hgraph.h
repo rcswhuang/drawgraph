@@ -5,6 +5,8 @@
 class QPainter;
 class HBaseObj;
 class HIconTemplate;
+class QDataStream;
+class QDomElement;
 class HGraph : public QObject
 {
 public:
@@ -12,9 +14,23 @@ public:
     ~HGraph();
 
 public:
-    virtual void Read();
+    virtual void ReadDataFile(const QString&);
 
-    virtual void Draw(QPainter* p);
+	virtual void WriteDateFile(const QString&);
+
+	virtual void ReadXmlFile(const QString&);
+
+	virtual void WriteXmlFile(const QString&);
+
+	virtual void ReadData(int,QDataStream *d);
+
+	virtual void WriteData(int,QDataStream *d);
+
+	virtual void ReadXml(QDomElement *d);
+    
+	virtual void WriteXml(QDomElement *d);
+
+	virtual void Draw(QPainter* p);
 
     virtual void clear();
 

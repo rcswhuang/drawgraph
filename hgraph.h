@@ -34,10 +34,27 @@ public:
 
     virtual void clear();
 
+    virtual void copyTo(HBaseObj* obj);
 
     virtual void addObj(HBaseObj* pObj);
 
     virtual void removeObj(HBaseObj* pObj);
+
+    //图元部分
+    int iconTemplateNum();
+
+    HIconTemplate* IconTemplateAt(int index);
+
+    virtual HIconTemplate* findIconTemplate(const QUuid& uid);
+
+    virtual HIconTemplate* addIconTemplate(HIconTemplate* temp);
+
+    virtual void removeIconTemplate(HIconTemplate* temp);
+
+    virtual void clearIconTemplate();
+
+    virtual void resetIconTemplate();
+
 
     qreal zoomScale();
 

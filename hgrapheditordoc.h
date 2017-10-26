@@ -1,11 +1,17 @@
-#ifndef HGRAPHEDITORDOC_H
+﻿#ifndef HGRAPHEDITORDOC_H
 #define HGRAPHEDITORDOC_H
 
-
-class HGraphEditorDoc
+#include "hgraph.h"
+class HGraphEditorDoc:public HGraph
 {
 public:
     HGraphEditorDoc();
+    virtual ~HGraphEditorDoc();
+
+protected:
+
+
+
 };
 
 #endif // HGRAPHEDITORDOC_H

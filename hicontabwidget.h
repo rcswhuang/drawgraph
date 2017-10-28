@@ -13,6 +13,7 @@ public:
 
 public:
     void initIconTabWiget();
+    HGraphEditorMgr* getGraphEditorMgr(){return pGraphEditorMgr;}
 
 signals:
     void iconSelected(const QString&,const QString&,const QString&,int);

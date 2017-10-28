@@ -2,11 +2,19 @@
 #include <QVBoxLayout>
 #include <QListWidget>
 #include <QTreeWidget>
+#include "hgrapheditormgr.h"
 #include "hiconlistwidget.h"
 #include "hicontreewidget.h"
+
 //Tab上的
-HIconViewEditor::HIconViewEditor(QWidget *parent , int nType )
-    :QWidget(parent)
+/*
+ * 树型窗口显示所有模板图符的名称信息，树型里面的类型都是按照模板里面区分的(包含遥信类，遥测类......)
+ * 模板的名称都是从doc类里面来的,只要显示模板的名称就可以了。
+ *
+ * 列表窗口显示对应树型类型里面的所有图符信息
+*/
+HIconViewEditor::HIconViewEditor(HIconTabWidget *tabWidget , int nType )
+    :pIconTabWidget(tabWidget)
 {
     QVBoxLayout* pVBoxLayout = new QVBoxLayout(this);
     Q_ASSERT(pVBoxLayout);
@@ -18,5 +26,10 @@ HIconViewEditor::HIconViewEditor(QWidget *parent , int nType )
     pVBoxLayout->addWidget(pIconListWidget);
 
     pIconTreeWidget->setIconListWidget(pIconListWidget);
+}
 
+
+void HIconViewEditor::initIconViewEditor()
+{
+    //获取模板信息
 }

@@ -11,6 +11,11 @@ class HBaseObj;
 class QUndoStatck;
 class QUndoCommand;
 //class QRectF;
+/*
+ * 图形绘图工具 管理总类，对各种管理类之间的转换调用进行控制。
+ * 包含了各种管理类，绘制类，图形类的对象。
+ * 彼此之间的调用都在这里进行转换。
+*/
 class HGraphEditorMgr : public QObject
 {
 public:
@@ -52,6 +57,7 @@ public:
 
     //
     void reName(const QString& newName);
+
     //增加对象
     virtual void addIconObj(HBaseObj* pObj,bool bPaste = false);
 

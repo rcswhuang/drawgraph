@@ -8,7 +8,7 @@ class HIconTemplate;
 class QDataStream;
 class QDomElement;
 class HIconGraphicsItem;
-
+class QColor;
 /*
  * 记录单个画面信息，包含画面所含的模板列表信息，各种图元信息，颜色，背景等等信息
  *

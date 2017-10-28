@@ -7,13 +7,18 @@ class HIconTreeWidget;
 class HIconListWidget;
 class HIconViewEditor : public QWidget
 {
+    Q_OBJECT
 public:
-    HIconViewEditor(QWidget *parent = Q_NULLPTR, int nType = 0);
+    HIconViewEditor(HIconTabWidget *tabWidget = Q_NULLPTR, int nType = 0);
+
+public:
+    void initIconViewEditor();
+
 
 protected:
-    HIconTabWidget* pIconTabWidget;
-    HIconListWidget* pIconListWidget;
-    HIconTreeWidget* pIconTreeWidget;
+    HIconTabWidget* pIconTabWidget;//父窗口
+    HIconListWidget* pIconListWidget;//下部分显示窗口
+    HIconTreeWidget* pIconTreeWidget;//上部分树型窗口
 
 };
 

@@ -15,8 +15,10 @@ class HGraph;
 
 /*
  * 初始化 加载所有厂站的信息，所有画面的信息，所有模板的信息(考虑启动画面)
- * 当新建一个新画面时，提供HGraph对象，初始化这个HGraph对象(包含背景等信息)
- *
+ * 初始化临时HGraph
+ * 当新建一个新画面时，提供HGraph对象，初始化这个HGraph对象(包含背景等信息)，返回给HGraph
+ *临时HGraph的内容提供给view/scene,供显示。
+ * 打开画面，删除都是如此，代码此处实现，可以供其他对象调用对应接口
 */
 class HGraphEditorDoc : QObject
 {
@@ -35,7 +37,7 @@ public:
     void loadAllGraph();
 
     //新建画面
-    void addGraph(const QString& name);
+    HGraph* addGraph(const QString& name);
 
     //删除画面
     void delGraph(const QString& name,const int id);

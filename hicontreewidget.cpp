@@ -2,7 +2,7 @@
 #include <QListWidget>
 #include <QTreeWidgetItem>
 #include "hiconlistwidget.h"
-
+#include "hgrapheditormgr.h"
 HIconTreeWidgetItem::HIconTreeWidgetItem(QTreeWidget* parent,int type ):QTreeWidgetItem(parent)
 {
 
@@ -19,8 +19,8 @@ int HIconTreeWidgetItem::getIconItemType()
     return nType;
 }
 
-HIconTreeWidget::HIconTreeWidget(QWidget* parent)
-    :QTreeWidget (parent)
+HIconTreeWidget::HIconTreeWidget(HIconEditorMgr* mgr)
+    :pIconEditorMgr(mgr)
 {
     initIconTypes();
 
@@ -35,7 +35,8 @@ void HIconTreeWidget::setIconListWidget(QListWidget* pList)
 
 void HIconTreeWidget::initIconTypes()
 {
-
+    //最好把文件的读取都统一到datafile里面去
+    //读取文件的内容需要修改成qt的
 }
 
 void HIconTreeWidget::treeItemClicked(QTreeWidgetItem* pItem,int column)

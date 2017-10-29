@@ -48,6 +48,8 @@ public:
     //拷贝画面
     void copyGraph(HGraph* graph);
 
+    //????
+    QList<HIconTemplate*> getIconTemplateList();
 protected:
     //厂站列表
     QList<HStation*> pStationList;

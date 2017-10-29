@@ -6,7 +6,7 @@ class QTreeWidgetItem;
 class QListWidget;
 class HIconListWidget;
 class HIconViewEditor;
-
+class HIconEditorMgr;
 class HIconTreeWidgetItem : public QTreeWidgetItem
 {
 
@@ -24,7 +24,7 @@ class HIconTreeWidget : public QTreeWidget
 {
     Q_OBJECT
 public:
-    HIconTreeWidget(QWidget* parent = 0);
+    HIconTreeWidget(HIconEditorMgr* mgr);
 public:
     void initIconTypes();
     void setIconListWidget(QListWidget* pList);
@@ -33,6 +33,7 @@ public slots:
     void treeItemClicked(QTreeWidgetItem*,int);
 private:
     HIconListWidget* pIconListWidget;
+    HIconEditorMgr* pIconEditorMgr;
 };
 
 #endif // HICONTREEWIDGET_H

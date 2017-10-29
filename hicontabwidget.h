@@ -4,7 +4,7 @@
 //右边Tab结构
 #include <QTabWidget>
 class HGraphEditorMgr;
-
+class HIconViewEditor;
 class HIconTabWidget : public QTabWidget
 {
     Q_OBJECT
@@ -21,6 +21,7 @@ public slots:
     void iconTemplateSelected(const QString&,const QString&,const QString&,int);
 protected:
     HGraphEditorMgr* pGraphEditorMgr;
+    HIconViewEditor* pIconViewEditor;
 
 };
 

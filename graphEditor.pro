@@ -12,7 +12,8 @@ CONFIG += qt thread all
 
 
 # Input
-HEADERS += hgraph.h \
+HEADERS += ../include/hiconapi.h \
+           hgraph.h \
            hgrapheditordoc.h \
            hgrapheditormainwindow.h \
            hgrapheditormgr.h \
@@ -22,7 +23,8 @@ HEADERS += hgraph.h \
            hiconlistwidget.h \
            hicontabwidget.h \
            hicontreewidget.h \
-           hiconvieweditor.h
+           hiconvieweditor.h \
+    hgraphapi.h
 FORMS += grapheditormainwindow.ui
 SOURCES += hgraph.cpp \
            hgrapheditordoc.cpp \

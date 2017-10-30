@@ -14,7 +14,7 @@ class HIconListWidget :public QListWidget
 {
     Q_OBJECT
 public:
-    HIconListWidget(QWidget* parent = 0);
+    HIconListWidget(HGraphEditorMgr* mgr);
     ~HIconListWidget();
 public:
     void initIconListWidget();
@@ -24,6 +24,7 @@ public:
 protected:
     HGraphEditorMgr* pGraphEditorMgr;
     QString strUuid;
+    int nType;
 };
 
 #endif // HICONLISTWIDGET_H

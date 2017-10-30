@@ -11,8 +11,8 @@ class HIconTreeWidgetItem : public QTreeWidgetItem
 {
 
 public:
-    HIconTreeWidgetItem(QTreeWidget* parent,int type = 0);
-    HIconTreeWidgetItem(QTreeWidgetItem* parnet);
+    HIconTreeWidgetItem(QTreeWidgetItem* parent,int type = 0);
+    HIconTreeWidgetItem(QTreeWidget* parnet);
 public:
     int getIconItemType();
 private:

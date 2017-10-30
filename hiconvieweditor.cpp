@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QListWidget>
 #include <QTreeWidget>
+#include "hiconapi.h" //图元api 后续要统一到一个api头文件中去
 #include "hgrapheditormgr.h"
 #include "hiconlistwidget.h"
 #include "hicontreewidget.h"
@@ -20,7 +21,8 @@ HIconViewEditor::HIconViewEditor(HIconTabWidget *tabWidget , int nType )
     Q_ASSERT(pVBoxLayout);
     pVBoxLayout->setMargin(0);
 
-    pIconTreeWidget = new HIconTreeWidget(pIconTabWidget->getGraphEditorMgr());
+
+    pIconTreeWidget = new HIconTreeWidget((HIconEditorMgr*)pIconTabWidget->getGraphEditorMgr());   // (pIconTabWidget->getGraphEditorMgr());
     pVBoxLayout->addWidget(pIconTreeWidget);
     pIconListWidget = new HIconListWidget(this);
     pVBoxLayout->addWidget(pIconListWidget);
@@ -31,5 +33,11 @@ HIconViewEditor::HIconViewEditor(HIconTabWidget *tabWidget , int nType )
 
 void HIconViewEditor::initIconViewEditor()
 {
-    //获取模板信息
+    //树型结构只要读取icon存放的各种大类型，比如遥信，遥测，遥控遥调，接地线，牌等等
+    //这些结构和名称都是事先定义好的。
+
+
+
+
+    //list结构是需要读取icontemplate里面的每个模板的信息，模板都是分类放置，设置uuid,icon,name等等
 }

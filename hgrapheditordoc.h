@@ -9,6 +9,7 @@ class HIconTemplate;
 class QDomElement;
 class HStation;
 class HGraph;
+class HGraphEditorMgr;
 //主要是对所有文档的管理类，包含所有模板文件，图符文件，以及图形文件
 //具备一些相关的操作来支持对应的管理对象
 //图形管理文档对象 主要目标是图形文件的管理，对于厂站、模板信息都有对应的对象进行操作
@@ -23,7 +24,7 @@ class HGraph;
 class HGraphEditorDoc : QObject
 {
 public:
-    HGraphEditorDoc();
+    HGraphEditorDoc(HGraphEditorMgr* mgr);
     virtual ~HGraphEditorDoc();
 
 public:
@@ -35,6 +36,11 @@ public:
 
     //加载画面信息
     void loadAllGraph();
+
+    //或者画面ID
+    int getGraphID();
+    //查找画面
+    HGraph* findGraph(int graphID);
 
     //新建画面
     HGraph* addGraph(const QString& name);
@@ -51,6 +57,8 @@ public:
     //????
     QList<HIconTemplate*> getIconTemplateList();
 protected:
+
+    HGraphEditorMgr* pGraphEditorMgr;
     //厂站列表
     QList<HStation*> pStationList;
 

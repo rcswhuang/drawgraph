@@ -16,9 +16,15 @@ class QColor;
 class HGraph : public QObject
 {
 public:
-    HGraph();
+    HGraph(const QString& name);
     ~HGraph();
+public:
 
+    //设置ID
+    void setGraphID(int id);
+
+    //获取ID
+    int getGraphID();
 public:
     virtual void ReadDataFile(const QString&);
 
@@ -81,6 +87,8 @@ public:
 protected:
     QString strFileName;
 
+    int nGraphID;//画面ID
+
     //所有图元信息
     QList<HIconGraphicsItem*> igItemList;
 
@@ -95,7 +103,7 @@ public:
 
     int nGridWidth;
 
-    QColor bgColor;
+    QColor *bgColor;
 
 
 };

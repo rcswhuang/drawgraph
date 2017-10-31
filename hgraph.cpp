@@ -1,6 +1,7 @@
-#include "hgraph.h"
+﻿#include "hgraph.h"
 
-HGraph::HGraph()
+HGraph::HGraph(const QString& name)
+    :sName(name)
 {
 
 }

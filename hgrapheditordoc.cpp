@@ -2,7 +2,9 @@
 #include "publicdata.h"
 #include "hgrapheditormgr.h"
 #include "hgraph.h"
+#include "H5IconGui/hicontemplate.h"
 #include "hstation.h"
+#include <QDir>
 //图形文件存储类
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
@@ -78,7 +80,55 @@ HStation* HGraphEditorDoc::findStation(int nIndex)
 //加载模板信息
 void HGraphEditorDoc::loadIconTemplate()
 {
+    //先找路径，在找文件夹，然后文件夹里面搜索添加完成
+    QString iconsPath  = QString(qgetenv("wfsystem_dir"));
+#ifdef WIN32
+    iconsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
+#else
+    iconsPath = "/users/huangw";
+#endif
+    iconsPath.append("/icons");
 
+    QDir dirIconsPath(iconsPath);
+    if(!dirIconsPath.exists())
+        return;
+    QFileInfoList iconsDirList = dirIconsPath.entryInfoList(QDir::Dirs  | QDir::NoDotAndDotDot);
+    foreach(QFileInfo info,iconsDirList)
+    {
+        if(info.isFile())continue; //icons文件夹下面文件是不读取的
+        QString strChildFilePath = iconsPath + "/" + info.fileName();
+
+        //在对应测点类型的文件夹里面搜索添加完成
+        QDir dirIconsFilePath(strChildFilePath);
+        if(!dirIconsFilePath.exists())
+            return;
+        QStringList filters;
+        filters<<"*.xic";
+        dirIconsFilePath.setNameFilters(filters);
+        QFileInfoList iconsFileInfoList = dirIconsFilePath.entryInfoList(QDir::Files);
+        foreach(QFileInfo info,iconsFileInfoList)
+        {
+            if(!info.isFile())continue;
+            QString strIconTemplateFile = strIconsPath + "/" + info.fileName();
+            QUuid uuid = QUuid(info.fileName());
+            HIconTemplate *pIconTemplate = new HIconTemplate(uuid);
+            if(!pIconTemplate) continue;
+            pIconTemplate->readXml(strIconTemplateFile);
+            pIconTemplateList.append(pIconTemplate);
+        }
+    }
+}
+
+//寻找模板
+HIconTemplate* HGraphEditorDoc::findIconTemplate(const QString &uuid)
+{
+    for(int i = 0; i < pIconTemplateList.count();i++)
+    {
+        HIconTemplate* iconTemplate = (HIconTemplate*)pIconTemplateList[i];
+        if(iconTemplate->getUuid().toString() == uuid)
+            return iconTemplate;
+    }
+    return NULL;
 }
 
 //加载画面信息

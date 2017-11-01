@@ -71,12 +71,14 @@ public:
     HDigital();
     friend class HStation;
 public:
+    quint8 getType(){return btType;}
     quint8 getWordType() {return TYPE_DIGITAL;}
     quint32 getDoubleDNo(){return wDoubleDNo;}
     HWord* getNext(){return this+1;}
     quint16 getGroupID(){return wGroupID;}
 
 public:
+    quint8 btType;
     quint16 wDoubleDNo;
     quint16 wGroupID;
 };

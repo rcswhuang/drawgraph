@@ -10,7 +10,7 @@ TEMPLATE = app
 INCLUDEPATH += ../include
 CONFIG += qt thread all
 
-
+#LIBS datafile.lib
 # Input
 HEADERS += ../include/hiconapi.h \
            ../include/publicdata.h \
@@ -23,7 +23,6 @@ HEADERS += ../include/hiconapi.h \
            hgraphtreewidget.h \
            hicontabwidget.h \
            hiconvieweditor.h \
-    hgraphapi.h \
     hstation.h
 FORMS += grapheditormainwindow.ui
 SOURCES += hgraph.cpp \

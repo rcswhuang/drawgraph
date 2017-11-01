@@ -43,6 +43,9 @@ public:
     //加载模板信息
     void loadIconTemplate();
 
+    //寻找模板 uuid
+    HIconTemplate* findIconTemplate(const QString& uuid);
+
     //加载画面信息
     void loadAllGraph();
 

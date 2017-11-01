@@ -2,8 +2,44 @@
 
 HStation::HStation()
 {
+    pAnalogue = NULL;
+    pDigital = NULL;
+    pRelay = NULL;
+    pSetPoint = NULL;
+    pPulse = NULL;
+    pGroup = NULL;
 
+    wTotalAnalogue = 0;
+    wTotalDigital = 0;
+    wTotalRelay = 0;
+    wTotalSetPoint = 0;
+    wTotalPulse = 0;
+    wTotalGroup = 0;
 }
+
+void HStation::~HStation()
+{
+    if(!pAnalogue)
+        delete pAnalogue[];
+    if(!pDigital)
+        delete pDigital[];
+    if(!pRelay)
+        delete pRelay[];
+    if(!pSetPoint)
+        delete pSetPoint[];
+    if(!pPulse)
+        delete pPulse[];
+    if(!pGroup)
+        delete pGroup[];
+
+    pAnalogue = NULL;
+    pDigital = NULL;
+    pRelay = NULL;
+    pSetPoint = NULL;
+    pPulse = NULL;
+    pGroup = NULL;
+}
+
 
 quint16 HStation::getNo()
 {
@@ -67,22 +103,57 @@ bool HStation::loadData(FILEHANDLE& fileHandle)
 
             loadDBRecord(FILE_TYPE_ANALOGUE,++fileHandle.wAnalogue,pAna);
             ana->wNo = pAna->wAnalogueID;
-
-            m_pAnalogueList.append(pAna);
+            ana->btType = pAna->btAnalogueType;
+            ana->wGroupID = pAna->wGroupID;
+            strncpy(ana->szName,pAna->szAnalogueName,PTNAMELEN-1);
+            ana->szName[PTNAMELEN-1] = 0;
         }
     }
 
     //遥信
-    openDB(FILE_TYPE_DIGITAL);
-    for(int i = 0; i < m_station.wDigitalCounts;i++)
+    if(wTotalDigital != 0)
     {
-        DIGITAL* pDigital = new DIGITAL;
-        if(false == loadDBRecord(FILE_TYPE_DIGITAL,++fileHandle.wDigital,pDigital))
+        pDigital = new HDigital[wTotalDigital];
+        if(NULL == pDigital)
         {
-            delete pDigital;
-            break;
+            wTotalDigital = 0;
+            return false;
         }
-        m_pDigitalList.append(pDigital);
+        openDB(FILE_TYPE_DIGITAL);
+        DIGITAL* pDig;
+        HDigital* digital = pDigital;
+        for(int i = 0; i < station.wDigitalCounts;i++,digital++)
+        {
+
+            loadDBRecord(FILE_TYPE_DIGITAL,++fileHandle.wDigital,pDig);
+            digital->wNo = pDig->wDigitalID;
+            digital->wGroupID = pDig->wGroupID;
+            strncpy(digital->szName,pDig->szDigitalName,PTNAMELEN-1);
+            digital->szName[PTNAMELEN-1] = 0;
+        }
+    }
+
+    //遥控
+    if(wTotalRelay != 0)
+    {
+        pRelay = new HDigital[wTotalRelay];
+        if(NULL == pRelay)
+        {
+            wTotalRelay = 0;
+            return false;
+        }
+        openDB(FILE_TYPE_RELAY);
+        RELAY* Relay;
+        HRelay* relay = pRelay;
+        for(int i = 0; i < station.wRelayCounts;i++,relay++)
+        {
+
+            loadDBRecord(FILE_TYPE_RELAY,++fileHandle.wRelay,Relay);
+            relay->wNo = Relay->wNo;
+            relay->btType = Relay->btType;
+            strncpy(relay->szName,Relay->szName,PTNAMELEN-1);
+            relay->szName[PTNAMELEN-1] = 0;
+        }
     }
     return true;
 }

@@ -155,9 +155,10 @@ public:
     quint16 getAddress();
     const char* getName();
 
-    bool loadData();
+    //bool loadData();
+    bool loadData(FILEHANDLE& fileHandle);
 
-    quint16 getWordCount();
+    quint16 getWordCount(quint8 btType);
     quint16 getTotalAnalogue();
     quint16 getTotalDigital();
     quint16 getTotalSetPoint();
@@ -168,7 +169,30 @@ public:
     HAnalogue* getAnalogue();
     HAnalogue* getAnalogue(quint16 wNo);
 
-    HAnalogue* findAnalogue();
+    HDigital* getDigital();
+    HDigital* getDigital(quint16 wNo);
+
+    HRelay*  getRelay();
+    HRelay*  getRelay(quint16 wNo);
+
+    HSetPoint* getSetPoint();
+    HSetPoint* getSetPoint(quint16 wNo);
+
+    HPulse* getPulse();
+    HPulse* getPulse(quint16 wNo);
+
+    HGroup* getGroup();
+    HGroup* getGroup(quint16 wNo);
+    HGroup* getGroupByDigital(quint16 wDigitalID);
+    HGroup* getGroupByAnalogue(quint16 wAnaID);
+
+
+    HAnalogue* findAnalogue(int nIndex);
+    HDigital* findDigital(int nIndex);
+    HRelay* findRelay(int nIndex);
+    HSetPoint* findSetPoint(int nIndex);
+    HPulse* findPulse(int nIndex);
+    HGroup* findGroup(int nIndex);
 
     HWord* getWord(quint8 btType);
     HWord* getWord(quint8 btType,quint8 wNo);

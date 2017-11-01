@@ -1,6 +1,8 @@
 ﻿#include "hgrapheditordoc.h"
+#include "publicdata.h"
 #include "hgrapheditormgr.h"
 #include "hgraph.h"
+#include "hstation.h"
 //图形文件存储类
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
@@ -11,7 +13,66 @@ HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
 //加载厂站信息
 void HGraphEditorDoc::loadStation()
 {
+    //读取厂站信息
+    FILEHANDLE fileHandle;
+    memset(&fileHandle,0,sizeof(FILEHANDLE));
+    DATAFILEHEADER dataFileHandle;
 
+    openDB(FILE_TYPE_STATION);
+    loadDataFileHeader(FILE_TYPE_STATION,&dataFileHandle);
+    //int wStation = 0;
+    for(int i = 0 ; i < dataFileHandle.wTotal; i++)
+    {
+        HStation* pStation = new HStation;
+        if(!pStation)
+            break;
+
+        if ( false == loadDBRecord(FILE_TYPE_STATION, ++fileHandle.wStation, &pStation->station ) )
+        {
+            delete pStation;
+            pStation=NULL;
+            break;
+        }
+        if(false == pStation->loadData(fileHandle))
+        {
+            delete pStation;
+            pStation = NULL;
+            break;
+        }
+        pStationList.append(pStation);
+    }
+    closeDB(FILE_TYPE_STATION);
+}
+
+
+//厂站ID获取厂站
+HStation* HGraphEditorDoc::getStation(quint16 wStationID)
+{
+    for(int i = 0; i < pStationList.count();i++)
+    {
+        HStation* pStation = pStationList[i];
+        if(wStationID == pStation->getNo())
+            return pStation;
+    }
+    return NULL;
+}
+
+//厂站地址获取厂站
+HStation* HGraphEditorDoc::getRtu(quint16 wStationAddress)
+{
+    for(int i = 0; i < pStationList.count();i++)
+    {
+        HStation* pStation = pStationList[i];
+        if(wStationAddress == pStation->getAddress())
+            return pStation;
+    }
+    return NULL;
+}
+
+//索引厂站
+HStation* HGraphEditorDoc::findStation(int nIndex)
+{
+    return pStationList.value(nIndex);
 }
 
 //加载模板信息

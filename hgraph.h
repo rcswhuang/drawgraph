@@ -80,9 +80,9 @@ public:
     virtual void resetIconTemplate();
 
 
-    qreal zoomScale();
+    //qreal zoomScale();
 
-    void setZoomScale(qreal f);
+    //void setZoomScale(qreal f);
 
 protected:
     QString strFileName;

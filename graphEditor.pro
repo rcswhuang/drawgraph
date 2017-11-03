@@ -4,6 +4,7 @@
 
 QT += gui
 QT += widgets
+QT += xml
 TARGET = graphEditor
 TEMPLATE = app
 

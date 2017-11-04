@@ -5,6 +5,7 @@
 #include "H5IconGui/hicontemplate.h"
 #include "hstation.h"
 #include <QDir>
+#include <QFileInfoList>
 //图形文件存储类
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)

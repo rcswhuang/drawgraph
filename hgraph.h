@@ -7,8 +7,6 @@ class HBaseObj;
 class HIconTemplate;
 class QDataStream;
 class QDomElement;
-class HIconGraphicsItem;
-class QColor;
 /*
  * 记录单个画面信息，包含画面所含的模板列表信息，各种图元信息，颜色，背景等等信息
  *
@@ -38,31 +36,28 @@ public:
 
 	virtual void WriteData(int,QDataStream *d);
 
-	virtual void ReadXml(QDomElement *d);
+    virtual void readXml(QDomElement *d);
     
-	virtual void WriteXml(QDomElement *d);
+    virtual void writeXml(QDomElement *d);
 
-    void ReadDynamicXml(QDomElement* d);
-
-    void WriteDynamicXml(QDomElement* d);
-
-    void ReadDynamicData(int,QDataStream* d);
-
-    void WriteDynamicData(int,QDataStream* d);
 
     void setGraphName(const QString& name);
 
     QString getGraphName();
 
-    virtual void Draw(QPainter* p);
+    void Draw(QPainter* p);
 
-    virtual void clear();
+    void clear();
 
-    virtual void copyTo(HBaseObj* obj);
+    void copyTo(HBaseObj* obj);
 
-    virtual void addObj(HBaseObj* pObj);
+    HBaseObj* newObj(int nObjType);
 
-    virtual void removeObj(HBaseObj* pObj);
+    HBaseObj* newObj(QString tagName);
+
+    void addObj(HBaseObj* pObj);
+
+    void removeObj(HBaseObj* pObj);
 
     //模板部分
     int iconTemplateNum();
@@ -85,25 +80,26 @@ public:
     //void setZoomScale(qreal f);
 
 protected:
-    QString strFileName;
+    QString sName; //名称
 
     int nGraphID;//画面ID
 
+    int nGraphWidth;
+
+    int nGraphHeight;
+
+    int nRefreshInterval; //刷新间隔
+
+    QString strFillColor;//背景填充颜色
     //所有图元信息
-    QList<HIconGraphicsItem*> igItemList;
+    QList<HBaseObj*> pObjList;
 
     //所有模板信息
     QList<HIconTemplate*> pIconTemplateList;
     //QList<HStation> stationList;
 
-public:
-    QString sName;
 
-    bool bGrid;
 
-    int nGridWidth;
-
-    QColor *bgColor;
 
 
 };

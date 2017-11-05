@@ -109,11 +109,11 @@ void HGraph::readXml(QDomElement *d)
     {
         QDomElement e = n1.toElement();
         QString strTagName = e.tagName();
-        //对于complexObj需要提前知道icontemplate的uuid
-        HBaseObj* pObj = newObj(strTagName);
+        QString strUuid = e.attribute("Uuid");
+        HBaseObj* pObj = newObj(strTagName,strUuid);
         if(!pObj) continue;
-       // pTempList.append(pObj);
         pObj->readXml(&e);
+        pObjList.append(pObj);
     }
 }
 
@@ -195,7 +195,7 @@ void HGraph::copyTo(HBaseObj* obj)
 }
 
 
-HBaseObj* HGraph::newObj(QString tagName)
+HBaseObj* HGraph::newObj(QString tagName,QString strUuid)
 {
     quint8 drawShape = enumNo;
     if(tagName == "Line")
@@ -218,12 +218,10 @@ HBaseObj* HGraph::newObj(QString tagName)
         drawShape = enumPolygon;
     else if(tagName == "ComplexObj")
         drawShape = enumComplex;
-    return newObj(drawShape);
-
-
+    return newObj(drawShape,strUuid);
 }
 
-HBaseObj* HGraph::newObj(int nObjType)
+HBaseObj* HGraph::newObj(int nObjType,QString strUuid)
 {
     HBaseObj* pObj = NULL;
     if(nObjType == enumLine)

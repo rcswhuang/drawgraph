@@ -51,9 +51,9 @@ public:
 
     void copyTo(HBaseObj* obj);
 
-    HBaseObj* newObj(int nObjType);
+    HBaseObj* newObj(int nObjType,QString strUuid);
 
-    HBaseObj* newObj(QString tagName);
+    HBaseObj* newObj(QString tagName,QString strUuid);
 
     void addObj(HBaseObj* pObj);
 

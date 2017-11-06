@@ -4,6 +4,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QTextCodec>
+#include "publicdata.h"
 #include "H5IconGui/hicontemplate.h"
 #include "H5IconGui/hbaseobj.h"
 #include "H5IconGui/hiconobj.h"
@@ -29,28 +30,103 @@ int HGraph::getGraphID()
     return nGraphID;
 }
 
-void HGraph::ReadDataFile(const QString&)
+//画面文件需要同时保存到二进制文件和xml文件?
+void HGraph::readDataFile(const QString&)
 {
 
 }
 
- void HGraph::WriteDateFile(const QString&)
+ void HGraph::writeDateFile(const QString&)
 {
 
 }
 
- void HGraph::ReadData(int,QDataStream *d)
- {
+//可以通过datafile保存到二进制文件 也可以作为复制拷贝功能来用
+void HGraph::readData(int v,QDataStream *d)
+{
+    QString s;
+    *d>>s;
+    sName = s;
+    int n;
+    *d>>n;
+    nGraphID = n;
+    *d>>n;
+    nGraphWidth=n;
+    *d>>n;
+    nGraphHeight=n;
+    *d>>n;
+    nRefreshInterval = n;
+    *d>>s;
+    strFillColor = s;
 
- }
+    *d>>n;
+    int nCount = n;
+    for(int i = 0; i < nCount;i++)
+    {
+        *d>>s;
+        QUuid uuid(s);
+        HIconTemplate* iconTemplate = new HIconTemplate(uuid);
+        if(iconTemplate)
+            iconTemplate->readData(v,d);
+    }
 
- void HGraph::WriteData(int,QDataStream *d)
- {
+    *d>>n;
+    nCount = n;
+    for(int i = 0; i < nCount;i++)
+    {
+        quint8 type;
+        *d>>type;
+        QString uuid = QString();
+        if(type == enumComplex)
+        {
+           *d>>s;
+            uuid = s;
+        }
+        HBaseObj* pObj = newObj(type,uuid);
+        pObj->readData(d);
+    }
+}
 
- }
+void HGraph::writeData(int n,QDataStream *d)
+{
+    *d<<sName;
+    *d<<nGraphID;
+    *d<<nGraphWidth;
+    *d<<nGraphHeight;
+    *d<<nRefreshInterval;
+    *d<<strFillColor;
+
+    *d<<pIconTemplateList.count();
+    for(int i = 0; i < pIconTemplateList.count();i++)
+    {
+        HIconTemplate* iconTemplate = (HIconTemplate*)pIconTemplateList[i];
+        QString struuid;
+        if(!iconTemplate)
+        {
+            continue;
+        }
+        struuid = iconTemplate->getUuid().toString();
+        *d<<struuid;
+        iconTemplate->writeData(n,d);
+    }
+
+    *d<<pObjList.count();
+    for(int i = 0; i < pObjList.count();i++)
+    {
+        HBaseObj* pObj = (HBaseObj*)pObjList[i];
+        quint8 type = pObj->getShapeType();
+        *d<<type;
+        if(type == enumComplex)
+        {
+            QString struuid = ((HIconComplexObj*)pObj)->iconTemplate()->getUuid().toString();
+            *d<<struuid;
+        }
+        pObj->writeData(d);
+    }
+}
 
  //先打开文件
-void HGraph::ReadXmlFile(const QString& fileName)
+void HGraph::readXmlFile(const QString& fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
@@ -117,7 +193,7 @@ void HGraph::readXml(QDomElement *d)
     }
 }
 
-void HGraph::WriteXmlFile(const QString& fileName)
+void HGraph::writeXmlFile(const QString& fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly))
@@ -171,12 +247,12 @@ void HGraph::writeXml(QDomElement *d)
 
 void HGraph::setGraphName(const QString& name)
 {
-
+    sName = name;
 }
 
 QString HGraph::getGraphName()
 {
-
+    return sName;
 }
 
 void HGraph::Draw(QPainter* p)
@@ -195,7 +271,7 @@ void HGraph::copyTo(HBaseObj* obj)
 }
 
 
-HBaseObj* HGraph::newObj(QString tagName,QString strUuid)
+HBaseObj* HGraph::newObj(QString tagName,const QString &strUuid)
 {
     quint8 drawShape = enumNo;
     if(tagName == "Line")
@@ -221,7 +297,7 @@ HBaseObj* HGraph::newObj(QString tagName,QString strUuid)
     return newObj(drawShape,strUuid);
 }
 
-HBaseObj* HGraph::newObj(int nObjType,QString strUuid)
+HBaseObj* HGraph::newObj(int nObjType,const QString &strUuid)
 {
     HBaseObj* pObj = NULL;
     if(nObjType == enumLine)
@@ -263,7 +339,8 @@ HBaseObj* HGraph::newObj(int nObjType,QString strUuid)
     else if(nObjType == enumComplex)
     {
         //先获取icontemplate
-        pObj = new HIconComplexObj();
+        HIconTemplate* icontemp = findIconTemplate(QUuid(strUuid));
+        pObj = new HIconComplexObj(icontemp);
     }
     pObj->setShapeType((DRAWSHAPE)nObjType);
 
@@ -284,35 +361,57 @@ void HGraph::removeObj(HBaseObj* pObj)
 //模板部分
 int HGraph::iconTemplateNum()
 {
-
+    return pIconTemplateList.count();
 }
 
 HIconTemplate* HGraph::IconTemplateAt(int index)
 {
-
+    return pIconTemplateList[index];
 }
 
 HIconTemplate* HGraph::findIconTemplate(const QUuid& uid)
 {
-
+    QString struuid = uid.toString();
+    for(int i = 0; i < pIconTemplateList.count();i++)
+    {
+        HIconTemplate* iconTemplate = (HIconTemplate*)pIconTemplateList[i];
+        if(iconTemplate->getUuid() == struuid)
+            return iconTemplate;
+    }
+    return NULL;
 }
 
 HIconTemplate* HGraph::addIconTemplate(HIconTemplate* temp)
 {
-
+    HIconTemplate *iconTemplate = NULL;
+    iconTemplate = findIconTemplate(temp->getUuid());
+    if(iconTemplate)
+        return iconTemplate;
+    iconTemplate = new HIconTemplate(temp->getUuid());
+    iconTemplate->copyTo(temp);
+    return iconTemplate;
 }
 
 void HGraph::removeIconTemplate(HIconTemplate* temp)
 {
-
+    HIconTemplate *iconTemplate = NULL;
+    iconTemplate = findIconTemplate(temp->getUuid());
+    if(iconTemplate)
+    {
+        pIconTemplateList.removeOne(iconTemplate);
+        delete iconTemplate;
+        iconTemplate = NULL;
+    }
 }
 
 void HGraph::clearIconTemplate()
 {
-
+    while(!pIconTemplateList.isEmpty())
+        delete pIconTemplateList.takeFirst();
+    pIconTemplateList.clear();
 }
 
 void HGraph::resetIconTemplate()
 {
-
+    clearIconTemplate();
 }

@@ -6,6 +6,7 @@
 #include "hstation.h"
 #include <QDir>
 #include <QFileInfoList>
+#include <QProcessEnvironment>
 //图形文件存储类
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
@@ -110,7 +111,7 @@ void HGraphEditorDoc::loadIconTemplate()
         foreach(QFileInfo info,iconsFileInfoList)
         {
             if(!info.isFile())continue;
-            QString strIconTemplateFile = strIconsPath + "/" + info.fileName();
+            QString strIconTemplateFile = strChildFilePath + "/" + info.fileName();
             QUuid uuid = QUuid(info.fileName());
             HIconTemplate *pIconTemplate = new HIconTemplate(uuid);
             if(!pIconTemplate) continue;
@@ -135,7 +136,41 @@ HIconTemplate* HGraphEditorDoc::findIconTemplate(const QString &uuid)
 //加载画面信息
 void HGraphEditorDoc::loadAllGraph()
 {
+    //先找路径，在找文件夹，然后文件夹里面搜索添加完成
+    QString iconsPath  = QString(qgetenv("wfsystem_dir"));
+#ifdef WIN32
+    iconsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
+#else
+    iconsPath = "/users/huangw";
+#endif
+    iconsPath.append("/graph");
 
+    QDir dirIconsPath(iconsPath);
+    if(!dirIconsPath.exists())
+        return;
+    QFileInfoList iconsDirList = dirIconsPath.entryInfoList(QDir::Dirs  | QDir::NoDotAndDotDot);
+    foreach(QFileInfo info,iconsDirList)
+    {
+        if(info.isFile())continue; //icons文件夹下面文件是不读取的
+        QString strChildFilePath = iconsPath + "/" + info.fileName();
+
+        //在对应测点类型的文件夹里面搜索添加完成
+        QDir dirIconsFilePath(strChildFilePath);
+        if(!dirIconsFilePath.exists())
+            return;
+        QStringList filters;
+        filters<<"*.grh";
+        dirIconsFilePath.setNameFilters(filters);
+        QFileInfoList graphsFileInfoList = dirIconsFilePath.entryInfoList(QDir::Files);
+        foreach(QFileInfo info,graphsFileInfoList)
+        {
+            if(!info.isFile())continue;
+            QString strGraphName = strChildFilePath + "/" + info.fileName();
+            HGraph* pGraph = new HGraph("");
+            pGraph->readXmlFile(strGraphName);
+            pGraphList.append(pGraph);
+        }
+    }
 }
 
 //获取一个新graph的ID

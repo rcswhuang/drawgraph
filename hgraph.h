@@ -24,17 +24,17 @@ public:
     //获取ID
     int getGraphID();
 public:
-    virtual void ReadDataFile(const QString&);
+    virtual void readDataFile(const QString&);
 
-	virtual void WriteDateFile(const QString&);
+    virtual void writeDateFile(const QString&);
 
-	virtual void ReadXmlFile(const QString&);
+    virtual void readXmlFile(const QString&);
 
-	virtual void WriteXmlFile(const QString&);
+    virtual void writeXmlFile(const QString&);
 
-	virtual void ReadData(int,QDataStream *d);
+    virtual void readData(int,QDataStream *d);
 
-	virtual void WriteData(int,QDataStream *d);
+    virtual void writeData(int,QDataStream *d);
 
     virtual void readXml(QDomElement *d);
     
@@ -51,9 +51,9 @@ public:
 
     void copyTo(HBaseObj* obj);
 
-    HBaseObj* newObj(int nObjType,QString strUuid);
+    HBaseObj* newObj(int nObjType,const QString &strUuid = QString());
 
-    HBaseObj* newObj(QString tagName,QString strUuid);
+    HBaseObj* newObj(QString tagName,const QString &strUuid = QString());
 
     void addObj(HBaseObj* pObj);
 
@@ -91,8 +91,10 @@ protected:
     int nRefreshInterval; //刷新间隔
 
     QString strFillColor;//背景填充颜色
-    //所有图元信息
-    QList<HBaseObj*> pObjList;
+
+    QList<HBaseObj*> pObjList;//所有图元信息
+
+    //缩放比例
 
     //所有模板信息
     QList<HIconTemplate*> pIconTemplateList;

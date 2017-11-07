@@ -30,7 +30,7 @@ public:
     HGraphEditorDoc* graphEditorDoc();
 
 public:
-    virtual void refresh();
+   /* virtual void refresh();
 
     virtual void reset();
 
@@ -71,7 +71,7 @@ public:
     QRectF getLogicRect();
 
     //历史
-    void addCommand(QUndoCommand* pCommand);
+    void addCommand(QUndoCommand* pCommand);*/
 
 protected:
     HGraphEditorDoc* pGraphEditorDoc;

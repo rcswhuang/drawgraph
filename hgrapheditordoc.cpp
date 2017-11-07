@@ -2,7 +2,7 @@
 #include "publicdata.h"
 #include "hgrapheditormgr.h"
 #include "hgraph.h"
-#include "H5IconGui/hicontemplate.h"
+#include "hicontemplate.h"
 #include "hstation.h"
 #include <QDir>
 #include <QFileInfoList>
@@ -10,6 +10,11 @@
 //图形文件存储类
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
+{
+
+}
+
+HGraphEditorDoc::~HGraphEditorDoc()
 {
 
 }

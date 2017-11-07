@@ -4,10 +4,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QTextCodec>
-#include "publicdata.h"
-#include "H5IconGui/hicontemplate.h"
-#include "H5IconGui/hbaseobj.h"
-#include "H5IconGui/hiconobj.h"
+
 HGraph::HGraph(const QString& name)
     :sName(name)
 {

@@ -2,9 +2,11 @@
 #define HGRAPH_H
 
 #include <QObject>
+#include "publicdata.h"
+#include "hicontemplate.h"
+#include "hbaseobj.h"
+#include "hiconobj.h"
 class QPainter;
-class HBaseObj;
-class HIconTemplate;
 class QDataStream;
 class QDomElement;
 /*

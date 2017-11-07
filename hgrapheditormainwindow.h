@@ -11,6 +11,8 @@ class HGraphTreeWidget;
 class HIconTabWidget;
 class HGraphEditorDoc;
 class HIconViewEditor;
+class QLineEdit;
+class QComboBox;
 class HGraphEditorMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -26,6 +28,9 @@ public:
     void createDockWidget();
     void initGraphEditorMgr();
     void initMainWindow();
+
+
+    void createFontBar();
 private:
     HGraphEditorMgr *pGraphEditorMgr;
     HGraphEditorDoc* pGraphEditorDoc;
@@ -33,6 +38,12 @@ private:
     HIconTabWidget* pIconTabWidget;//右边tab结构
     HIconViewEditor* pIconViewEditor;//tab上面的view
     Ui::GraphEditorMainWindow *ui;
+
+
+
+    QComboBox* pFontBox;
+    QComboBox* pFontSizeBox;
+    QLineEdit* pTextEdit;
 };
 
 #endif // HGRAPHEDITORMAINWINDOW_H

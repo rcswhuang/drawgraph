@@ -17,20 +17,20 @@ HStation::HStation()
     wTotalGroup = 0;
 }
 
-void HStation::~HStation()
+HStation::~HStation()
 {
     if(!pAnalogue)
-        delete pAnalogue[];
+        delete[] pAnalogue;
     if(!pDigital)
-        delete pDigital[];
+        delete[] pDigital;
     if(!pRelay)
-        delete pRelay[];
+        delete[] pRelay;
     if(!pSetPoint)
-        delete pSetPoint[];
+        delete[] pSetPoint;
     if(!pPulse)
-        delete pPulse[];
+        delete[] pPulse;
     if(!pGroup)
-        delete pGroup[];
+        delete[] pGroup;
 
     pAnalogue = NULL;
     pDigital = NULL;
@@ -136,7 +136,7 @@ bool HStation::loadData(FILEHANDLE& fileHandle)
     //遥控
     if(wTotalRelay != 0)
     {
-        pRelay = new HDigital[wTotalRelay];
+        pRelay = new HRelay[wTotalRelay];
         if(NULL == pRelay)
         {
             wTotalRelay = 0;
@@ -160,7 +160,7 @@ bool HStation::loadData(FILEHANDLE& fileHandle)
 
 quint16 HStation::getWordCount(quint8 btType)
 {
-
+    return 0;
 }
 
 quint16 HStation::getTotalAnalogue()

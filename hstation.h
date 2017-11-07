@@ -16,7 +16,7 @@ class HStation;
 class HWord: public QObject
 {
 public:
-    HWord();
+    HWord(){};
     friend class HStation;
 
 public:
@@ -36,7 +36,7 @@ public:
 class HAnalogue:public HWord
 {
 public:
-    HAnalogue();
+    HAnalogue(){};
     friend class HStation;
 
 public:
@@ -57,7 +57,7 @@ public:
 class HSetPoint : public HWord
 {
 public:
-    HSetPoint();
+    HSetPoint(){};
     friend class HStation;
 public:
     quint8 getWordType(){return TYPE_SETPOINT;}
@@ -68,7 +68,7 @@ public:
 class HDigital : public HWord
 {
 public:
-    HDigital();
+    HDigital(){};
     friend class HStation;
 public:
     quint8 getType(){return btType;}
@@ -87,7 +87,7 @@ public:
 class HRelay : public HWord
 {
 public:
-    HRelay();
+    HRelay(){};
     friend class HStation;
 public:
     quint8 getType(){return btType;}
@@ -108,7 +108,7 @@ public:
 class HPulse : public HWord
 {
 public:
-    HPulse();
+    HPulse(){};
     friend class HStation;
 public:
     quint8 getType(){return btType;}
@@ -129,7 +129,7 @@ public:
 class HGroup : public HWord
 {
 public:
-    HGroup();
+    HGroup(){};
     friend class HStation;
 public:
     quint8 getType(){return btType;}

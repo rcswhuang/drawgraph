@@ -7,7 +7,7 @@
 #include "hicontabwidget.h"
 #include "hgrapheditormgr.h"
 #include "hgrapheditordoc.h"
-#include "H5IconGui/hicontemplate.h"
+#include "hicontemplate.h"
 ////////////////////////////////////树型控件////////////////////////////////
 HIconTreeWidgetItem::HIconTreeWidgetItem(QTreeWidgetItem* parent,int type ):QTreeWidgetItem(parent,type)
 {

@@ -5,9 +5,8 @@
 #include "hiconvieweditor.h"
 #include <QLineEdit>
 #include <QComboBox>
-#include <QFontComboBox>
-#include <QFontDatabase>
 #include <QDebug>
+#include "hfonthelper.h"
 HGraphEditorMainWindow::HGraphEditorMainWindow(HGraphEditorMgr *pMgr,QWidget *parent)
 :QMainWindow (parent),
 ui(new Ui::GraphEditorMainWindow)
@@ -38,22 +37,22 @@ void HGraphEditorMainWindow::createToolBars()
 void HGraphEditorMainWindow::createFontBar()
 {
 
-    //pFontBox = new QComboBox(ui->fontBar);
-    QFontComboBox* pFontBox1 = new QFontComboBox(ui->fontBar);
-    QFontDatabase database;
-    QStringList fontList = database.families();
+    pFontBox = new QComboBox(ui->fontBar);
+    QStringList fontList = HFontHelper::Instance()->fontFamilies();
 
     for(int i = 0; i < fontList.count();i++)
         qDebug()<<fontList[i];
 
-   // pFontBox->insertItems(0,fontList);
-    ui->fontBar->insertWidget(ui->actionBold,pFontBox1);
+    pFontBox->insertItems(0,fontList);
+    pFontBox->setCurrentIndex(0);
+    ui->fontBar->insertWidget(ui->actionBold,pFontBox);
 
     pFontSizeBox = new QComboBox(ui->fontBar);
     pFontSizeBox->clear();
-    QString strFont = pFontBox1->currentFont().family();
-    QList<int> fontSize = database.pointSizes(strFont);
-    QStringList styleList = database.styles(strFont);
+    QString strFont = pFontBox->currentText();
+    //QString strStyle = HFontHelper::Instance()->styleString();
+    QList<int> fontSize = HFontHelper::Instance()->pointSizes(strFont);
+    QStringList styleList = HFontHelper::Instance()->styles(strFont);
     for(int i = 0;i < fontSize.count();i++)
     {
         QString str = QString("%1").arg(fontSize[i]);
@@ -61,7 +60,7 @@ void HGraphEditorMainWindow::createFontBar()
     }
     ui->fontBar->insertWidget(ui->actionBold,pFontSizeBox);
 
-    bool bBold = styleList.contains("Bold");
+    //bool bBold = HFontHelper::Instance()->bold(strFont);
     ui->actionBold->setEnabled(bBold);
     //最后插入文本编辑框
     pTextEdit = new QLineEdit(ui->fontBar);

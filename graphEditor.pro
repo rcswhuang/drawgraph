@@ -40,7 +40,8 @@ SOURCES += hgraph.cpp \
            hiconvieweditor.cpp \
            main.cpp \
            hstation.cpp \
-    hfonthelper.cpp
+           hfonthelper.cpp \
+           hgrapheditormainwindowactions.cpp
 
 FORMS += grapheditormainwindow.ui
 RESOURCES += images.qrc

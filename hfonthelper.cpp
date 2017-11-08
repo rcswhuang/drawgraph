@@ -46,7 +46,7 @@ bool HFontHelper::italic(const QString &family, const QString &style) const
     return fontDatabase.italic(family,style);
 }
 
-QList<int> HFontHelper::pointSizes(const QString &family, const QString &styleName = QString())
+QList<int> HFontHelper::pointSizes(const QString &family, const QString &styleName )
 {
     return fontDatabase.pointSizes(family,styleName);
 }

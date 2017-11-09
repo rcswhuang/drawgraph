@@ -27,7 +27,7 @@ HEADERS += ../include/hiconapi.h \
            hicontabwidget.h \
            hiconvieweditor.h \
            hstation.h \
-    hfonthelper.h
+           hfonthelper.h
 
 SOURCES += hgraph.cpp \
            hgrapheditordoc.cpp \

@@ -47,6 +47,8 @@ public:
 
     QString getGraphName();
 
+    QString getFillColor();
+
     void Draw(QPainter* p);
 
     void clear();

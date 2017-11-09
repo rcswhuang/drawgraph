@@ -120,11 +120,9 @@ public slots:
 
 private:
     HGraphEditorMgr *pGraphEditorMgr;
-    HGraphEditorDoc* pGraphEditorDoc;
 
-    HGraphEditorScene* pGraphEditorScene;
     HGraphEditorView* pGraphEditorView;
-    HGraphTreeWidget* pGraphTreeWiget;//左边树结构
+    HGraphTreeWidget* pGraphTreeWidget;//左边树结构
     HIconTabWidget* pIconTabWidget;//右边tab结构
     HIconViewEditor* pIconViewEditor;//tab上面的view
     Ui::GraphEditorMainWindow *ui;

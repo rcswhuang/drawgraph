@@ -8,7 +8,11 @@
 HGraph::HGraph(const QString& name)
     :sName(name)
 {
-
+    nGraphID = 0;
+    nGraphWidth = 1000;
+    nGraphHeight = 1000;
+    nRefreshInterval = 3000;
+    strFillColor = "#000000";
 }
 
 HGraph::~HGraph()
@@ -250,6 +254,11 @@ void HGraph::setGraphName(const QString& name)
 QString HGraph::getGraphName()
 {
     return sName;
+}
+
+QString HGraph::getFillColor()
+{
+    return strFillColor;
 }
 
 void HGraph::Draw(QPainter* p)

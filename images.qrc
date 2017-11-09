@@ -49,5 +49,8 @@
         <file>images/edit_sameheight.png</file>
         <file>images/edit_samesize.png</file>
         <file>images/edit_samewidth.png</file>
+        <file>images/document-text.png</file>
+        <file>images/Folder.png</file>
+        <file>images/Folder_Documents.png</file>
     </qresource>
 </RCC>

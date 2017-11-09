@@ -11,7 +11,7 @@
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
 {
-
+    pCurGraph = NULL;
 }
 
 HGraphEditorDoc::~HGraphEditorDoc()
@@ -233,8 +233,18 @@ void HGraphEditorDoc::copyGraph(HGraph* graph)
 
 }
 
-//????
+HGraph* HGraphEditorDoc::getCurGraph()
+{
+    return pCurGraph;
+}
+
+
 QList<HIconTemplate*> HGraphEditorDoc::getIconTemplateList()
 {
     return pIconTemplateList;
+}
+
+QList<HGraph*> HGraphEditorDoc::getGraphList()
+{
+    return pGraphList;
 }

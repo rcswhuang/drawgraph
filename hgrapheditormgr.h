@@ -3,13 +3,15 @@
 
 #include <QObject>
 #include <QRectF>
+#include <QUndoStack>
+#include <QUndoCommand>
 class HGraphEditorScene;
 class HGraphEditorView;
 class HGraphEditorDoc;
 class HIconGraphicsItem;
 class HBaseObj;
-class QUndoStatck;
-class QUndoCommand;
+
+class HGraph;
 //class QRectF;
 /*
  * 图形绘图工具 管理总类，对各种管理类之间的转换调用进行控制。
@@ -19,6 +21,7 @@ class QUndoCommand;
 */
 class HGraphEditorMgr : public QObject
 {
+    Q_OBJECT
 public:
     HGraphEditorMgr();
 
@@ -65,13 +68,15 @@ public:
     //创建图符对象
     void createIconObj(const QString&,const QString&,int shape,QPointF,QList<HIconGraphicsItem*> &items);
 
+
+
+    //历史
+    void addCommand(QUndoCommand* pCommand);*/
     //设置逻辑界面大小
     void setLogicRect(const QRectF& rect);
 
     QRectF getLogicRect();
 
-    //历史
-    void addCommand(QUndoCommand* pCommand);*/
 
 protected:
     HGraphEditorDoc* pGraphEditorDoc;
@@ -80,9 +85,12 @@ protected:
 
     HGraphEditorView* pGraphEditorView;
 
-    QUndoStatck* pCommand;
+    QUndoStack* pCommand;
 
-    QRectF logicRectF;
+private:
+    QRectF logicRectF;  //scene的大小
+    HGraph* pTempGraph; //临时画面文件
+    QString strGraphFile;
 
 
 

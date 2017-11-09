@@ -66,8 +66,14 @@ public:
     //拷贝画面
     void copyGraph(HGraph* graph);
 
-    //????
+    //获取模板对象列表
     QList<HIconTemplate*> getIconTemplateList();
+
+    //获取画面列表
+    QList<HGraph*> getGraphList();
+
+    //获取当前画面
+    HGraph* getCurGraph();
 protected:
 
     HGraphEditorMgr* pGraphEditorMgr;
@@ -79,6 +85,9 @@ protected:
 
     //图形文件列表
     QList<HGraph*> pGraphList;
+
+    //当前文件
+    HGraph* pCurGraph;
 
 };
 

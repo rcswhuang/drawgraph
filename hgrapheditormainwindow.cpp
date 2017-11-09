@@ -1,14 +1,16 @@
 ﻿#include "hgrapheditormainwindow.h"
 #include "ui_grapheditormainwindow.h"
+#include "hgrapheditormgr.h"
 #include "hgrapheditorview.h"
 #include "hgrapheditordoc.h"
 #include "hgrapheditorscene.h"
+#include "hgraphtreewidget.h"
 #include "hicontabwidget.h"
 #include "hiconvieweditor.h"
+#include "hfonthelper.h"
 #include <QLineEdit>
 #include <QComboBox>
 #include <QDebug>
-#include "hfonthelper.h"
 HGraphEditorMainWindow::HGraphEditorMainWindow(HGraphEditorMgr *pMgr,QWidget *parent)
 :QMainWindow (parent),
 ui(new Ui::GraphEditorMainWindow)
@@ -20,6 +22,8 @@ ui(new Ui::GraphEditorMainWindow)
     createToolBars();
     createStatusBar();
     createActions();
+    createDockWidget();
+    showMaximized();
 }
 
 HGraphEditorMainWindow::~HGraphEditorMainWindow()
@@ -155,6 +159,12 @@ void HGraphEditorMainWindow::createStatusBar()
 
 void HGraphEditorMainWindow::createDockWidget()
 {
+    pIconTabWidget = new HIconTabWidget(pGraphEditorMgr);
+    //connect(pIconTabWidget,SIGNAL(iconSelected(const QString&,const QString&,const QString&,int)),SLOT(iconTemplateSelected(const QString&,const QString&,const QString&,int)));
+    ui->resDockWidget->setWidget(pIconTabWidget);
+
+    pGraphTreeWidget = new HGraphTreeWidget(pGraphEditorMgr);
+    ui->fileDockWidget->setWidget(pGraphTreeWidget);
 
 }
 
@@ -165,9 +175,7 @@ void HGraphEditorMainWindow::initGraphEditorMgr()
 
 void HGraphEditorMainWindow::initMainWindow()
 {
-    pIconTabWidget = new HIconTabWidget(pGraphEditorMgr);
-    //connect(pIconTabWidget,SIGNAL(iconSelected(const QString&,const QString&,const QString&,int)),SLOT(iconTemplateSelected(const QString&,const QString&,const QString&,int)));
-    ui->resDockWidget->setWidget(pIconTabWidget);
+
 
     pGraphEditorView = new HGraphEditorView(ui->centralWidget);
     pGraphEditorView->setObjectName(QStringLiteral("画图系统"));
@@ -176,5 +184,7 @@ void HGraphEditorMainWindow::initMainWindow()
     pGraphEditorView->setLineWidth(0);
 
     ui->gridLayout->addWidget(pGraphEditorView,0,1,1,1);
+
+    pGraphEditorMgr->setGraphEditorView(pGraphEditorView);
 
 }

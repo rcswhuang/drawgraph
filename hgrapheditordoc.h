@@ -55,6 +55,7 @@ public:
     //查找画面
     HGraph* findGraph(int graphID);
 
+    //
     HGraph* findGraph(const QString& graphName);
 
     //新建画面
@@ -77,6 +78,9 @@ public:
 
     //获取当前画面
     HGraph* getCurGraph();
+
+    //判断graph文件是否修改
+    bool isGraphModify();
 protected:
 
     HGraphEditorMgr* pGraphEditorMgr;

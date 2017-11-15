@@ -95,13 +95,17 @@ bool HGraphEditorMgr::findGraphByName(const QString& graphName)
 //判断graph文件是否修改
 bool HGraphEditorMgr::isGraphModify()
 {
-
+    if(!pGraphEditorDoc)
+        return false;
+    return pGraphEditorDoc->isGraphModify();
 }
 
 //新建文件
-void HGraphEditorMgr::New(const QString&)
+void HGraphEditorMgr::New(const QString& graphName)
 {
-
+    if(!pGraphEditorDoc)
+        return;
+    pGraphEditorDoc->addGraph(graphName);
 }
 
 

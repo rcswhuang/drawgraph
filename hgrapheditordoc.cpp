@@ -11,7 +11,7 @@
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
 {
-    pCurGraph = NULL;
+    pCurGraph = new HGraph("tempGraph");
 }
 
 HGraphEditorDoc::~HGraphEditorDoc()
@@ -214,11 +214,11 @@ HGraph* HGraphEditorDoc::findGraph(const QString& graphName)
     return NULL;
 }
 
-
-
 //新建画面
 HGraph* HGraphEditorDoc::addGraph(const QString& name)
 {
+    if(pCurGraph)
+        pCurGraph->clear();
     HGraph* newGraph = new HGraph(name);
     newGraph->setGraphID(getGraphID());
     pGraphList.append(newGraph);

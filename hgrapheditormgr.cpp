@@ -81,5 +81,27 @@ QRectF HGraphEditorMgr::getLogicRect()
     return logicRectF;
 }
 
+//判断graph文件名是否存在
+bool HGraphEditorMgr::findGraphByName(const QString& graphName)
+{
+    if(!pGraphEditorDoc)
+        return false;
+    HGraph* graph = pGraphEditorDoc->findGraph(graphName);
+    if(!graph)
+        return false;
+    return true;
+}
+
+//判断graph文件是否修改
+bool HGraphEditorMgr::isGraphModify()
+{
+
+}
+
+//新建文件
+void HGraphEditorMgr::New(const QString&)
+{
+
+}
 
 

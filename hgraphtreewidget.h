@@ -13,10 +13,10 @@ public:
     HGraphTreeWidgetItem(QTreeWidgetItem * parent, int type = UserType);
 
 public:
-    void setGraphTreeID(unsigned short graphTreeID);
-    unsigned short getGraphTreeID();
+    void setGraphTreeID(int graphTreeID);
+    int getGraphTreeID();
 private:
-    unsigned short wGraphTreeID;
+    int wGraphTreeID;
 };
 
 class HGraphTreeWidget : public QTreeWidget
@@ -36,7 +36,7 @@ public:
     void delGraphTreeWidgetItem();
 
     //导入画面
-    void initGraphTreeWigetItem();
+    void importGraphTreeWigetItem();
 
     //根目录右键菜单
     void initGraphMenu(QContextMenuEvent* event);
@@ -61,11 +61,13 @@ public slots:
     //导入画面
     void importGraph();
 
+    //点击树
+    void clickGraphItem(QTreeWidgetItem*,int);
 signals:
     void graphNew(const QString&);
-    void graphOepn(const QString&,const int graphID);
+    void graphOpen(const QString&,const int graphID);
     void graphDel(const QString&,const int graphID);
-    void graphOpen();
+
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

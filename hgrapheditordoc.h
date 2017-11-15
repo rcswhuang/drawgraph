@@ -51,8 +51,11 @@ public:
 
     //或者画面ID
     int getGraphID();
+
     //查找画面
     HGraph* findGraph(int graphID);
+
+    HGraph* findGraph(const QString& graphName);
 
     //新建画面
     HGraph* addGraph(const QString& name);

@@ -22,12 +22,12 @@ HGraphTreeWidgetItem::HGraphTreeWidgetItem(QTreeWidgetItem * parent, int type)
 
 }
 
-void HGraphTreeWidgetItem::setGraphTreeID(unsigned short graphTreeID)
+void HGraphTreeWidgetItem::setGraphTreeID(int graphTreeID)
 {
     wGraphTreeID = graphTreeID;
 }
 
-unsigned short HGraphTreeWidgetItem::getGraphTreeID()
+int HGraphTreeWidgetItem::getGraphTreeID()
 {
     return wGraphTreeID;
 }
@@ -69,6 +69,8 @@ void HGraphTreeWidget::initGraphTreeWidget()
         item->setText(0,graph->getGraphName());      
         //HGraphTreeWidgetItem* citem = new HGraphTreeWidgetItem(item,GRAPHTREE_TYPE_CFILE)
     }
+
+    connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),SLOT(clickGraphItem(QTreeWidgetItem*,int)));
 }
 
 void HGraphTreeWidget::contextMenuEvent(QContextMenuEvent *event)
@@ -119,6 +121,43 @@ void HGraphTreeWidget::intGraphFileMenu(QContextMenuEvent* event)
     menu->popup(event->globalPos());
 }
 
+void HGraphTreeWidget::clickGraphItem(QTreeWidgetItem* item,int column)
+{
+    HGraphTreeWidgetItem* clickItem = dynamic_cast<HGraphTreeWidgetItem*>(item);
+    HGraphTreeWidgetItem* pCurItem = dynamic_cast<HGraphTreeWidgetItem*> (currentItem());
+
+    //点击当前最新版本不做任何处理
+    if(GRAPHTREE_TYPE_CFILE == clickItem->type())
+        return;
+
+    //如果是画面层次结构，如果两者一致，切换到最新版本里面
+    if(clickItem == pCurItem)
+    {
+        //要切换到子文件里面
+        HGraphTreeWidgetItem* childItem = dynamic_cast<HGraphTreeWidgetItem*>(clickItem->child(0));
+        if(childItem && GRAPHTREE_TYPE_CFILE == childItem->type())
+        {
+            setCurrentItem(childItem);
+        }
+        return;
+    }
+
+
+    //如果是属于切换，就要先关闭原来的树结构
+    //注意切换之前需要保存，保存在mainwindows里面进行提醒
+    int childCount = clickItem->childCount();
+    for(int index = 0; index < childCount;index++)
+    {
+        HGraphTreeWidgetItem* childItem = dynamic_cast<HGraphTreeWidgetItem*>(clickItem->child(index));
+        if(childItem)
+        {
+            delete childItem;
+            childItem = NULL;
+        }
+    }
+    collapseItem(clickItem);
+    openGraph();
+}
 
 void HGraphTreeWidget::newGraph()
 {
@@ -130,14 +169,18 @@ void HGraphTreeWidget::newGraph()
 
 void HGraphTreeWidget::openGraph()
 {
-
+    HGraphTreeWidgetItem* pCurItem = dynamic_cast<HGraphTreeWidgetItem*> (currentItem());
+    if(!pCurItem) return;
+    QString strGraphName = pCurItem->text(0);
+    int nGraphID = pCurItem->getGraphTreeID();
+    emit graphOpen(strGraphName,nGraphID);
 }
 
 void HGraphTreeWidget::delGraph()
 {
     if(!pGraphEditorMgr)
         return;
-    if(QMessageBox::Ok == QMessageBox::warning(NULL,QStringLiteral("删除画面"),QStringLiteral("确认删除此画面所有信息?"),QMessageBox::Ok|QMessageBox::Cancel))
+    /*if(QMessageBox::Ok == QMessageBox::warning(NULL,QStringLiteral("删除画面"),QStringLiteral("确认删除此画面所有信息?"),QMessageBox::Ok|QMessageBox::Cancel))
     {
         HGraphTreeWidgetItem* item = (HGraphTreeWidgetItem*)currentItem();
         if(!item)
@@ -146,7 +189,11 @@ void HGraphTreeWidget::delGraph()
             return;
         }
         //emit IconDel();
-    }
+    }*/
+    HGraphTreeWidgetItem* pCurItem = dynamic_cast<HGraphTreeWidgetItem*> (currentItem());
+    QString strGraphName = pCurItem->text(0);
+    int nGraphID = pCurItem->getGraphTreeID();
+    emit graphDel(strGraphName,nGraphID);
 }
 
 void HGraphTreeWidget::saveAsGraph()
@@ -159,18 +206,47 @@ void HGraphTreeWidget::importGraph()
 
 }
 
-
 void HGraphTreeWidget::addGraphTreeWidgetItem()
 {
+    if(!pGraphEditorMgr)
+        return;
+    HGraphTreeWidgetItem *parentItem = (HGraphTreeWidgetItem*)currentItem();
+    int type = parentItem->type();
+    if(!parentItem || type > GRAPHTREE_TYPE_ROOT)
+        return;
 
+    HGraph* pGraph = pGraphEditorMgr->graphEditorDoc()->getCurGraph();
+
+    HGraphTreeWidgetItem* newItem = new HGraphTreeWidgetItem(parentItem,GRAPHTREE_TYPE_FILE);
+    newItem->setGraphTreeID(pGraph->getGraphID());
+    newItem->setText(0,pGraph->getGraphName());
+    newItem->setIcon(0,QIcon(":/images/Folder_Documents.png"));
+    parentItem->addChild(newItem);
+
+    HGraphTreeWidgetItem* fileItem = new HGraphTreeWidgetItem(newItem,GRAPHTREE_TYPE_CFILE);
+    fileItem->setGraphTreeID(pGraph->getGraphID());
+    fileItem->setIcon(0,QIcon(":/images/document-text.png"));
+    fileItem->setText(0,QStringLiteral("最新版本"));
+    setCurrentItem(newItem);
 }
 
 void HGraphTreeWidget::delGraphTreeWidgetItem()
 {
-
+    if(!pGraphEditorMgr)
+        return;
+    HGraphTreeWidgetItem *curItem = (HGraphTreeWidgetItem*)currentItem();
+    if(!curItem || curItem->type() != GRAPHTREE_TYPE_FILE) return;
+    HGraphTreeWidgetItem *parentItem = (HGraphTreeWidgetItem*)curItem->parent();
+    HGraphTreeWidgetItem* childItem = dynamic_cast<HGraphTreeWidgetItem*>(curItem->child(0));
+    if(!childItem)
+        return;
+    curItem->removeChild(childItem);
+    delete childItem;
+    childItem = NULL;
+    setCurrentItem(parentItem);
 }
 
-void HGraphTreeWidget::initGraphTreeWigetItem()
+void HGraphTreeWidget::importGraphTreeWigetItem()
 {
 
 }

@@ -30,12 +30,14 @@ public:
     void createDockWidget();
     void initGraphEditorMgr();
     void initMainWindow();
-
-
     void createFontBar();
 
 
 public slots:
+
+   void New(const QString&);
+   void Open(const QString&,const int graphID);
+   void Del(const QString&,const int graphID);
 
    //文件部分
    void actionNew_clicked();

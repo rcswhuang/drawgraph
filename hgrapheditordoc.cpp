@@ -201,6 +201,21 @@ HGraph* HGraphEditorDoc::findGraph(int graphID)
     return NULL;
 }
 
+HGraph* HGraphEditorDoc::findGraph(const QString& graphName)
+{
+    HGraph *graph = NULL;
+    QList<HGraph*>::Iterator graphIterator;
+    for(graphIterator = pGraphList.begin();graphIterator != pGraphList.end();graphIterator++)
+    {
+        graph = *graphIterator;
+        if(graph->getGraphName() == graphName)
+            return graph;
+    }
+    return NULL;
+}
+
+
+
 //新建画面
 HGraph* HGraphEditorDoc::addGraph(const QString& name)
 {

@@ -10,6 +10,7 @@
 #include "hfonthelper.h"
 #include <QLineEdit>
 #include <QComboBox>
+#include <QMessageBox>
 #include <QDebug>
 HGraphEditorMainWindow::HGraphEditorMainWindow(HGraphEditorMgr *pMgr,QWidget *parent)
 :QMainWindow (parent),
@@ -122,7 +123,6 @@ void HGraphEditorMainWindow::createActions()
 void HGraphEditorMainWindow::createToolBars()
 {
 
-
    //字体 默认的字体都是可以Bold italic
    pFontBox = new QComboBox(ui->fontBar);
    QStringList fontList = HFontHelper::Instance()->fontFamilies();
@@ -165,7 +165,9 @@ void HGraphEditorMainWindow::createDockWidget()
 
     pGraphTreeWidget = new HGraphTreeWidget(pGraphEditorMgr);
     ui->fileDockWidget->setWidget(pGraphTreeWidget);
-
+    connect(pGraphTreeWidget,SIGNAL(graphNew(const QString&)),this,SLOT(New(const QString&)));//新建
+    connect(pGraphTreeWidget,SIGNAL(graphOpen(const QString&,const int)),this,SLOT(Open(const QString&,const int)));//打开
+    connect(pGraphTreeWidget,SIGNAL(graphDel(const QString&,const int )),this,SLOT(Del(const QString&,const int)));//删除
 }
 
 void HGraphEditorMainWindow::initGraphEditorMgr()
@@ -175,8 +177,6 @@ void HGraphEditorMainWindow::initGraphEditorMgr()
 
 void HGraphEditorMainWindow::initMainWindow()
 {
-
-
     pGraphEditorView = new HGraphEditorView(ui->centralWidget);
     pGraphEditorView->setObjectName(QStringLiteral("画图系统"));
     pGraphEditorView->setFrameShape(QFrame::NoFrame);
@@ -184,7 +184,45 @@ void HGraphEditorMainWindow::initMainWindow()
     pGraphEditorView->setLineWidth(0);
 
     ui->gridLayout->addWidget(pGraphEditorView,0,1,1,1);
-
     pGraphEditorMgr->setGraphEditorView(pGraphEditorView);
 
 }
+
+void HGraphEditorMainWindow::New(const QString& graphName)
+{
+    //主要要先保存，然后删除当前的，然后新建graph对象(mgr->doc)，然后树新增
+    if(!pGraphEditorMgr)
+        return;
+    bool bfind = pGraphEditorMgr->findGraphByName(graphName);
+    if(bfind)
+    {
+        QMessageBox::information(this,QStringLiteral("提醒"),QStringLiteral("已经存在相同名字的图形文件，请修改名称"),QMessageBox::Ok);
+        return;
+    }
+
+    //如果有修改的
+    if(pGraphEditorMgr->isGraphModify())
+    {
+        if(QMessageBox::Ok == QMessageBox::information(NULL,QStringLiteral("提醒"),QStringLiteral("需要保存当前的画面文件吗？"),QMessageBox::Yes|QMessageBox::No))
+        {
+
+             //Save();
+        }
+    }
+
+    //view 或者 scene里面要清除掉所有内容
+    pGraphEditorMgr->New(graphName);
+    pGraphTreeWidget->addGraphTreeWidgetItem();
+}
+
+void HGraphEditorMainWindow::Open(const QString&,const int graphID)
+{
+
+}
+
+void HGraphEditorMainWindow::Del(const QString&,const int graphID)
+{
+
+}
+
+

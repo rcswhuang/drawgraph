@@ -33,6 +33,16 @@ public:
     HGraphEditorDoc* graphEditorDoc();
 
 public:
+
+    //判断graph文件名是否存在
+    bool findGraphByName(const QString&);
+
+    //判断graph文件是否修改
+    bool isGraphModify();
+
+    //新建文件
+    void New(const QString&);
+
    /* virtual void refresh();
 
     virtual void reset();

@@ -13,6 +13,7 @@ HGraph::HGraph(const QString& name)
     nGraphHeight = 1000;
     nRefreshInterval = 3000;
     strFillColor = "#000000";
+    bModify = false;
 }
 
 HGraph::~HGraph()
@@ -268,12 +269,116 @@ void HGraph::Draw(QPainter* p)
 
 void HGraph::clear()
 {
+    for(int i = 0; i < pIconTemplateList.count();i++)
+    {
+        HIconTemplate* icontemp = (HIconTemplate*)pIconTemplateList.takeFirst();
+        if(!icontemp) continue;
+        delete icontemp;
+        icontemp = NULL;
+    }
+    pIconTemplateList.clear();
 
+    //所有图元信息
+    for (int i = 0; i < pObjList.count();i++)
+    {
+        //HBaseObj的所有继承类都要virtual析构函数
+        HBaseObj* pObj = (HBaseObj*)pObjList[i];
+        if(!pObj) continue;
+        delete pObj;
+        pObj = NULL;
+    }
+    pObjList.clear();
 }
 
-void HGraph::copyTo(HBaseObj* obj)
+void HGraph::copyTo(HGraph* graph)
 {
+    graph->sName = sName;
+    graph->nGraphID = nGraphID;
+    graph->nGraphWidth = nGraphWidth;
+    graph->nGraphHeight = nGraphHeight;
+    graph->nRefreshInterval = nRefreshInterval;
+    graph->strFillColor = strFillColor;
+    graph->bModify = bModify;
 
+
+    //所有模板信息
+    for(int i = 0; i < pIconTemplateList.count();i++)
+    {
+        HIconTemplate* icontemp = (HIconTemplate*)pIconTemplateList[i];
+        if(!icontemp) continue;
+        HIconTemplate* newtemp = new HIconTemplate(icontemp->getUuid());
+        icontemp->copyTo(newtemp);
+        graph->pIconTemplateList.append(newtemp);//拷贝HIconTemplate到新HGraph里面
+    }
+
+    //所有图元信息
+    for (int i = 0; i < pObjList.count();i++)
+    {
+        HBaseObj* pObj = (HBaseObj*)pObjList[i];
+        if(pObj->getShapeType() == enumLine)
+        {
+            HLineObj* pLineObj = new HLineObj;
+            pObj->clone(pLineObj);
+            graph->addObj(pObj);
+        }
+        else if(pObj->getShapeType() == enumRectangle)
+        {
+            HRectObj* pRectObj = new HRectObj;
+            pObj->clone(pRectObj);
+            graph->addObj(pRectObj);
+        }
+        else if(pObj->getShapeType() == enumEllipse)
+        {
+            HEllipseObj* pEllipseObj = new HEllipseObj;
+            pObj->clone(pEllipseObj);
+            graph->addObj(pEllipseObj);
+        }
+        else if(pObj->getShapeType() == enumCircle)
+        {
+            HCircleObj* pCircleObj = new HCircleObj;
+            pObj->clone(pCircleObj);
+            graph->addObj(pCircleObj);
+        }
+        else if(pObj->getShapeType() == enumPolyline)
+        {
+            HPolylineObj* pPolylineObj = new HPolylineObj;
+            pObj->clone(pPolylineObj);
+            graph->addObj(pPolylineObj);
+        }
+        else if(pObj->getShapeType() == enumPolygon)
+        {
+            HPolygonObj* pPolygonObj = new HPolygonObj;
+            pObj->clone(pPolygonObj);
+            graph->addObj(pPolygonObj);
+        }
+        else if(pObj->getShapeType() == enumPie)
+        {
+            HPieObj* pPieObj = new HPieObj;
+            pObj->clone(pPieObj);
+            graph->addObj(pPieObj);
+        }
+        else if(pObj->getShapeType() == enumArc)
+        {
+            HArcObj* pArcObj = new HArcObj;
+            pObj->clone(pArcObj);
+            graph->addObj(pArcObj);
+        }
+        else if(pObj->getShapeType() == enumText)
+        {
+            HTextObj* pTextObj = new HTextObj;
+            pObj->clone(pTextObj);
+            graph->addObj(pTextObj);
+        }
+        else if(pObj->getShapeType() == enumComplex)
+        {
+            HIconComplexObj* pObj1 = (HIconComplexObj*)pObj;
+            //要从graph里面去寻找
+            HIconTemplate* icontemp = graph->findIconTemplate(QUuid(pObj1->getUuid()));
+            HIconComplexObj* pComplexObj = new HIconComplexObj(icontemp);
+            pObj->clone(pComplexObj);
+            graph->addObj(pComplexObj);
+        }
+    }
 }
 
 
@@ -420,4 +525,14 @@ void HGraph::clearIconTemplate()
 void HGraph::resetIconTemplate()
 {
     clearIconTemplate();
+}
+
+void HGraph::setModify(bool modify)
+{
+    bModify = modify;
+}
+
+bool HGraph::getModify()
+{
+    return bModify;
 }

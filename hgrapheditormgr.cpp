@@ -108,4 +108,16 @@ void HGraphEditorMgr::New(const QString& graphName)
     pGraphEditorDoc->addGraph(graphName);
 }
 
+void HGraphEditorMgr::refreshView()
+{
+    if(!pGraphEditorView)
+        return;
+    pGraphEditorView->refresh();
+}
 
+void HGraphEditorMgr::delGraphSceneItem()
+{
+    if(!pGraphEditorScene)
+        return;
+    pGraphEditorScene->delGraphEditorSceneItems();
+}

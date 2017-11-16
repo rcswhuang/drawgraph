@@ -9,3 +9,10 @@ HGraphEditorView::HGraphEditorView(QWidget *parent)
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 }
 
+void HGraphEditorView::refresh()
+{
+    int width = viewport()->width();
+    int height = viewport()->height();
+    resize(width-1,height-1);
+    resize(width,height);
+}

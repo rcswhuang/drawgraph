@@ -11,7 +11,7 @@
 HGraphEditorDoc::HGraphEditorDoc(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
 {
-    pCurGraph = new HGraph("tempGraph");
+    pCurGraph = NULL;
 }
 
 HGraphEditorDoc::~HGraphEditorDoc()
@@ -218,10 +218,17 @@ HGraph* HGraphEditorDoc::findGraph(const QString& graphName)
 HGraph* HGraphEditorDoc::addGraph(const QString& name)
 {
     if(pCurGraph)
+    {
         pCurGraph->clear();
+        delete pCurGraph;
+        pCurGraph = NULL;
+    }
     HGraph* newGraph = new HGraph(name);
     newGraph->setGraphID(getGraphID());
     pGraphList.append(newGraph);
+
+    pCurGraph = new HGraph("tempGraph");
+    newGraph->copyTo(pCurGraph);
     return newGraph;
 }
 
@@ -234,6 +241,12 @@ void HGraphEditorDoc::delGraph(const QString& name,const int id)
     pGraphList.removeOne(graph);
     delete graph;
     graph = NULL;
+
+    if(pCurGraph)
+    {
+        delete pCurGraph;
+        pCurGraph = NULL;
+    }
 }
 
 //打开画面
@@ -262,4 +275,13 @@ QList<HIconTemplate*> HGraphEditorDoc::getIconTemplateList()
 QList<HGraph*> HGraphEditorDoc::getGraphList()
 {
     return pGraphList;
+}
+
+//判断graph文件是否修改
+bool HGraphEditorDoc::isGraphModify()
+{
+    //只需要判断当前画面是否存在修改
+    if(!pCurGraph)
+        return false;
+    return pCurGraph->getModify();
 }

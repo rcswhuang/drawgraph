@@ -87,6 +87,12 @@ public:
 
     QRectF getLogicRect();
 
+    //刷新view
+    void refreshView();
+
+    //清空scene上面所有的Item
+    void delGraphSceneItem();
+
 
 protected:
     HGraphEditorDoc* pGraphEditorDoc;

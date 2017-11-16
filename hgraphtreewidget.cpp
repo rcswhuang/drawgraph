@@ -222,12 +222,12 @@ void HGraphTreeWidget::addGraphTreeWidgetItem()
     newItem->setText(0,pGraph->getGraphName());
     newItem->setIcon(0,QIcon(":/images/Folder_Documents.png"));
     parentItem->addChild(newItem);
-
+    expandItem(newItem);
     HGraphTreeWidgetItem* fileItem = new HGraphTreeWidgetItem(newItem,GRAPHTREE_TYPE_CFILE);
     fileItem->setGraphTreeID(pGraph->getGraphID());
     fileItem->setIcon(0,QIcon(":/images/document-text.png"));
     fileItem->setText(0,QStringLiteral("最新版本"));
-    setCurrentItem(newItem);
+    setCurrentItem(fileItem);
 }
 
 void HGraphTreeWidget::delGraphTreeWidgetItem()

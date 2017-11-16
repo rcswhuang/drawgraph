@@ -19,12 +19,10 @@ public:
     HGraph(const QString& name);
     ~HGraph();
 public:
-
-    //设置ID
     void setGraphID(int id);
-
-    //获取ID
     int getGraphID();
+    void setModify(bool modify);
+    bool getModify();
 public:
     virtual void readDataFile(const QString&);
 
@@ -53,7 +51,7 @@ public:
 
     void clear();
 
-    void copyTo(HBaseObj* obj);
+    void copyTo(HGraph* graph);
 
     HBaseObj* newObj(int nObjType,const QString &strUuid = QString());
 
@@ -95,6 +93,8 @@ protected:
     int nRefreshInterval; //刷新间隔
 
     QString strFillColor;//背景填充颜色
+
+    bool bModify; //是否修改，不需要保存
 
     QList<HBaseObj*> pObjList;//所有图元信息
 

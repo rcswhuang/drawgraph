@@ -12,6 +12,9 @@ class HGraphEditorScene : public QGraphicsScene
 public:
     HGraphEditorScene(HGraphEditorMgr *mgr);
 
+public:
+    void delGraphEditorSceneItems();
+
 protected:
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent);
     virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);

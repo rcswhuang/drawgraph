@@ -213,6 +213,7 @@ void HGraphEditorMainWindow::New(const QString& graphName)
     //view 或者 scene里面要清除掉所有内容
     pGraphEditorMgr->New(graphName);
     pGraphTreeWidget->addGraphTreeWidgetItem();
+    pGraphEditorMgr->refreshView();
 }
 
 void HGraphEditorMainWindow::Open(const QString&,const int graphID)

@@ -60,3 +60,14 @@ void HGraphEditorScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
 
 }
+
+void HGraphEditorScene::delGraphEditorSceneItems()
+{
+    foreach (QGraphicsItem *item, items())
+    {
+        HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
+        if(!pItem) continue;
+        removeItem(item);
+        delete item;
+     }
+}

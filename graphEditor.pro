@@ -44,7 +44,8 @@ SOURCES += hgraph.cpp \
            hgrapheditormainwindowactions.cpp
 
 FORMS += grapheditormainwindow.ui
-RESOURCES += images.qrc
+RESOURCES += images.qrc \
+    pixmaps.qrc
 
 unix{
 

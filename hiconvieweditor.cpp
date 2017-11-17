@@ -120,7 +120,7 @@ void HIconListWidget::initIconListWidget()
 
     clearIconListWidget();
     //初始化默认读取所有模板文件
-    nType = TEMPLATE_TYPE_DIGITAL;
+    nType = TEMPLATE_TYPE_NULL;
     RefreshIconType(nType);
 }
 
@@ -140,7 +140,7 @@ void HIconListWidget::clearIconListWidget()//切换需要先清除
 
 void HIconListWidget::RefreshIconType(int ntype)
 {
-    if(nType == ntype)
+    if(nType == ntype || TEMPLATE_TYPE_NULL == ntype)
         return;
     nType = ntype;
     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorDoc())

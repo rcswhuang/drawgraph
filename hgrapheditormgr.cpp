@@ -29,6 +29,33 @@ HGraphEditorMgr::HGraphEditorMgr()
 
 }
 
+
+//启动时加载数据库
+void HGraphEditorMgr::loadStation()
+{
+    if(!pGraphEditorDoc)
+        return;
+    pGraphEditorDoc->loadStation();
+}
+
+//启动时加载模板信息
+void HGraphEditorMgr::loadTemplates()
+{
+    if(!pGraphEditorDoc)
+        return;
+    pGraphEditorDoc->loadIconTemplate();
+}
+
+//启动时加载画面信息
+void HGraphEditorMgr::loadGraphs()
+{
+    if(!pGraphEditorDoc)
+        return;
+    pGraphEditorDoc->loadAllGraph();
+}
+
+
+
 HGraphEditorScene* HGraphEditorMgr::GraphEditorScene()
 {
     return pGraphEditorScene;

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pixmaps/splash.png</file>
+    </qresource>
+</RCC>

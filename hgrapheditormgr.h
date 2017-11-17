@@ -34,6 +34,17 @@ public:
 
 public:
 
+    //启动时加载数据库
+    void loadStation();
+
+    //启动时加载模板信息
+    void loadTemplates();
+
+    //启动时加载画面信息
+    void loadGraphs();
+
+
+
     //判断graph文件名是否存在
     bool findGraphByName(const QString&);
 

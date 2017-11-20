@@ -34,15 +34,15 @@ QPixmap HIconHelper::iconPixmap(const QString& strType,const QString& uuid)
 #endif
     iconsPath.append("/icons");
 
-   QString path = iconsPath + strType + "/" + uuid + ".xic";
-   if ( uuid.isEmpty() && strType.contains(".xic") )
-   {
-       path = strType;
-   }
-   pIconTemplate->readXml(path);
+    QString path = iconsPath +"/" + strType + "/" + uuid + ".xic";
+    if ( uuid.isEmpty() && strType.contains(".xic") )
+    {
+        path = strType;
+    }
+    pIconTemplate->readXml(path);
 
     QSizeF sizeF = pIconTemplate->getDefaultSize();
-    QImage image(sizeF.width()+1,sizeF.height(),QImage::Format_ARGB32);
+    QImage image(sizeF.width()+1.00,sizeF.height(),QImage::Format_ARGB32);
     image.fill(Qt::transparent);
     QPainter painter(&image);
     HIconComplexObj* pObj = new HIconComplexObj(pIconTemplate);

@@ -8,6 +8,7 @@
 #include "hgrapheditormgr.h"
 #include "hgrapheditordoc.h"
 #include "hicontemplate.h"
+#include "hiconhelper.h"
 ////////////////////////////////////树型控件////////////////////////////////
 HIconTreeWidgetItem::HIconTreeWidgetItem(QTreeWidgetItem* parent,int type ):QTreeWidgetItem(parent,type)
 {
@@ -147,6 +148,8 @@ void HIconListWidget::RefreshIconType(int ntype)
         return;
     QList<HIconTemplate*> pList = pGraphEditorMgr->graphEditorDoc()->getIconTemplateList();
 
+
+    HIconHelper* pIconHelper = HIconHelper::Instance();
     for(int i=0;i < pList.count();i++)
     {
         HIconTemplate* pTemp = (HIconTemplate*)pList[i];
@@ -154,8 +157,9 @@ void HIconListWidget::RefreshIconType(int ntype)
         {
             HIconListWidgetItem* listItem = new HIconListWidgetItem(this,ntype);
             listItem->setData(Qt::UserRole,pTemp->getUuid());//uuid
-            listItem->setText(pTemp->getCatalogName());//名字
-            listItem->setIcon(pTemp->getIcon());
+            listItem->setText(pTemp->getSymbol()->getSymolName());//名字
+            QIcon icon(pIconHelper->iconPixmap(pTemp->getCatalogName(),pTemp->getUuid().toString()));
+            listItem->setIcon(icon);
             addItem(listItem);
         }
     }

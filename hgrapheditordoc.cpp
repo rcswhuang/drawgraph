@@ -23,6 +23,7 @@ HGraphEditorDoc::~HGraphEditorDoc()
 void HGraphEditorDoc::loadStation()
 {
     //读取厂站信息
+    /*
     FILEHANDLE fileHandle;
     memset(&fileHandle,0,sizeof(FILEHANDLE));
     DATAFILEHEADER dataFileHandle;
@@ -51,6 +52,7 @@ void HGraphEditorDoc::loadStation()
         pStationList.append(pStation);
     }
     closeDB(FILE_TYPE_STATION);
+    */
 }
 
 

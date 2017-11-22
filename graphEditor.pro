@@ -51,8 +51,7 @@ RESOURCES += images.qrc \
 
 unix{
 
-    LIBS += \
-           -lH5IconGui
+    LIBS += -L ../lib/ -lH5IconGui
 }
 
 win32{

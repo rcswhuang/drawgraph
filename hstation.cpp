@@ -64,7 +64,7 @@ bool HStation::loadData(FILEHANDLE& fileHandle)
     wTotalDigital = station.wDigitalCounts;
     wTotalGroup = station.wEquipmentGroupCounts;
     wTotalRelay = station.wRelayCounts;
-
+/*
     //间隔
     if(wTotalGroup != 0)
     {
@@ -155,6 +155,7 @@ bool HStation::loadData(FILEHANDLE& fileHandle)
             relay->szName[PTNAMELEN-1] = 0;
         }
     }
+    */
     return true;
 }
 

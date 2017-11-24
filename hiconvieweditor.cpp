@@ -117,6 +117,8 @@ void HIconListWidget::initIconListWidget()
     setAcceptDrops(true);//放
     setDragEnabled(true);//拖
     setDropIndicatorShown(true);
+    //setViewMode(QListView::IconMode);
+    //setSpacing(10);
     setIconSize(QSize(50,50));
 
     clearIconListWidget();
@@ -160,6 +162,7 @@ void HIconListWidget::RefreshIconType(int ntype)
             listItem->setText(pTemp->getSymbol()->getSymolName());//名字
             QIcon icon(pIconHelper->iconPixmap(pTemp->getCatalogName(),pTemp->getUuid().toString()));
             listItem->setIcon(icon);
+            listItem->setSizeHint(QSize(50,50));
             addItem(listItem);
         }
     }

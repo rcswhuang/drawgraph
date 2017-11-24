@@ -45,6 +45,9 @@ QPixmap HIconHelper::iconPixmap(const QString& strType,const QString& uuid)
     QImage image(sizeF.width()+1.00,sizeF.height(),QImage::Format_ARGB32);
     image.fill(Qt::transparent);
     QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::TextAntialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
     HIconComplexObj* pObj = new HIconComplexObj(pIconTemplate);
     QPolygonF pf;
     pf<<QPointF(0,0)<<QPointF(sizeF.width(),sizeF.height());

@@ -69,7 +69,6 @@ void HGraphTreeWidget::initGraphTreeWidget()
         item->setText(0,graph->getGraphName());      
         //HGraphTreeWidgetItem* citem = new HGraphTreeWidgetItem(item,GRAPHTREE_TYPE_CFILE)
     }
-
     connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),SLOT(clickGraphItem(QTreeWidgetItem*,int)));
 }
 

@@ -89,15 +89,12 @@ void HIconTreeWidget::treeItemClicked(QTreeWidgetItem* pItem,int column)
         pIconListWidget->RefreshIconType(item->getIconItemType());
     }
 }
-
-
 ///////////////////////////////列表控件/////////////////////////////////////////////////////
-
 HIconListWidgetItem::HIconListWidgetItem(QListWidget * parent , int type )
     :QListWidgetItem(parent,type)
 {
-}
 
+}
 
 HIconListWidget::HIconListWidget(HGraphEditorMgr* mgr)
     :pGraphEditorMgr(mgr)
@@ -109,7 +106,6 @@ HIconListWidget::~HIconListWidget()
 {
     clearIconListWidget();
 }
-
 
 void HIconListWidget::initIconListWidget()
 {
@@ -219,7 +215,6 @@ HIconViewEditor::HIconViewEditor(HIconTabWidget *tabWidget )
     QVBoxLayout* pVBoxLayout = new QVBoxLayout(this);
     Q_ASSERT(pVBoxLayout);
     pVBoxLayout->setMargin(0);
-
 
     pIconTreeWidget = new HIconTreeWidget((HGraphEditorMgr*)pIconTabWidget->getGraphEditorMgr());   // (pIconTabWidget->getGraphEditorMgr());
     pVBoxLayout->addWidget(pIconTreeWidget);

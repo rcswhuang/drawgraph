@@ -81,7 +81,7 @@ public:
     virtual void initZValue();
 
     //
-    void reName(const QString& newName);
+    void reName(const QString& newName);*/
 
     //增加对象
     virtual void addIconObj(HBaseObj* pObj,bool bPaste = false);
@@ -92,7 +92,7 @@ public:
 
 
     //历史
-    void addCommand(QUndoCommand* pCommand);*/
+    //void addCommand(QUndoCommand* pCommand);
     //设置逻辑界面大小
     void setLogicRect(const QRectF& rect);
 

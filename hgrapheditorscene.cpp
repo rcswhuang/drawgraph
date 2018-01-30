@@ -2,6 +2,7 @@
 #include "hgrapheditormgr.h"
 #include "hgrapheditordoc.h"
 #include "hgraph.h"
+#include <QMimeData>
 HGraphEditorScene::HGraphEditorScene(HGraphEditorMgr *mgr)
     :pGraphEditorMgr(mgr)
 {
@@ -41,9 +42,28 @@ void HGraphEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *context
 
 }
 
-void HGraphEditorScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
+
+
+void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 
+}
+
+void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    int a = 0;
+}
+
+
+void HGraphEditorScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
+{
+    if(event->mimeData()->hasFormat("DragIcon"))
+    {
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    }
+    else
+        event->ignore();
 }
 
 void HGraphEditorScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
@@ -53,7 +73,13 @@ void HGraphEditorScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 
 void HGraphEditorScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-
+    if(event->mimeData()->hasFormat("DragIcon"))
+    {
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    }
+    else
+        event->ignore();
 }
 
 void HGraphEditorScene::dropEvent(QGraphicsSceneDragDropEvent *event)

@@ -21,7 +21,6 @@ HFontHelper* HFontHelper::Instance()
     return m_pInstance;
 }
 
-
 QStringList HFontHelper::fontFamilies() const
 {
     QStringList familiesList;

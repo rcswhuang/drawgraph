@@ -52,7 +52,7 @@ void HIconTreeWidget::initIconTypes()
     //digitalItem->setIcon(0,QIcon(":/images/tree.png"));
     digitalItem->setText(0,QStringLiteral("遥信"));
 
-    HIconTreeWidgetItem *analogueItem = new HIconTreeWidgetItem(rootItem,TEMPLATE_TYPE_ANALGOUE);
+    HIconTreeWidgetItem *analogueItem = new HIconTreeWidgetItem(rootItem,TEMPLATE_TYPE_ANALOGUE);
     //analogueItem->setIcon(0,QIcon(":/images/tree.png"));
     analogueItem->setText(0,QStringLiteral("遥测"));
 
@@ -129,7 +129,7 @@ void HIconListWidget::initIconListWidget()
 
 void HIconListWidget::clearIconListWidget()//切换需要先清除
 {
-    for(int i = 0; i < count();i++)
+    /*for(int i = 0; i < count();i++)
     {
         HIconTemplate* item = (HIconTemplate*)takeItem(i);
         if(item)
@@ -137,7 +137,7 @@ void HIconListWidget::clearIconListWidget()//切换需要先清除
             delete item;
             item = NULL;
         }
-    }
+    }*/
     clear();
 }
 
@@ -148,9 +148,8 @@ void HIconListWidget::RefreshIconType(int ntype)
     nType = ntype;
     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorDoc())
         return;
+    clear();
     QList<HIconTemplate*> pList = pGraphEditorMgr->graphEditorDoc()->getIconTemplateList();
-
-
     HIconHelper* pIconHelper = HIconHelper::Instance();
     for(int i=0;i < pList.count();i++)
     {

@@ -4,6 +4,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QGraphicsSceneDragDropEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 class HGraphEditorMgr;
 class HGraphEditorScene : public QGraphicsScene
@@ -16,6 +17,10 @@ public:
     void delGraphEditorSceneItems();
 
 protected:
+
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent);
     virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     virtual void dragLeaveEvent(QGraphicsSceneDragDropEvent *event);

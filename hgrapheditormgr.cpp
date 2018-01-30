@@ -148,3 +148,21 @@ void HGraphEditorMgr::delGraphSceneItem()
         return;
     pGraphEditorScene->delGraphEditorSceneItems();
 }
+
+
+//增加对象
+void HGraphEditorMgr::addIconObj(HBaseObj* pObj,bool bPaste)
+{
+
+}
+
+//创建图符对象
+//类型(遥信,遥控...),uuid,shape,fpoint
+void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,int shape,QPointF fpoint,QList<HIconGraphicsItem*> &items)
+{
+    HIconTemplate* pIconTemplate = 0;
+    HIconTemplate* pTemplate = pGraphEditorDoc->findIconTemplate(uuid);
+
+}
+
+

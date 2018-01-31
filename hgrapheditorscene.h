@@ -6,6 +6,21 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+class HIconLineItem;
+class HIconRectItem;
+class HIconEllipseItem;
+class HIconCircleItem;
+class HIconPolygonItem;
+class HIconPolylineItem;
+class HIconArcItem;
+class HIconPieItem;
+class HIconTextItem;
+class HIconComplexItem;
+class HIconSelectionItem;
+class HIconGraphicsItem;
+class HIconItemGroup;
+class HBaseObj;
+
 class HGraphEditorMgr;
 class HGraphEditorScene : public QGraphicsScene
 {
@@ -15,7 +30,7 @@ public:
 
 public:
     void delGraphEditorSceneItems();
-
+    void addIconGraphicsItem(HBaseObj* pObj);
 protected:
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -31,6 +46,21 @@ protected:
 
 public:
     HGraphEditorMgr* pGraphEditorMgr;
+    HIconLineItem* line;
+    HIconRectItem* rectangle;
+    HIconEllipseItem* ellipse;
+    HIconCircleItem* circle;
+    HIconPolygonItem* polygon;
+    HIconPolylineItem* polyline;
+    HIconArcItem* arc;
+    HIconPieItem* pie;
+    HIconTextItem* text;
+    HIconSelectionItem* select;
+    HIconItemGroup* group;
+    HIconComplexItem* complex;
+
+public:
+    QList<HIconGraphicsItem*> dragMoveItems;
 };
 
 #endif // HGRAPHEDITORSCENE_H

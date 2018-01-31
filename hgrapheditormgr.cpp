@@ -54,8 +54,6 @@ void HGraphEditorMgr::loadGraphs()
     pGraphEditorDoc->loadAllGraph();
 }
 
-
-
 HGraphEditorScene* HGraphEditorMgr::GraphEditorScene()
 {
     return pGraphEditorScene;
@@ -149,20 +147,57 @@ void HGraphEditorMgr::delGraphSceneItem()
     pGraphEditorScene->delGraphEditorSceneItems();
 }
 
-
-//增加对象
-void HGraphEditorMgr::addIconObj(HBaseObj* pObj,bool bPaste)
-{
-
-}
-
 //创建图符对象
 //类型(遥信,遥控...),uuid,shape,fpoint
 void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,int shape,QPointF fpoint,QList<HIconGraphicsItem*> &items)
 {
-    HIconTemplate* pIconTemplate = 0;
+    HIconTemplate* pIconTemplate = new HIconTemplate("");
     HIconTemplate* pTemplate = pGraphEditorDoc->findIconTemplate(uuid);
+    pIconTemplate->copyTo(pTemplate);
+    pGraphEditorDoc->getCurGraph()->addIconTemplate(pIconTemplate);
+    HBaseObj* pObj = pIconTemplate->getSymbol()->newObj(enumComplex);
+    HIconComplexObj* pIconComplexObj = (HIconComplexObj*)pObj;
+    //设置图元坐标位置
+    double width;
+    double height;
+    double rectwidth = pIconComplexObj->getRectWidth();
+    double rectheight = pIconComplexObj->getRectHeight();
+    if(rectwidth > 0 || rectheight > 0)
+    {
+        width = rectwidth;
+        height = rectheight;
+    }
+    else
+    {
+        width = 30;
+        height = 30;
+    }
 
+    //QRectF rectComplex(fpoint,QSizeF(width,height));
+    pIconComplexObj->setTopLeft(fpoint);
+    pIconComplexObj->setRectWidth(width);
+    pIconComplexObj->setRectHeight(height);
+    QPointF ptLt,ptRb;
+    ptLt.setX(fpoint.x() - width/2);
+    ptLt.setY(fpoint.y() - height/2);
+    //ptRb.setX(fpoint.x() + width/2);
+    //ptRb.setY(fpoint.y() + height/2);
+
+    //pIconComplexObj->resetRectPoint(p)
+    addIconObj(pIconComplexObj);
+    items.append(pIconComplexObj->getIconGraphicsItem());
 }
 
+//增加对象
+void HGraphEditorMgr::addIconObj(HBaseObj* pObj,bool bPaste)
+{
+    if(!pObj)
+        return;
+    //图元对象添加到画面文件
+    pGraphEditorDoc->getCurGraph()->addObj(pObj);
+}
 
+void HGraphEditorMgr::ObjCreated(HBaseObj* pObj)
+{
+    pGraphEditorScene->addIconGraphicsItem(pObj);
+}

@@ -169,6 +169,8 @@ void HIconListWidget::startDrag(Qt::DropActions supportedActions)
     QByteArray itemData;//数组
     QDataStream dataStream(&itemData,QIODevice::WriteOnly);//读数据到数组的流
     //uuid,name,type uuid,红绿灯,遥信
+    QString uuid = item->data(Qt::UserRole).toString();
+    QString name = item->text();
     dataStream<<item->data(Qt::UserRole).toString()<<item->text()<<nType; //读入数据到数组
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("DragIcon",itemData);

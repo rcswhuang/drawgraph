@@ -10,7 +10,6 @@ class HGraphEditorView;
 class HGraphEditorDoc;
 class HIconGraphicsItem;
 class HBaseObj;
-
 class HGraph;
 //class QRectF;
 /*
@@ -83,6 +82,7 @@ public:
     //
     void reName(const QString& newName);*/
 
+    virtual void ObjCreated(HBaseObj* pObj);
     //增加对象
     virtual void addIconObj(HBaseObj* pObj,bool bPaste = false);
 

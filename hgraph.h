@@ -3,9 +3,12 @@
 
 #include <QObject>
 #include "publicdata.h"
+#include "hiconapi.h"
 #include "hicontemplate.h"
 #include "hbaseobj.h"
 #include "hiconobj.h"
+#include "hiconrectobj.h"
+
 class QPainter;
 class QDataStream;
 class QDomElement;

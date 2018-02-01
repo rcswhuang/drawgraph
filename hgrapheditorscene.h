@@ -35,6 +35,7 @@ protected:
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent);
     virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
@@ -45,6 +46,7 @@ protected:
     virtual void dropEvent(QGraphicsSceneDragDropEvent *event);
 
 public:
+    QPointF ptStart;
     HGraphEditorMgr* pGraphEditorMgr;
     HIconLineItem* line;
     HIconRectItem* rectangle;

@@ -153,15 +153,17 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
 {
     HIconTemplate* pIconTemplate = new HIconTemplate("");
     HIconTemplate* pTemplate = pGraphEditorDoc->findIconTemplate(uuid);
-    pIconTemplate->copyTo(pTemplate);
+    pTemplate->copyTo(pIconTemplate);
     pGraphEditorDoc->getCurGraph()->addIconTemplate(pIconTemplate);
     HBaseObj* pObj = pIconTemplate->getSymbol()->newObj(enumComplex);
     HIconComplexObj* pIconComplexObj = (HIconComplexObj*)pObj;
+    //HRectObj* pIconComplexObj = (HRectObj*)pObj;
     //设置图元坐标位置
-    double width;
-    double height;
-    double rectwidth = pIconComplexObj->getRectWidth();
-    double rectheight = pIconComplexObj->getRectHeight();
+    double width = 100;
+    double height = 100;
+    QSizeF sizeF = pIconTemplate->getDefaultSize();
+    double rectwidth = sizeF.width();
+    double rectheight = sizeF.height();
     if(rectwidth > 0 || rectheight > 0)
     {
         width = rectwidth;
@@ -182,8 +184,10 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
     ptLt.setY(fpoint.y() - height/2);
     //ptRb.setX(fpoint.x() + width/2);
     //ptRb.setY(fpoint.y() + height/2);
-
-    //pIconComplexObj->resetRectPoint(p)
+    QSizeF pt = pIconTemplate->getDefaultSize();
+    double w1 = width/(pt.width()*20);
+    double h1 = height/(pt.height()*20);
+    pIconComplexObj->resize(w1,h1);
     addIconObj(pIconComplexObj);
     items.append(pIconComplexObj->getIconGraphicsItem());
 }
@@ -195,6 +199,7 @@ void HGraphEditorMgr::addIconObj(HBaseObj* pObj,bool bPaste)
         return;
     //图元对象添加到画面文件
     pGraphEditorDoc->getCurGraph()->addObj(pObj);
+    ObjCreated(pObj);
 }
 
 void HGraphEditorMgr::ObjCreated(HBaseObj* pObj)

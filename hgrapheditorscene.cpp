@@ -23,7 +23,9 @@
 HGraphEditorScene::HGraphEditorScene(HGraphEditorMgr *mgr)
     :pGraphEditorMgr(mgr)
 {
-
+    //setAcceptDraps(true);
+    complex = 0;
+    rectangle = 0;
 }
 
 void HGraphEditorScene::drawBackground(QPainter *painter, const QRectF &rect)
@@ -51,7 +53,7 @@ void HGraphEditorScene::drawBackground(QPainter *painter, const QRectF &rect)
 
 void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-
+    QPointF pt = mouseEvent->scenePos();
 }
 
 void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -60,8 +62,18 @@ void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     //if(drawShape == enumSelection)
     //{
       //  setItemCursor(mouseEvent);
+    QList<QGraphicsItem*> itemlist = selectedItems();
+    for(int i = 0; i < itemlist.count();i++)
+    {
+        HIconGraphicsItem* item = qgraphicsitem_cast<HIconGraphicsItem*>(itemlist[i]);
+    }
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     //}
+}
+
+void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+
 }
 
 void HGraphEditorScene::drawForeground(QPainter *painter, const QRectF &rect)
@@ -78,8 +90,10 @@ void HGraphEditorScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     dragMoveItems.clear();
     QPointF point = event->scenePos();
+
     if(event->mimeData()->hasFormat("DragIcon"))
     {
+        ptStart = point;
         QByteArray itemData = event->mimeData()->data("DragIcon");//数组
         QDataStream dataStream(&itemData,QIODevice::ReadOnly);//读数据到数组的流
         //uuid,name,type uuid,红绿灯,遥信
@@ -89,13 +103,14 @@ void HGraphEditorScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
         pGraphEditorMgr->createIconObj(strTypeName,strUuid,nShapeType,point,dragMoveItems);
         event->setDropAction(Qt::MoveAction);
-        if(dragMoveItems.count() > 0)
-        {
+        //if(dragMoveItems.count() > 0)
+        //{
             event->accept();
-        }
-        else
-            event->ignore();
+        //}
+
     }
+    else
+        event->ignore();
 
 }
 
@@ -109,13 +124,32 @@ void HGraphEditorScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
     QPointF pointF = event->scenePos();
     if(event->mimeData()->hasFormat("DragIcon"))
     {
-        HIconGraphicsItem* pIconGraphicsItem = NULL;
+        /*HIconGraphicsItem* pIconGraphicsItem = NULL;
         for(int i = 0; i < dragMoveItems.count();i++)
         {
             pIconGraphicsItem = (HIconGraphicsItem*)dragMoveItems[i];
             if(!pIconGraphicsItem)
                 continue;
             pIconGraphicsItem->moveBy(pointF.x()-pIconGraphicsItem->scenePos().x(),pointF.y()-pIconGraphicsItem->scenePos().y());
+            HBaseObj* pObj = pIconGraphicsItem->getItemObj();
+            HIconComplexObj* pObj1 = (HIconComplexObj*)pObj;
+            QRectF rectF(pointF,QSize(pObj1->getRectWidth(),pObj1->getRectHeight()));
+            //pIconGraphicsItem->setRect(rectF);
+            //pObj1->setObjRect(rectF);
+            //pObj1->moveBy(pointF.x()-pIconGraphicsItem->scenePos().x(),pointF.y()-pIconGraphicsItem->scenePos().y());
+        }*/
+        if(complex != 0)
+        {
+            //pIconGraphicsItem->moveBy(pointF.x()-pIconGraphicsItem->scenePos().x(),pointF.y()-pIconGraphicsItem->scenePos().y());
+            HBaseObj* pObj = complex->getItemObj();
+            complex->moveBy(pointF.x()-ptStart.x(),pointF.y()-ptStart.y());
+            HIconComplexObj* pObj1 = (HIconComplexObj*)pObj;
+            //pObj1->moveBy(pointF.x()-ptStart.x(),pointF.y()-ptStart.y());
+            //QRectF rectF(pObj1->getTopLeft(),QSize(pObj1->getRectWidth(),pObj1->getRectHeight()));
+            //complex->setRect(rectF);
+            //pObj1->moveBy(pointF.x()-ptStart.x(),pointF.y()-ptStart.y());
+            //complex->update();
+            ptStart = pointF;
         }
         event->setDropAction(Qt::MoveAction);
         event->accept();
@@ -126,7 +160,37 @@ void HGraphEditorScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void HGraphEditorScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+    QPointF pointF = event->scenePos();
+    if(event->mimeData()->hasFormat("DragIcon"))
+    {
+        /*HIconGraphicsItem* pIconGraphicsItem = NULL;
+        for(int i = 0; i < dragMoveItems.count();i++)
+        {
+            pIconGraphicsItem = (HIconGraphicsItem*)dragMoveItems[i];
+            if(!pIconGraphicsItem)
+                continue;
+            HBaseObj * pObj = pIconGraphicsItem->getItemObj();
+            DRAWSHAPE drawShape = pObj->getShapeType();
+            HIconComplexObj* pObj1 = (HIconComplexObj*)pObj;
+            QRectF rectF(pointF,QSize(pObj1->getRectWidth(),pObj1->getRectHeight()));
+            pIconGraphicsItem->setRect(rectF);
 
+            //pIconGraphicsItem->moveBy(pointF.x()-pIconGraphicsItem->scenePos().x(),pointF.y()-pIconGraphicsItem->scenePos().y());
+        }*/
+        HBaseObj * pObj = complex->getItemObj();
+        DRAWSHAPE drawShape = pObj->getShapeType();
+        HRectObj* pObj1 = (HRectObj*)pObj;
+        //QRectF rectF(pointF,QSize(pObj1->getRectWidth(),pObj1->getRectHeight()));
+        //rectangle->setRect(rectF);
+        if(drawShape == enumComplex && complex != 0)
+        {
+            complex = 0;
+        }
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    }
+    else
+        event->ignore();
 }
 
 void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
@@ -213,7 +277,8 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
         complex->setZValue(nZValue);
         addItem(complex);
     }
-
+    //if(complex != 0)
+     //   complex->setAcceptDrops(true);
 }
 
 void HGraphEditorScene::delGraphEditorSceneItems()

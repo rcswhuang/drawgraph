@@ -177,6 +177,7 @@ void HGraphEditorMainWindow::initGraphEditorMgr()
 
 void HGraphEditorMainWindow::initMainWindow()
 {
+    //pGraphEditorScene = new HGraphEditorScene(pGraphEditorMgr);
     pGraphEditorView = new HGraphEditorView(ui->centralWidget);
     pGraphEditorView->setObjectName(QStringLiteral("画图系统"));
     pGraphEditorView->setFrameShape(QFrame::NoFrame);

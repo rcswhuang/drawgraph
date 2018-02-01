@@ -122,7 +122,7 @@ public slots:
 
 private:
     HGraphEditorMgr *pGraphEditorMgr;
-
+    //HGraphEditorScene *pGraphEditorScene;
     HGraphEditorView* pGraphEditorView;
     HGraphTreeWidget* pGraphTreeWidget;//左边树结构
     HIconTabWidget* pIconTabWidget;//右边tab结构

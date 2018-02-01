@@ -179,10 +179,11 @@ void HIconListWidget::startDrag(Qt::DropActions supportedActions)
     drag->exec(Qt::MoveAction);
 }
 
+/*
 void HIconListWidget::dragLeaveEvent(QDragLeaveEvent *e)
 {
 
-}
+}*/
 
 void HIconListWidget::dragMoveEvent(QDragMoveEvent *e)
 {

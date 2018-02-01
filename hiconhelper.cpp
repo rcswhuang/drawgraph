@@ -49,10 +49,13 @@ QPixmap HIconHelper::iconPixmap(const QString& strType,const QString& uuid)
     painter.setRenderHint(QPainter::TextAntialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     HIconComplexObj* pObj = new HIconComplexObj(pIconTemplate);
-    QPolygonF pf;
-    pf<<QPointF(0,0)<<QPointF(sizeF.width(),sizeF.height());
-    QRectF rectF = pf.boundingRect();
-    pObj->resize(rectF.width(),rectF.height());
+    //QPolygonF pf;
+    //pf<<QPointF(0,0)<<QPointF(sizeF.width(),sizeF.height());
+    //QRectF rectF = pf.boundingRect();
+    QSizeF pt = pIconTemplate->getDefaultSize();
+    double w1 = sizeF.width()/(pt.width()*20);
+    double h1 = sizeF.height()/(pt.height()*20);
+    pObj->resize(w1,h1);
     //应该还有一个move
     painter.translate(sizeF.width()/2.0,sizeF.height()/2.0);
     pObj->paint(&painter);

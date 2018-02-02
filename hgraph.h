@@ -71,7 +71,7 @@ public:
 
     virtual HIconTemplate* findIconTemplate(const QUuid& uid);
 
-    virtual HIconTemplate* addIconTemplate(HIconTemplate* temp);
+    virtual void addIconTemplate(HIconTemplate* temp);
 
     virtual void removeIconTemplate(HIconTemplate* temp);
 

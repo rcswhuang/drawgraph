@@ -492,15 +492,11 @@ HIconTemplate* HGraph::findIconTemplate(const QUuid& uid)
     return NULL;
 }
 
-HIconTemplate* HGraph::addIconTemplate(HIconTemplate* temp)
+void HGraph::addIconTemplate(HIconTemplate* temp)
 {
-    HIconTemplate *iconTemplate = NULL;
-    iconTemplate = findIconTemplate(temp->getUuid());
-    if(iconTemplate)
-        return iconTemplate;
-    iconTemplate = new HIconTemplate(temp->getUuid());
-    iconTemplate->copyTo(temp);
-    return iconTemplate;
+    if(!temp)
+        return
+    pIconTemplateList.append(temp);
 }
 
 void HGraph::removeIconTemplate(HIconTemplate* temp)

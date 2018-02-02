@@ -151,10 +151,22 @@ void HGraphEditorMgr::delGraphSceneItem()
 //类型(遥信,遥控...),uuid,shape,fpoint
 void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,int shape,QPointF fpoint,QList<HIconGraphicsItem*> &items)
 {
-    HIconTemplate* pIconTemplate = new HIconTemplate("");
-    HIconTemplate* pTemplate = pGraphEditorDoc->findIconTemplate(uuid);
-    pTemplate->copyTo(pIconTemplate);
-    pGraphEditorDoc->getCurGraph()->addIconTemplate(pIconTemplate);
+    HIconTemplate* pIconTemplate;// = new HIconTemplate("");
+    //先到画面模板中去寻找
+    pIconTemplate = pGraphEditorDoc->getCurGraph()->findIconTemplate(uuid);
+    if(!pIconTemplate)//没找到
+    {
+        pIconTemplate = new HIconTemplate("");
+        HIconTemplate* pTemplate = pGraphEditorDoc->findIconTemplate(uuid);
+        pTemplate->copyTo(pIconTemplate);
+        pGraphEditorDoc->getCurGraph()->addIconTemplate(pIconTemplate);
+    }
+    else //找到了
+    {
+
+    }
+
+
     HBaseObj* pObj = pIconTemplate->getSymbol()->newObj(enumComplex);
     HIconComplexObj* pIconComplexObj = (HIconComplexObj*)pObj;
     //HRectObj* pIconComplexObj = (HRectObj*)pObj;
@@ -175,8 +187,7 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
         height = 30;
     }
 
-    //QRectF rectComplex(fpoint,QSizeF(width,height));
-    pIconComplexObj->setTopLeft(fpoint);
+    pIconComplexObj->setTopLeft(QPointF(fpoint.x() - width/2,fpoint.y() - height/2));
     pIconComplexObj->setRectWidth(width);
     pIconComplexObj->setRectHeight(height);
     QPointF ptLt,ptRb;
@@ -187,6 +198,7 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
     QSizeF pt = pIconTemplate->getDefaultSize();
     double w1 = width/(pt.width()*20);
     double h1 = height/(pt.height()*20);
+    pIconComplexObj->resetRectPoint(fpoint,QPointF(-pt.width()/2,-pt.height()/2));
     pIconComplexObj->resize(w1,h1);
     addIconObj(pIconComplexObj);
     items.append(pIconComplexObj->getIconGraphicsItem());

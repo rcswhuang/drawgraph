@@ -495,7 +495,7 @@ HIconTemplate* HGraph::findIconTemplate(const QUuid& uid)
 void HGraph::addIconTemplate(HIconTemplate* temp)
 {
     if(!temp)
-        return
+        return;
     pIconTemplateList.append(temp);
 }
 

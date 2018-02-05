@@ -1,6 +1,7 @@
 ﻿#include "hgrapheditormainwindow.h"
 #include "ui_grapheditormainwindow.h"
-
+#include "hiconapi.h"
+#include "hgrapheditormgr.h"
 //文件部分
 void HGraphEditorMainWindow::actionNew_clicked()
 {
@@ -192,42 +193,58 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
  //选择,工具
  void HGraphEditorMainWindow::actionSelect_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumSelection);
  }
 
  void HGraphEditorMainWindow::actionText_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumText);
  }
 
  void HGraphEditorMainWindow::actionLine_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumLine);
  }
 
  void HGraphEditorMainWindow::actionRectagle_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumRectangle);
  }
 
  void HGraphEditorMainWindow::actionPolyline_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumPolyline);
  }
 
  void HGraphEditorMainWindow::actionPolygon_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumPolygon);
  }
 
  void HGraphEditorMainWindow::actionCircle_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumCircle);
  }
 
  void HGraphEditorMainWindow::actionArc_clicked()
  {
-
+     if(!pGraphEditorMgr)
+         return;
+     pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumArc);
  }
 
  //缩放

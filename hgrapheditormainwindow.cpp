@@ -100,6 +100,15 @@ void HGraphEditorMainWindow::createActions()
     connect(ui->actionPolygon,SIGNAL(triggered(bool)),this,SLOT(actionPolygon_clicked()));
     connect(ui->actionCircle,SIGNAL(triggered(bool)),this,SLOT(actionCircle_clicked()));
     connect(ui->actionArc,SIGNAL(triggered(bool)),this,SLOT(actionArc_clicked()));
+    QActionGroup * actionGroup = new QActionGroup(this);
+    actionGroup->addAction(ui->actionText);
+    actionGroup->addAction(ui->actionLine);
+    actionGroup->addAction(ui->actionRectangle);
+    actionGroup->addAction(ui->actionPolyline);
+    actionGroup->addAction(ui->actionPolygon);
+    actionGroup->addAction(ui->actionCircle);
+    actionGroup->addAction(ui->actionArc);
+    actionGroup->addAction(ui->actionSelect);
 
 
     //缩放
@@ -186,6 +195,7 @@ void HGraphEditorMainWindow::initMainWindow()
 
     ui->gridLayout->addWidget(pGraphEditorView,0,1,1,1);
     pGraphEditorMgr->setGraphEditorView(pGraphEditorView);
+    connect(pGraphEditorMgr->GraphEditorScene(),SIGNAL(itemInserted(int)),this,SLOT(itemInserted(int)));
 
 }
 
@@ -227,4 +237,9 @@ void HGraphEditorMainWindow::Del(const QString&,const int graphID)
 
 }
 
+void HGraphEditorMainWindow::itemInserted(int type)
+{
+    ui->actionSelect->setChecked(true);
+    emit ui->actionSelect->triggered();
+}
 

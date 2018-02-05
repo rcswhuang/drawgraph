@@ -125,6 +125,16 @@ bool HGraphEditorMgr::isGraphModify()
     return pGraphEditorDoc->isGraphModify();
 }
 
+void HGraphEditorMgr::setDrawShape(DRAWSHAPE ds)
+{
+    drawShape = ds;
+}
+
+DRAWSHAPE HGraphEditorMgr::getDrawShape()
+{
+    return drawShape;
+}
+
 //新建文件
 void HGraphEditorMgr::New(const QString& graphName)
 {
@@ -153,6 +163,8 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
 {
     HIconTemplate* pIconTemplate;// = new HIconTemplate("");
     //先到画面模板中去寻找
+    if(!pGraphEditorDoc && !pGraphEditorDoc->getCurGraph())
+        return;
     pIconTemplate = pGraphEditorDoc->getCurGraph()->findIconTemplate(uuid);
     if(!pIconTemplate)//没找到
     {
@@ -161,15 +173,9 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
         pTemplate->copyTo(pIconTemplate);
         pGraphEditorDoc->getCurGraph()->addIconTemplate(pIconTemplate);
     }
-    else //找到了
-    {
 
-    }
-
-
-    HBaseObj* pObj = pIconTemplate->getSymbol()->newObj(enumComplex);
+    HBaseObj* pObj = pGraphEditorDoc->getCurGraph()->newObj(enumComplex,uuid);
     HIconComplexObj* pIconComplexObj = (HIconComplexObj*)pObj;
-    //HRectObj* pIconComplexObj = (HRectObj*)pObj;
     //设置图元坐标位置
     double width = 100;
     double height = 100;

@@ -118,6 +118,9 @@ public slots:
 
     //关于
     void about();
+
+public slots:
+    void itemInserted(int);
 		
 
 private:

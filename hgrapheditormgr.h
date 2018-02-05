@@ -5,6 +5,7 @@
 #include <QRectF>
 #include <QUndoStack>
 #include <QUndoCommand>
+#include "hiconapi.h"
 class HGraphEditorScene;
 class HGraphEditorView;
 class HGraphEditorDoc;
@@ -82,6 +83,9 @@ public:
     //
     void reName(const QString& newName);*/
 
+    void setDrawShape(DRAWSHAPE ds);
+    DRAWSHAPE getDrawShape();
+
     virtual void ObjCreated(HBaseObj* pObj);
     //增加对象
     virtual void addIconObj(HBaseObj* pObj,bool bPaste = false);
@@ -115,6 +119,7 @@ protected:
     QUndoStack* pCommand;
 
 private:
+    DRAWSHAPE drawShape;
     QRectF logicRectF;  //scene的大小
     HGraph* pTempGraph; //临时画面文件
     QString strGraphFile;

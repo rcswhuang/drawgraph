@@ -30,7 +30,9 @@ public:
 
 public:
     void delGraphEditorSceneItems();
-    void addIconGraphicsItem(HBaseObj* pObj);
+    void addIconGraphicsItem(HBaseObj* pObj);//obj->item
+    void newIconGraphicsObj();//新建obj
+    void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
 protected:
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -44,9 +46,13 @@ protected:
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
     virtual void drawForeground(QPainter *painter, const QRectF &rect);
     virtual void dropEvent(QGraphicsSceneDragDropEvent *event);
+signals:
+    void itemInserted(int);
 
 public:
     QPointF ptStart;
+    QPointF prePoint;
+    QPointF curPoint;
     HGraphEditorMgr* pGraphEditorMgr;
     HIconLineItem* line;
     HIconRectItem* rectangle;

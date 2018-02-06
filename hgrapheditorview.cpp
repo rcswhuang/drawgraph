@@ -9,6 +9,7 @@ HGraphEditorView::HGraphEditorView(QWidget *parent)
     setRubberBandSelectionMode(Qt::ContainsItemShape);//选择拖拽部分
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    viewport()->setMouseTracking(true);
 }
 
 void HGraphEditorView::refresh()

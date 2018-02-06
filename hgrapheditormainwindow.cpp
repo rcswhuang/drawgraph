@@ -171,6 +171,7 @@ void HGraphEditorMainWindow::createDockWidget()
     pIconTabWidget = new HIconTabWidget(pGraphEditorMgr);
     //connect(pIconTabWidget,SIGNAL(iconSelected(const QString&,const QString&,const QString&,int)),SLOT(iconTemplateSelected(const QString&,const QString&,const QString&,int)));
     ui->resDockWidget->setWidget(pIconTabWidget);
+    //ui->resDockWidget->setMaximumWidth(10);
 
     pGraphTreeWidget = new HGraphTreeWidget(pGraphEditorMgr);
     ui->fileDockWidget->setWidget(pGraphTreeWidget);
@@ -196,6 +197,8 @@ void HGraphEditorMainWindow::initMainWindow()
     ui->gridLayout->addWidget(pGraphEditorView,0,1,1,1);
     pGraphEditorMgr->setGraphEditorView(pGraphEditorView);
     connect(pGraphEditorMgr->GraphEditorScene(),SIGNAL(itemInserted(int)),this,SLOT(itemInserted(int)));
+
+    connect(pGraphEditorMgr->GraphEditorScene(),SIGNAL(mousePosChanged(const QPointF&)),this,SLOT(viewMousePosChanged(const QPointF&)));
 
 }
 
@@ -243,3 +246,10 @@ void HGraphEditorMainWindow::itemInserted(int type)
     emit ui->actionSelect->triggered();
 }
 
+void HGraphEditorMainWindow::viewMousePosChanged(const QPointF &logPos)
+{
+
+    //QString strViewPos = QString("x=%1,y=%2").arg((int)pos.x()).arg((int)pos.y());
+    QString strLogicPos =  QString("log:x=%1,y=%2").arg(logPos.x(),0,'f',1).arg(logPos.y(),0,'f',1);
+    statusBar()->showMessage(strLogicPos );
+}

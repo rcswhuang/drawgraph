@@ -20,7 +20,6 @@ class HIconSelectionItem;
 class HIconGraphicsItem;
 class HIconItemGroup;
 class HBaseObj;
-
 class HGraphEditorMgr;
 class HGraphEditorScene : public QGraphicsScene
 {
@@ -46,8 +45,10 @@ protected:
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
     virtual void drawForeground(QPainter *painter, const QRectF &rect);
     virtual void dropEvent(QGraphicsSceneDragDropEvent *event);
+    //virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 signals:
     void itemInserted(int);
+    void mousePosChanged(QPointF logPos);
 
 public:
     QPointF ptStart;

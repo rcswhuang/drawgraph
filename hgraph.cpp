@@ -187,7 +187,7 @@ void HGraph::readXml(QDomElement *d)
     {
         QDomElement e = n1.toElement();
         QString strTagName = e.tagName();
-        QString strUuid = e.attribute("Uuid");
+        QString strUuid = e.attribute("UUID");
         HBaseObj* pObj = newObj(strTagName,strUuid);
         if(!pObj) continue;
         pObj->readXml(&e);

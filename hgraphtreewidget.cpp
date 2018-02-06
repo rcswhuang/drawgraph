@@ -50,7 +50,7 @@ HGraphTreeWidget::~HGraphTreeWidget()
 void HGraphTreeWidget::initGraphTreeWidget()
 {
     HGraphTreeWidgetItem* rootItem = new HGraphTreeWidgetItem(this,GRAPHTREE_TYPE_ROOT);
-    rootItem->setText(0,QStringLiteral("wfSystem"));
+    rootItem->setText(0,QStringLiteral("厂站五防画面总览"));
     rootItem->setIcon(0,QIcon(":/images/Folder.png"));
     addTopLevelItem(rootItem);
     //expandItem(rootItem);

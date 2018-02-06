@@ -121,7 +121,7 @@ public slots:
 
 public slots:
     void itemInserted(int);
-		
+    void viewMousePosChanged(const QPointF &logPos);
 
 private:
     HGraphEditorMgr *pGraphEditorMgr;

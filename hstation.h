@@ -1,6 +1,7 @@
 ﻿#ifndef HSTATION_H
 #define HSTATION_H
 #include <QObject>
+#include <QList>
 #include "publicdata.h"
 //厂站类
 //class HWord;
@@ -216,7 +217,30 @@ private:
     quint16 wTotalSetPoint;
     quint16 wTotalPulse;
     quint16 wTotalGroup;
+};
 
+class HStationList
+{
+public:
+    HStationList();
+    ~HStationList();
+
+public:
+
+    //加载厂站信息
+    void loadStation();
+
+    //厂站ID获取厂站
+    HStation* getStation(quint16 wStationID);
+
+    //厂站地址获取厂站
+    HStation* getRtu(quint16 wStationAddress);
+
+    //索引厂站
+    HStation* findStation(int nIndex);
+
+public:
+    QList<HStation*> pStationList;
 
 };
 

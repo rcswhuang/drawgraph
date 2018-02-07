@@ -28,7 +28,8 @@ HEADERS += ../include/hiconapi.h \
            hiconvieweditor.h \
            hstation.h \
            hfonthelper.h \
-    hiconhelper.h
+           hiconhelper.h \
+           hdatapropertydlg.h
 
 SOURCES += hgraph.cpp \
            hgrapheditordoc.cpp \
@@ -43,11 +44,15 @@ SOURCES += hgraph.cpp \
            hstation.cpp \
            hfonthelper.cpp \
            hgrapheditormainwindowactions.cpp \
-    hiconhelper.cpp
+           hiconhelper.cpp \
+           hdatapropertydlg.cpp
 
-FORMS += grapheditormainwindow.ui
+FORMS += \
+         UI/grapheditormainwindow.ui \
+         UI/datapropertydlg.ui
+
 RESOURCES += images.qrc \
-    pixmaps.qrc
+             pixmaps.qrc
 
 unix{
 

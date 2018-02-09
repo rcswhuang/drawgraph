@@ -15,8 +15,7 @@ CONFIG += qt warn_off thread exceptions
 
 #LIBS datafile.lib
 # Input
-HEADERS += ../include/hiconapi.h \
-           ../include/publicdata.h \
+HEADERS += \
            hgraph.h \
            hgrapheditordoc.h \
            hgrapheditormainwindow.h \
@@ -29,7 +28,9 @@ HEADERS += ../include/hiconapi.h \
            hstation.h \
            hfonthelper.h \
            hiconhelper.h \
-           hdatapropertydlg.h
+           hdigitalpage.h \
+    UI/hanaloguepage.h
+
 
 SOURCES += hgraph.cpp \
            hgrapheditordoc.cpp \
@@ -45,11 +46,13 @@ SOURCES += hgraph.cpp \
            hfonthelper.cpp \
            hgrapheditormainwindowactions.cpp \
            hiconhelper.cpp \
-           hdatapropertydlg.cpp
+           hdigitalpage.cpp \
+    UI/hanaloguepage.cpp
 
 FORMS += \
          UI/grapheditormainwindow.ui \
-         UI/datapropertydlg.ui
+    UI/digitalpage.ui \
+    UI/analoguepage.ui
 
 RESOURCES += images.qrc \
              pixmaps.qrc

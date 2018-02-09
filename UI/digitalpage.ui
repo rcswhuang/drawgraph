@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DataPropertyDlg</class>
- <widget class="QDialog" name="DataPropertyDlg">
+ <class>digitalPage</class>
+ <widget class="QDialog" name="digitalPage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -28,7 +28,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="baseTab">
     <attribute name="title">
@@ -489,7 +489,8 @@
     <string>取消</string>
    </property>
    <property name="icon">
-    <iconset theme="dd"/>
+    <iconset theme="dd">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="autoDefault">
     <bool>false</bool>

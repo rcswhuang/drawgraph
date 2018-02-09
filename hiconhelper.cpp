@@ -21,7 +21,7 @@ HIconHelper* HIconHelper::Instance()
     return m_pInstance;
 }
 
-QPixmap HIconHelper::iconPixmap(const QString& strType,const QString& uuid)
+QPixmap HIconHelper::iconPixmap(const QString& strType,const QString& uuid,const QSizeF &size,int nCurPattern)
 {
     HIconTemplate* pIconTemplate = new HIconTemplate(QString());
     Q_ASSERT( pIconTemplate );
@@ -41,7 +41,9 @@ QPixmap HIconHelper::iconPixmap(const QString& strType,const QString& uuid)
     }
     pIconTemplate->readXml(path);
 
-    QSizeF sizeF = pIconTemplate->getDefaultSize();
+    QSizeF sizeF = size;
+    if(sizeF.width() == 0 || sizeF.height() == 0)
+        sizeF = pIconTemplate->getDefaultSize();
     QImage image(sizeF.width()+1.00,sizeF.height(),QImage::Format_ARGB32);
     image.fill(Qt::transparent);
     QPainter painter(&image);
@@ -49,10 +51,8 @@ QPixmap HIconHelper::iconPixmap(const QString& strType,const QString& uuid)
     painter.setRenderHint(QPainter::TextAntialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     HIconComplexObj* pObj = new HIconComplexObj(pIconTemplate);
-    //QPolygonF pf;
-    //pf<<QPointF(0,0)<<QPointF(sizeF.width(),sizeF.height());
-    //QRectF rectF = pf.boundingRect();
     QSizeF pt = pIconTemplate->getDefaultSize();
+    pIconTemplate->getSymbol()->setCurrentPattern(nCurPattern);
     double w1 = sizeF.width()/(pt.width()*20);
     double h1 = sizeF.height()/(pt.height()*20);
     pObj->resize(w1,h1);

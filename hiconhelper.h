@@ -13,7 +13,7 @@ public:
     static HIconHelper* Instance();
 
 public:
-    QPixmap iconPixmap(const QString& strType,const QString& uuid);
+    QPixmap iconPixmap(const QString& strType,const QString& uuid,const QSizeF &size = QSizeF(0,0),int nCurPattern = 0);
 
 };
 

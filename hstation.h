@@ -3,6 +3,14 @@
 #include <QObject>
 #include <QList>
 #include "publicdata.h"
+
+typedef struct _tagATTRINFO
+{
+    unsigned short wAttrib;
+    char* szName;
+}ATTRINFO;
+
+
 //厂站类
 //class HWord;
 class HAnalogue;
@@ -204,11 +212,11 @@ public:
     STATION station;
 
 private:
-    HAnalogue* pAnalogue;
-    HDigital* pDigital;
-    HRelay* pRelay;
-    HSetPoint* pSetPoint;
-    HPulse* pPulse;
+    HAnalogue* pAnalogue;//遥测
+    HDigital* pDigital;//遥信
+    HRelay* pRelay;//遥控
+    HSetPoint* pSetPoint;//遥调
+    HPulse* pPulse;//遥脉
     HGroup* pGroup;
 
     quint16 wTotalAnalogue;
@@ -239,9 +247,31 @@ public:
     //索引厂站
     HStation* findStation(int nIndex);
 
+    //获取厂站列表
+    //QList<HStation*>* getStationList();
+
 public:
     QList<HStation*> pStationList;
-
 };
+
+class HStationHelper
+{
+public:
+    HStationHelper();
+    ~HStationHelper();
+
+public:
+    static HStationHelper* m_pInstance;
+    static HStationHelper* Instance();
+    void loadStation();
+    QList<HStation*> getStationList();
+    HStation* getStation(quint16 wStationID);
+
+public:
+    HStationList stationList;
+};
+
+
+
 
 #endif // HSTATION_H

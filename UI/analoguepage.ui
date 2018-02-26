@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>HAnaloguePage</class>
- <widget class="QDialog" name="HAnaloguePage">
+ <class>analoguePage</class>
+ <widget class="QDialog" name="analoguePage">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>351</width>
-    <height>489</height>
+    <width>338</width>
+    <height>472</height>
    </rect>
   </property>
   <property name="font">
@@ -21,14 +21,14 @@
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
+     <x>3</x>
+     <y>4</y>
      <width>331</width>
-     <height>438</height>
+     <height>431</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -37,8 +37,8 @@
     <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>104</y>
+       <x>5</x>
+       <y>100</y>
        <width>311</width>
        <height>91</height>
       </rect>
@@ -59,7 +59,7 @@
        <string>文字：</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_3">
+     <widget class="QLineEdit" name="ptNameLineEdit">
       <property name="geometry">
        <rect>
         <x>51</x>
@@ -82,7 +82,7 @@
        <string>字体：</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="fontBtn">
       <property name="geometry">
        <rect>
         <x>257</x>
@@ -108,7 +108,7 @@
        <string>水平对齐：</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox">
+     <widget class="QComboBox" name="hComboBox">
       <property name="geometry">
        <rect>
         <x>74</x>
@@ -118,7 +118,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox_2">
+     <widget class="QComboBox" name="vComboBox">
       <property name="geometry">
        <rect>
         <x>219</x>
@@ -145,8 +145,8 @@
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>11</y>
+       <x>4</x>
+       <y>7</y>
        <width>311</width>
        <height>81</height>
       </rect>
@@ -167,7 +167,7 @@
        <string>间隔：</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit">
+     <widget class="QLineEdit" name="jgLineEdit">
       <property name="geometry">
        <rect>
         <x>50</x>
@@ -190,7 +190,7 @@
        <string>测点：</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_2">
+     <widget class="QLineEdit" name="ptLineEdit">
       <property name="geometry">
        <rect>
         <x>50</x>
@@ -204,8 +204,8 @@
     <widget class="QGroupBox" name="groupBox_3">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>206</y>
+       <x>5</x>
+       <y>203</y>
        <width>311</width>
        <height>80</height>
       </rect>
@@ -226,30 +226,30 @@
        <string>文字颜色：</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="textClrBtn">
       <property name="geometry">
        <rect>
-        <x>73</x>
-        <y>21</y>
+        <x>76</x>
+        <y>20</y>
         <width>75</width>
         <height>23</height>
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string/>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_3">
+     <widget class="QPushButton" name="bgClrBtn">
       <property name="geometry">
        <rect>
-        <x>222</x>
-        <y>21</y>
+        <x>224</x>
+        <y>20</y>
         <width>75</width>
         <height>23</height>
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string/>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
@@ -265,7 +265,7 @@
        <string>背景颜色：</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox">
+     <widget class="QCheckBox" name="transparentCheckBox">
       <property name="geometry">
        <rect>
         <x>12</x>
@@ -282,8 +282,8 @@
     <widget class="QGroupBox" name="groupBox_4">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>295</y>
+       <x>5</x>
+       <y>292</y>
        <width>311</width>
        <height>111</height>
       </rect>
@@ -304,7 +304,7 @@
        <string>格式：</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox_3">
+     <widget class="QComboBox" name="pointFormatComboBox">
       <property name="geometry">
        <rect>
         <x>50</x>
@@ -327,7 +327,7 @@
        <string>前缀：</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_4">
+     <widget class="QLineEdit" name="prefixLineEdit">
       <property name="geometry">
        <rect>
         <x>50</x>
@@ -337,7 +337,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_5">
+     <widget class="QLineEdit" name="suffixLineEdit">
       <property name="geometry">
        <rect>
         <x>50</x>
@@ -369,8 +369,8 @@
     <widget class="QLabel" name="label_12">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>17</y>
+       <x>4</x>
+       <y>16</y>
        <width>31</width>
        <height>16</height>
       </rect>
@@ -382,8 +382,8 @@
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>190</y>
+       <x>4</x>
+       <y>189</y>
        <width>41</width>
        <height>16</height>
       </rect>
@@ -392,7 +392,7 @@
       <string>测点：</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_4">
+    <widget class="QComboBox" name="stComboBox">
      <property name="geometry">
       <rect>
        <x>46</x>
@@ -405,8 +405,8 @@
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>55</y>
+       <x>4</x>
+       <y>54</y>
        <width>31</width>
        <height>16</height>
       </rect>
@@ -415,7 +415,7 @@
       <string>间隔：</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_5">
+    <widget class="QComboBox" name="jgComboBox">
      <property name="geometry">
       <rect>
        <x>46</x>
@@ -425,7 +425,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QListWidget" name="listWidget">
+    <widget class="QListWidget" name="ptListWidget">
      <property name="geometry">
       <rect>
        <x>47</x>
@@ -438,8 +438,8 @@
     <widget class="QLabel" name="label_15">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>383</y>
+       <x>5</x>
+       <y>378</y>
        <width>31</width>
        <height>16</height>
       </rect>
@@ -448,11 +448,11 @@
       <string>属性：</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_6">
+    <widget class="QComboBox" name="attrComboBox">
      <property name="geometry">
       <rect>
        <x>48</x>
-       <y>377</y>
+       <y>373</y>
        <width>271</width>
        <height>26</height>
       </rect>
@@ -460,11 +460,11 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="okBtn">
    <property name="geometry">
     <rect>
-     <x>179</x>
-     <y>452</y>
+     <x>265</x>
+     <y>437</y>
      <width>65</width>
      <height>31</height>
     </rect>
@@ -473,11 +473,11 @@
     <string>确定</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_5">
+  <widget class="QPushButton" name="cancelBtn">
    <property name="geometry">
     <rect>
-     <x>260</x>
-     <y>452</y>
+     <x>4</x>
+     <y>437</y>
      <width>65</width>
      <height>31</height>
     </rect>

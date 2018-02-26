@@ -8,7 +8,7 @@
 #include "hbaseobj.h"
 #include "hiconobj.h"
 #include "hiconrectobj.h"
-
+#include "hiconcomplexobj.h"
 class QPainter;
 class QDataStream;
 class QDomElement;

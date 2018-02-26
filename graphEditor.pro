@@ -29,7 +29,9 @@ HEADERS += \
            hfonthelper.h \
            hiconhelper.h \
            hdigitalpage.h \
-    UI/hanaloguepage.h
+           hanaloguepage.h \
+           hrelaypage.h
+
 
 
 SOURCES += hgraph.cpp \
@@ -47,12 +49,14 @@ SOURCES += hgraph.cpp \
            hgrapheditormainwindowactions.cpp \
            hiconhelper.cpp \
            hdigitalpage.cpp \
-    UI/hanaloguepage.cpp
+           hanaloguepage.cpp \
+           hrelaypage.cpp
 
 FORMS += \
          UI/grapheditormainwindow.ui \
-    UI/digitalpage.ui \
-    UI/analoguepage.ui
+         UI/digitalpage.ui \
+         UI/analoguepage.ui \
+         UI/relaypage.ui
 
 RESOURCES += images.qrc \
              pixmaps.qrc

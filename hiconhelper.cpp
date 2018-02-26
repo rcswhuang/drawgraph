@@ -2,7 +2,7 @@
 #include "hicontemplate.h"
 #include "hbaseobj.h"
 #include "hiconobj.h"
-
+#include "hiconcomplexobj.h"
 #include <QProcessEnvironment>
 
 HIconHelper::HIconHelper()

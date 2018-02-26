@@ -1,13 +1,20 @@
 ﻿#include "hstation.h"
 #include "publicdata.h"
 
-ATTRINFO DgtAttrInfo[]
+ATTRINFO DgtAttrInfo[] =
 {
     {ATTR_DGT_4_STATE_VALUE,   "工程值(双遥信)"},
     {ATTR_DGT_VALUE,           "工程值"},
     {0,                          NULL}
 };
 
+ATTRINFO AnaAttrInfo[] =
+{
+    {ATTR_ANA_VALUE,         "工程值"},
+    {ATTR_ANA_CC1,           "偏移"},
+    {ATTR_ANA_CC2,           "系数"},
+    {0,                      NULL}
+};
 
 HStationHelper::HStationHelper()
 {

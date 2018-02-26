@@ -3,6 +3,7 @@
 #include "hbaseobj.h"
 #include "hiconobj.h"
 #include "hiconrectobj.h"
+#include "hiconcomplexobj.h"
 #include "hdynamicobj.h"
 #include "hstation.h"
 #include "hiconhelper.h"
@@ -76,10 +77,10 @@ void HDigitalPage::initBaseProper()
     closeIcon = QIcon(HIconHelper::Instance()->iconPixmap(strType,strUuid,sizeF,1));
     ui->close->setIcon(closeIcon);
     sizeF = QSizeF(ui->wrongOpen->width()-2,ui->wrongOpen->height()-2);
-    wrongOpenIcon = QIcon(HIconHelper::Instance()->iconPixmap(strType,strUuid,sizeF,1));
+    wrongOpenIcon = QIcon(HIconHelper::Instance()->iconPixmap(strType,strUuid,sizeF,2));
     ui->wrongOpen->setIcon(wrongOpenIcon);
     sizeF = QSizeF(ui->wrongClose->width()-2,ui->wrongClose->height()-2);
-    wrongCloseIcon = QIcon(HIconHelper::Instance()->iconPixmap(strType,strUuid,sizeF,1));
+    wrongCloseIcon = QIcon(HIconHelper::Instance()->iconPixmap(strType,strUuid,sizeF,3));
     ui->wrongClose->setIcon(wrongCloseIcon);
 
 }
@@ -187,9 +188,10 @@ void HDigitalPage::onOk()
     wPoint = ui->ptListWidget->currentItem()->data(Qt::UserRole).toInt();
     pCurObj->getDynamicObj()->setDBStation(wStation);
     pCurObj->getDynamicObj()->setDBPoint(wPoint);
+    QDialog::accept();
 }
 
 void HDigitalPage::onCancel()
 {
-
+    QDialog::reject();
 }

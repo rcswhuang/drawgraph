@@ -27,6 +27,16 @@ HGraphEditorScene::HGraphEditorScene(HGraphEditorMgr *mgr)
     //setAcceptDraps(true);
     complex = 0;
     rectangle = 0;
+    line = 0;
+    ellipse = 0;
+    circle = 0;
+    polygon = 0;
+    polyline = 0;
+    arc = 0;
+    pie = 0;
+    text = 0;
+    select = 0;
+    group = 0;
 }
 
 void HGraphEditorScene::drawBackground(QPainter *painter, const QRectF &rect)

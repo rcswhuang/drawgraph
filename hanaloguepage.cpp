@@ -167,9 +167,9 @@ void HAnaloguePage::initBaseProperty()
 
     /*************************颜色设置************************************/
     QString strColor = "#000000"; //文字颜色
-    QString strTextColor = QString("background-color:")+ strColor; //文字颜色
+    strTextColor = QString("background-color:")+ strColor; //文字颜色
     ui->textClrBtn->setStyleSheet(strTextColor);
-    QString strBgColor = QString("background-color:")+ strColor; //背景颜色
+    strBgColor = QString("background-color:")+ strColor; //背景颜色
     ui->bgClrBtn->setStyleSheet(strBgColor);
     ui->transparentCheckBox->setCheckState(Qt::Unchecked);
 

@@ -52,7 +52,5 @@
         <file>images/document-text.png</file>
         <file>images/Folder.png</file>
         <file>images/Folder_Documents.png</file>
-        <file>images/picoperator.png</file>
-        <file>images/runcontrol.png</file>
     </qresource>
 </RCC>

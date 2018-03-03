@@ -9,7 +9,8 @@ TEMPLATE = app
 
 INCLUDEPATH += \
     ../include \
-    ../include/H5IconGui
+    ../include/H5IconGui \
+    ../include/H5IconHelp \
 
 CONFIG += qt warn_off thread exceptions
 
@@ -24,13 +25,7 @@ HEADERS += \
            hgrapheditorview.h \
            hgraphtreewidget.h \
            hicontabwidget.h \
-           hiconvieweditor.h \
-           hstation.h \
-           hfonthelper.h \
-           hiconhelper.h \
-           hdigitalpage.h \
-           hanaloguepage.h \
-           hrelaypage.h
+           hiconvieweditor.h
 
 
 
@@ -44,31 +39,23 @@ SOURCES += hgraph.cpp \
            hicontabwidget.cpp \
            hiconvieweditor.cpp \
            main.cpp \
-           hstation.cpp \
-           hfonthelper.cpp \
-           hgrapheditormainwindowactions.cpp \
-           hiconhelper.cpp \
-           hdigitalpage.cpp \
-           hanaloguepage.cpp \
-           hrelaypage.cpp
+           hgrapheditormainwindowactions.cpp
 
 FORMS += \
-         UI/grapheditormainwindow.ui \
-         UI/digitalpage.ui \
-         UI/analoguepage.ui \
-         UI/relaypage.ui
+         UI/grapheditormainwindow.ui
 
 RESOURCES += images.qrc \
              pixmaps.qrc
 
 unix{
 
-    LIBS += -L ../lib/ -lH5IconGui
+    LIBS += -L ../lib/ -lH5IconGui -lH5IconHelp
 }
 
 win32{
    LIBS += \
         ../lib/H5IconGui.lib \
+        ../lib/H5IconHelp.lib \
         ../lib/datafile.lib
 }
 QT += gui

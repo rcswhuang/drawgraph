@@ -32,12 +32,13 @@ public:
     void addIconGraphicsItem(HBaseObj* pObj);//obj->item
     void newIconGraphicsObj();//新建obj
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
+    void setItemProperty(QGraphicsItem* item);
 protected:
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
-
+    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent);
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent);
     virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     virtual void dragLeaveEvent(QGraphicsSceneDragDropEvent *event);

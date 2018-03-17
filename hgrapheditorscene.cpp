@@ -20,6 +20,10 @@
 #include "hiconobj.h"
 #include "hiconrectobj.h"
 #include "hgraph.h"
+#include "hdigitalpage.h"
+#include "hanaloguepage.h"
+#include "hrelaypage.h"
+#include "hiconproperty.h"
 #include <QMimeData>
 HGraphEditorScene::HGraphEditorScene(HGraphEditorMgr *mgr)
     :pGraphEditorMgr(mgr)
@@ -206,13 +210,97 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
+void HGraphEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent)
+{
+    QList<QGraphicsItem*> itemList = selectedItems();
+    if(itemList.size()== 1)
+    {
+        QGraphicsItem* pItem = itemList.first();
+        setItemProperty(pItem);
+    }
+    QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
+}
+
+void HGraphEditorScene::setItemProperty(QGraphicsItem* item)
+{
+    if(!item) return;
+    HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
+    HBaseObj* pObj = pItem->getItemObj();
+    DRAWSHAPE drawShape = pObj->getShapeType();
+    if(drawShape == enumComplex)
+    {
+        HIconComplexObj* pComplexObj = (HIconComplexObj*)pObj;
+        int nPointType = pComplexObj->getObjType();
+        if(nPointType == TEMPLATE_TYPE_DIGITAL)
+        {
+            HDigitalPage dlg(pComplexObj);
+            dlg.exec();
+        }
+        else if(nPointType == TEMPLATE_TYPE_ANALOGUE)
+        {
+            HAnaloguePage dlg(pComplexObj);
+            dlg.exec();
+        }
+        else if(nPointType == TEMPLATE_TYPE_YK)
+        {
+            HRelayPage dlg(pComplexObj);
+            dlg.exec();
+        }
+    }
+    else
+    {
+        HPropertyDlg dlg(pObj);
+        dlg.exec();
+    }
+}
+
 void HGraphEditorScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
 
 }
 
-void HGraphEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent)
+void HGraphEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
+    DRAWSHAPE drawShape = pGraphEditorMgr->getDrawShape();
+    if(drawShape == enumPolygon && polygon != 0)
+    {
+        if(polygon->polygon().size()<=2)
+        {
+            HBaseObj* pObj = polygon->getItemObj();
+            pObj->setDeleted(true);
+            polygon->setVisible(false);
+        }
+        else
+        {
+            QPolygonF tempF = polygon->polygon();
+            tempF.replace(tempF.size()-1,event->scenePos());
+            tempF.append(tempF.at(0));
+            polygon->setPolygon(tempF);
+        }
+        polygon->getItemObj()->setModify(true);
+        emit itemInserted(polygon->type());
+        polygon = 0;
+        return;
+    }
+    else if(drawShape == enumPolyline && polyline != 0)
+    {
+        if(polyline->polygon().size()<=2)
+        {
+            HBaseObj* pObj = polyline->getItemObj();
+            pObj->setDeleted(true);
+            polyline->setVisible(false);
+        }
+        else
+        {
+            QPolygonF tempF = polyline->polygon();
+            tempF.replace(tempF.size()-1,event->scenePos());
+            polyline->setPolygon(tempF);
+        }
+        polyline->getItemObj()->setModify(true);
+        emit itemInserted(polyline->type());
+        polyline = 0;
+        return;
+    }
 
 }
 
@@ -358,7 +446,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     {
         if(polygon == 0)
         {
-            HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumLine);
+            HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumPolygon);
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
             HPolygonObj* pObj1 = (HPolygonObj*)pObj;
             pObj1->pylist<<prePoint<<prePoint;
@@ -395,6 +483,14 @@ void HGraphEditorScene::newIconGraphicsObj()
         }
     }
         break;
+    case enumText:
+    {
+        HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumText);
+        pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
+        HTextObj* pObj1 = (HTextObj*)pObj;
+        pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
+        addIconGraphicsItem(pObj1);
+    }
     case enumMulSelection:
     {
         QRectF tempF = QRectF(prePoint,prePoint).normalized();

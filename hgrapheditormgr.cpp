@@ -193,18 +193,14 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
         height = 30;
     }
 
-    pIconObj->setTopLeft(QPointF(fpoint.x() - width/2,fpoint.y() - height/2));
+    QPointF ptCenter = QPointF(fpoint.x() - width/2,fpoint.y() - height/2);
+    pIconObj->setTopLeft(ptCenter);
     pIconObj->setRectWidth(width);
     pIconObj->setRectHeight(height);
-    QPointF ptLt,ptRb;
-    ptLt.setX(fpoint.x() - width/2);
-    ptLt.setY(fpoint.y() - height/2);
-    //ptRb.setX(fpoint.x() + width/2);
-    //ptRb.setY(fpoint.y() + height/2);
     QSizeF pt = pIconTemplate->getDefaultSize();
     double w1 = width/(pt.width()*20);
     double h1 = height/(pt.height()*20);
-    pIconObj->resetRectPoint(fpoint,QPointF(-pt.width()/2,-pt.height()/2));
+    pIconObj->resetRectPoint(ptCenter,QPointF(-pt.width()*10,-pt.height()*10));
     pIconObj->resize(w1,h1);
     addIconObj(pIconObj);
     items.append(pIconObj->getIconGraphicsItem());

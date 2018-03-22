@@ -49,7 +49,7 @@ RESOURCES += images.qrc \
 
 unix{
 
-    LIBS += -L ../lib/ -lH5IconGui -lH5IconHelp
+    LIBS += -L ../lib/ -lH5IconGui -lH5IconHelp -ldatafile
 }
 
 win32{

@@ -16,9 +16,7 @@
 #include "hiconselectionitem.h"
 #include "hiconcomplexitem.h"
 #include "hiconapi.h"
-#include "hbaseobj.h"
-#include "hiconobj.h"
-#include "hiconrectobj.h"
+#include "hiconsymbol.h"
 #include "hgraph.h"
 #include "hdigitalpage.h"
 #include "hanaloguepage.h"
@@ -229,7 +227,7 @@ void HGraphEditorScene::setItemProperty(QGraphicsItem* item)
     DRAWSHAPE drawShape = pObj->getShapeType();
     if(drawShape == enumComplex)
     {
-        HIconComplexObj* pComplexObj = (HIconComplexObj*)pObj;
+        HIconObj* pComplexObj = (HIconObj*)pObj;
         int nPointType = pComplexObj->getObjType();
         if(nPointType == TEMPLATE_TYPE_DIGITAL)
         {
@@ -241,7 +239,7 @@ void HGraphEditorScene::setItemProperty(QGraphicsItem* item)
             HAnaloguePage dlg(pComplexObj);
             dlg.exec();
         }
-        else if(nPointType == TEMPLATE_TYPE_YK)
+        else if(nPointType == TEMPLATE_TYPE_RELAY)
         {
             HRelayPage dlg(pComplexObj);
             dlg.exec();
@@ -385,7 +383,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     case enumLine:
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumLine);
-        HLineObj* pObj1 = (HLineObj*)pObj;
+        HLine* pObj1 = (HLine*)pObj;
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
         pObj1->setHeadPoint(prePoint);
         pObj1->setTailPoint(prePoint);
@@ -396,7 +394,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumRectangle);
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-        HRectObj* pObj1 = (HRectObj*)pObj;
+        HRectangle* pObj1 = (HRectangle*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
         addIconGraphicsItem(pObj1);
 
@@ -406,7 +404,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumEllipse);
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-        HRectObj* pObj1 = (HRectObj*)pObj;
+        HEllipse* pObj1 = (HEllipse*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
         addIconGraphicsItem(pObj1);
 
@@ -416,7 +414,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumCircle);
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-        HRectObj* pObj1 = (HRectObj*)pObj;
+        HCircle* pObj1 = (HCircle*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
         addIconGraphicsItem(pObj1);
 
@@ -426,7 +424,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumArc);
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-        HRectObj* pObj1 = (HRectObj*)pObj;
+        HArc* pObj1 = (HArc*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
         addIconGraphicsItem(pObj1);
 
@@ -436,7 +434,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumPie);
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-        HRectObj* pObj1 = (HRectObj*)pObj;
+        HPie* pObj1 = (HPie*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
         addIconGraphicsItem(pObj1);
 
@@ -448,7 +446,7 @@ void HGraphEditorScene::newIconGraphicsObj()
         {
             HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumPolygon);
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-            HPolygonObj* pObj1 = (HPolygonObj*)pObj;
+            HPolygon* pObj1 = (HPolygon*)pObj;
             pObj1->pylist<<prePoint<<prePoint;
             addIconGraphicsItem(pObj);
             //addNewIconCommand(polygon->getItemObj());
@@ -468,7 +466,7 @@ void HGraphEditorScene::newIconGraphicsObj()
         {
             HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumPolyline);
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-            HPolygonObj* pObj1 = (HPolygonObj*)pObj;
+            HPolyline* pObj1 = (HPolyline*)pObj;
             pObj1->pylist<<prePoint<<prePoint;
             addIconGraphicsItem(pObj);
             //addNewIconCommand(polyline->getItemObj());
@@ -487,7 +485,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumText);
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
-        HTextObj* pObj1 = (HTextObj*)pObj;
+        HText* pObj1 = (HText*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
         addIconGraphicsItem(pObj1);
     }
@@ -509,7 +507,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     int nZValue = pObj->getStackOrder();
     if(drawShape == enumLine)
     {
-        line = new HIconLineItem(QLineF(((HLineObj*) pObj)->getHeadPoint(),((HLineObj*)pObj)->getTailPoint()));
+        line = new HIconLineItem(QLineF(((HLine*) pObj)->getHeadPoint(),((HLine*)pObj)->getTailPoint()));
         line->setItemObj(pObj);
         line->setZValue(nZValue);
         addItem(line);
@@ -517,7 +515,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumRectangle)
     {
-        HRectObj* pObj1 = (HRectObj*)pObj;
+        HRectangle* pObj1 = (HRectangle*)pObj;
         rectangle = new HIconRectItem(pObj1->getObjRect());
         rectangle->setItemObj(pObj);
         rectangle->setZValue(nZValue);
@@ -525,7 +523,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumEllipse)
     {
-        HEllipseObj* pObj1 = (HEllipseObj*)pObj;
+        HEllipse* pObj1 = (HEllipse*)pObj;
         ellipse = new HIconEllipseItem(pObj1->getObjRect());
         ellipse->setItemObj(pObj);
         ellipse->setZValue(nZValue);
@@ -533,7 +531,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumCircle)
     {
-        HCircleObj* pObj1 = (HCircleObj*)pObj;
+        HCircle* pObj1 = (HCircle*)pObj;
         circle = new HIconCircleItem(pObj1->getObjRect());
         circle->setItemObj(pObj);
         circle->setZValue(nZValue);
@@ -541,7 +539,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumPolygon)
     {
-        HPolygonObj* pObj1 = (HPolygonObj*)pObj;
+        HPolygon* pObj1 = (HPolygon*)pObj;
         polygon = new HIconPolygonItem(pObj1->pylist);
         polygon->setItemObj(pObj);
         polygon->setZValue(nZValue);
@@ -549,7 +547,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumPolyline)
     {
-        HPolylineObj* pObj1 = (HPolylineObj*)pObj;
+        HPolyline* pObj1 = (HPolyline*)pObj;
         polyline = new HIconPolylineItem(pObj1->pylist);
         polyline->setItemObj(pObj);
         polyline->setZValue(nZValue);
@@ -557,7 +555,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumArc)
     {
-        HArcObj* pObj1 = (HArcObj*)pObj;
+        HArc* pObj1 = (HArc*)pObj;
         arc = new HIconArcItem(pObj1->getObjRect());
         arc->setItemObj(pObj);
         arc->setZValue(nZValue);
@@ -565,7 +563,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumPie)
     {
-        HPieObj* pObj1 = (HPieObj*)pObj;
+        HPie* pObj1 = (HPie*)pObj;
         pie = new HIconPieItem(pObj1->getObjRect());
         pie->setItemObj(pObj);
         pie->setZValue(nZValue);
@@ -573,7 +571,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumText)
     {
-        HTextObj* pObj1 = (HTextObj*)pObj;
+        HText* pObj1 = (HText*)pObj;
         text = new HIconTextItem(pObj1->getObjRect());
         text->setItemObj(pObj);
         text->setZValue(nZValue);
@@ -581,7 +579,7 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     else if(drawShape == enumComplex)
     {
-        HIconComplexObj* pObj1 = (HIconComplexObj*)pObj;
+        HIconObj* pObj1 = (HIconObj*)pObj;
         complex = new HIconComplexItem(pObj1->getObjRect().normalized());
         complex->setItemObj(pObj);
         complex->setZValue(nZValue);

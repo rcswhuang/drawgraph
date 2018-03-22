@@ -120,7 +120,7 @@ void HGraph::writeData(int n,QDataStream *d)
         *d<<type;
         if(type == enumComplex)
         {
-            QString struuid = ((HIconComplexObj*)pObj)->iconTemplate()->getUuid().toString();
+            QString struuid = ((HIconObj*)pObj)->iconTemplate()->getUuid().toString();
             *d<<struuid;
         }
         pObj->writeData(d);
@@ -317,64 +317,64 @@ void HGraph::copyTo(HGraph* graph)
         HBaseObj* pObj = (HBaseObj*)pObjList[i];
         if(pObj->getShapeType() == enumLine)
         {
-            HLineObj* pLineObj = new HLineObj;
+            HLine* pLineObj = new HLine;
             pObj->clone(pLineObj);
             graph->addObj(pObj);
         }
         else if(pObj->getShapeType() == enumRectangle)
         {
-            HRectObj* pRectObj = new HRectObj;
+            HRectangle* pRectObj = new HRectangle;
             pObj->clone(pRectObj);
             graph->addObj(pRectObj);
         }
         else if(pObj->getShapeType() == enumEllipse)
         {
-            HEllipseObj* pEllipseObj = new HEllipseObj;
+            HEllipse* pEllipseObj = new HEllipse;
             pObj->clone(pEllipseObj);
             graph->addObj(pEllipseObj);
         }
         else if(pObj->getShapeType() == enumCircle)
         {
-            HCircleObj* pCircleObj = new HCircleObj;
+            HCircle* pCircleObj = new HCircle;
             pObj->clone(pCircleObj);
             graph->addObj(pCircleObj);
         }
         else if(pObj->getShapeType() == enumPolyline)
         {
-            HPolylineObj* pPolylineObj = new HPolylineObj;
+            HPolyline* pPolylineObj = new HPolyline;
             pObj->clone(pPolylineObj);
             graph->addObj(pPolylineObj);
         }
         else if(pObj->getShapeType() == enumPolygon)
         {
-            HPolygonObj* pPolygonObj = new HPolygonObj;
+            HPolygon* pPolygonObj = new HPolygon;
             pObj->clone(pPolygonObj);
             graph->addObj(pPolygonObj);
         }
         else if(pObj->getShapeType() == enumPie)
         {
-            HPieObj* pPieObj = new HPieObj;
+            HPie* pPieObj = new HPie;
             pObj->clone(pPieObj);
             graph->addObj(pPieObj);
         }
         else if(pObj->getShapeType() == enumArc)
         {
-            HArcObj* pArcObj = new HArcObj;
+            HArc* pArcObj = new HArc;
             pObj->clone(pArcObj);
             graph->addObj(pArcObj);
         }
         else if(pObj->getShapeType() == enumText)
         {
-            HTextObj* pTextObj = new HTextObj;
+            HText* pTextObj = new HText;
             pObj->clone(pTextObj);
             graph->addObj(pTextObj);
         }
         else if(pObj->getShapeType() == enumComplex)
         {
-            HIconComplexObj* pObj1 = (HIconComplexObj*)pObj;
+            HIconObj* pObj1 = (HIconObj*)pObj;
             //要从graph里面去寻找
             HIconTemplate* icontemp = graph->findIconTemplate(QUuid(pObj1->getUuid()));
-            HIconComplexObj* pComplexObj = new HIconComplexObj(icontemp);
+            HIconObj* pComplexObj = new HIconObj(icontemp);
             pObj->clone(pComplexObj);
             graph->addObj(pComplexObj);
         }
@@ -413,45 +413,45 @@ HBaseObj* HGraph::newObj(int nObjType,const QString &strUuid)
     HBaseObj* pObj = NULL;
     if(nObjType == enumLine)
     {
-        pObj = new HLineObj();
+        pObj = new HLine();
     }
     else if(nObjType == enumRectangle)
     {
-        pObj = new HRectObj();
+        pObj = new HRectangle();
     }
     else if(nObjType == enumEllipse)
     {
-        pObj = new HEllipseObj();
+        pObj = new HEllipse();
     }
     else if(nObjType == enumCircle)
     {
-        pObj = new HCircleObj();
+        pObj = new HCircle();
     }
     else if(nObjType == enumPolygon)
     {
-        pObj = new HPolygonObj();
+        pObj = new HPolygon();
     }
     else if(nObjType == enumPolyline)
     {
-        pObj = new HPolylineObj();
+        pObj = new HPolyline();
     }
     else if(nObjType == enumArc)
     {
-        pObj = new HArcObj();
+        pObj = new HArc();
     }
     else if(nObjType == enumPie)
     {
-        pObj = new HPieObj();
+        pObj = new HPie();
     }
     else if(nObjType == enumText)
     {
-        pObj = new HTextObj();
+        pObj = new HText();
     }
     else if(nObjType == enumComplex)
     {
         //先获取icontemplate
         HIconTemplate* icontemp = findIconTemplate(QUuid(strUuid));
-        pObj = new HIconComplexObj(icontemp);
+        pObj = new HIconObj(icontemp);
     }
     pObj->setShapeType((DRAWSHAPE)nObjType);
 

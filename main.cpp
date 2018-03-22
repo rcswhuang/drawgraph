@@ -1,10 +1,17 @@
-﻿#include "hgrapheditormainwindow.h"
+﻿#if defined(_MSC_VER) &&(_MSC_VER >= 1600)
+#pragma execution_character_set("utf-8")
+#endif
+
+#include "hgrapheditormainwindow.h"
 #include <QApplication>
 #include <QSplashScreen>
+#include <QTextCodec>
 #include "hgrapheditormgr.h"
+
 class HGraphEditorMgr;
 int main(int argc, char *argv[])
 {
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF8"));
     QApplication a(argc, argv);
     QPixmap pixmap(":/pixmaps/splash.png");
 

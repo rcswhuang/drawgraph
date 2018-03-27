@@ -11,7 +11,7 @@ void HGraphEditorMainWindow::actionNew_clicked()
 
 void HGraphEditorMainWindow::actionOpen_clicked()
 {
-
+    //打开所有的
 }
 
 void HGraphEditorMainWindow::actionSave_clicked()

@@ -501,7 +501,7 @@ void HGraphEditorScene::newIconGraphicsObj()
     }
 }
 
-void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
+void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bdel)
 {
     DRAWSHAPE drawShape = pObj->getShapeType();
     int nZValue = pObj->getStackOrder();
@@ -587,6 +587,68 @@ void HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj)
     }
     //if(complex != 0)
      //   complex->setAcceptDrops(true);
+    if(bdel)
+    {
+        if(drawShape == enumLine && line != 0)
+        {
+            line = 0;
+        }
+        else if(drawShape == enumRectangle && rectangle != 0)
+        {
+            rectangle = 0;
+        }
+        else if(drawShape == enumEllipse && ellipse != 0)
+        {
+            ellipse = 0;
+        }
+        else if(drawShape == enumCircle && circle != 0)
+        {
+            circle = 0;
+        }
+        else if(drawShape == enumPolyline && polyline != 0)
+        {
+            polyline = 0;
+        }
+        else if(drawShape == enumPolygon && polygon !=0)
+        {
+            polygon = 0;
+        }
+        else if(drawShape == enumArc && arc !=0)
+        {
+            arc = 0;
+        }
+        else if(drawShape == enumPie && pie !=0)
+        {
+            pie = 0;
+        }
+        else if(drawShape == enumText && text != 0)
+        {
+            text = 0;
+        }
+        else if(drawShape == enumComplex && complex != 0)
+        {
+            complex = 0;
+        }
+    }
+}
+
+void HGraphEditorScene::openGraphEditorSceneItems()
+{
+    if(!pGraphEditorMgr)
+        return;
+    if(!pGraphEditorMgr->graphEditorDoc())
+        return;
+    HGraph* pGraph = pGraphEditorMgr->graphEditorDoc()->getCurGraph();
+    if(!pGraph)
+        return;
+    QList<HBaseObj*> pObjList = pGraph->getObjList();
+    for(int i = 0; i < pObjList.count();i++)
+    {
+        HBaseObj* pObj = (HBaseObj*)pObjList[i];
+        if(!pObj)
+            continue;
+        addIconGraphicsItem(pObj,true);
+    }
 }
 
 void HGraphEditorScene::delGraphEditorSceneItems()

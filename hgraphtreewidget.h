@@ -63,6 +63,9 @@ public slots:
 
     //点击树
     void clickGraphItem(QTreeWidgetItem*,int);
+
+    //改变
+    void changedGraphItem(QTreeWidgetItem*,QTreeWidgetItem*);
 signals:
     void graphNew(const QString&);
     void graphOpen(const QString&,const int graphID);
@@ -73,6 +76,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
 protected:
     HGraphEditorMgr* pGraphEditorMgr;
+    int nPreGraphID;
 };
 
 #endif // HGRAPHTREEWIDGET_H

@@ -37,6 +37,7 @@ int HGraphTreeWidgetItem::getGraphTreeID()
 HGraphTreeWidget::HGraphTreeWidget(HGraphEditorMgr *pMgr)
     :pGraphEditorMgr(pMgr)
 {
+    nPreGraphID = (int)-1;
     setRootIsDecorated(true);
     setHeaderLabel(QStringLiteral("画面"));
     initGraphTreeWidget();
@@ -52,6 +53,7 @@ void HGraphTreeWidget::initGraphTreeWidget()
     HGraphTreeWidgetItem* rootItem = new HGraphTreeWidgetItem(this,GRAPHTREE_TYPE_ROOT);
     rootItem->setText(0,QStringLiteral("厂站五防画面总览"));
     rootItem->setIcon(0,QIcon(":/images/Folder.png"));
+    rootItem->setGraphTreeID(9999);
     addTopLevelItem(rootItem);
     //expandItem(rootItem);
 
@@ -74,6 +76,7 @@ void HGraphTreeWidget::initGraphTreeWidget()
         fileItem->setText(0,QStringLiteral("最新版本"));
     }
     connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),SLOT(clickGraphItem(QTreeWidgetItem*,int)));
+    //connect(this,SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),SLOT(changedGraphItem(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
 void HGraphTreeWidget::contextMenuEvent(QContextMenuEvent *event)
@@ -127,39 +130,53 @@ void HGraphTreeWidget::intGraphFileMenu(QContextMenuEvent* event)
 void HGraphTreeWidget::clickGraphItem(QTreeWidgetItem* item,int column)
 {
     HGraphTreeWidgetItem* clickItem = dynamic_cast<HGraphTreeWidgetItem*>(item);
-    HGraphTreeWidgetItem* pCurItem = dynamic_cast<HGraphTreeWidgetItem*> (currentItem());
+    //HGraphTreeWidgetItem* pCurItem = dynamic_cast<HGraphTreeWidgetItem*> (currentItem());
 
-    //点击当前最新版本不做任何处理
-    if(GRAPHTREE_TYPE_CFILE == clickItem->type())
-        return;
+    int nCurGraphID = clickItem->getGraphTreeID();
+    if(nCurGraphID != nPreGraphID)
+    {
+        if(GRAPHTREE_TYPE_FILE == clickItem->type());
+        int count = topLevelItemCount();
+        for(int k = 0; k < count;k++)
+        {
+            HGraphTreeWidgetItem* rootItem = static_cast<HGraphTreeWidgetItem*>(topLevelItem(k));
+           if(!rootItem) continue;
+           for(int i = 0;i < rootItem->childCount();i++)
+           {
+               HGraphTreeWidgetItem* childItem = static_cast<HGraphTreeWidgetItem*>(rootItem->child(i));
+               collapseItem(childItem);
+           }
+       }
+           if(GRAPHTREE_TYPE_ROOT == clickItem->type())
+               expandItem(clickItem);
+           else if(GRAPHTREE_TYPE_CFILE == clickItem->type())
+           {
+               if(clickItem->parent())
+                expandItem(clickItem->parent());
+           }
+    }
 
-    //如果是画面层次结构，如果两者一致，切换到最新版本里面
-    if(clickItem == pCurItem)
+    int type = clickItem->type();
+    if(GRAPHTREE_TYPE_FILE == type)
     {
         //要切换到子文件里面
-        HGraphTreeWidgetItem* childItem = dynamic_cast<HGraphTreeWidgetItem*>(clickItem->child(0));
+        HGraphTreeWidgetItem* childItem = dynamic_cast<HGraphTreeWidgetItem*>(clickItem->child(column));
         if(childItem && GRAPHTREE_TYPE_CFILE == childItem->type())
         {
             setCurrentItem(childItem);
         }
+    }
+    if(nCurGraphID == nPreGraphID) return;
+    nPreGraphID = nCurGraphID;
+
+    if(GRAPHTREE_TYPE_ROOT == clickItem->type())
         return;
-    }
 
-
-    //如果是属于切换，就要先关闭原来的树结构
-    //注意切换之前需要保存，保存在mainwindows里面进行提醒
-    int childCount = clickItem->childCount();
-    for(int index = 0; index < childCount;index++)
-    {
-        HGraphTreeWidgetItem* childItem = dynamic_cast<HGraphTreeWidgetItem*>(clickItem->child(index));
-        if(childItem)
-        {
-            delete childItem;
-            childItem = NULL;
-        }
-    }
-    collapseItem(clickItem);
     openGraph();
+}
+
+void HGraphTreeWidget::changedGraphItem(QTreeWidgetItem* cur,QTreeWidgetItem* pre)
+{
 }
 
 void HGraphTreeWidget::newGraph()
@@ -230,7 +247,8 @@ void HGraphTreeWidget::addGraphTreeWidgetItem()
     fileItem->setGraphTreeID(pGraph->getGraphID());
     fileItem->setIcon(0,QIcon(":/images/document-text.png"));
     fileItem->setText(0,QStringLiteral("最新版本"));
-    setCurrentItem(fileItem);
+    //setCurrentItem(fileItem);
+    emit itemClicked(newItem,0);
 }
 
 void HGraphTreeWidget::delGraphTreeWidgetItem()

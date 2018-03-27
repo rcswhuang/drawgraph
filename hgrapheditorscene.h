@@ -28,8 +28,9 @@ public:
     HGraphEditorScene(HGraphEditorMgr *mgr);
 
 public:
+    void openGraphEditorSceneItems();
     void delGraphEditorSceneItems();
-    void addIconGraphicsItem(HBaseObj* pObj);//obj->item
+    void addIconGraphicsItem(HBaseObj* pObj,bool del = false);//obj->item
     void newIconGraphicsObj();//新建obj
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);

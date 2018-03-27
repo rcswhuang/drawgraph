@@ -54,6 +54,8 @@ public:
     //新建文件
     void New(const QString&);
 
+    bool Open(const QString&,int);
+
    /* virtual void refresh();
 
     virtual void reset();
@@ -106,6 +108,7 @@ public:
     void refreshView();
 
     //清空scene上面所有的Item
+    void openGraphScene();
     void delGraphSceneItem();
 
 

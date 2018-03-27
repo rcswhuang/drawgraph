@@ -231,6 +231,18 @@ void HGraphEditorDoc::saveAllGraph()
     }
 
     //最后要把curExistFolderList剩下来的所有文件夹全部删除
+    for(int i = 0; i < curExistFolderList.count();i++)
+    {
+        QString strPath = graphsPath + "/" + curExistFolderList[i];
+        QFileInfoList iconsFileInfoList = QDir(strPath).entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+        foreach(QFileInfo info,iconsFileInfoList)
+        {
+            if(info.isFile())
+                QFile::remove(info.fileName());
+        }
+
+        dirIconsPath.rmpath(strPath);
+    }
 }
 
 
@@ -329,9 +341,23 @@ void HGraphEditorDoc::delGraph(const QString& name,const int id)
 }
 
 //打开画面
-void HGraphEditorDoc::openGraph(const QString& name,const int id)
+bool HGraphEditorDoc::openGraph(const QString& name,const int id)
 {
+    if(pCurGraph)
+    {
+        pCurGraph->clear();
+        delete pCurGraph;
+        pCurGraph = NULL;
+    }
 
+    HGraph* graph = findGraph(id);
+    if(!graph)
+        return false;
+
+    pCurGraph = new HGraph("tempGraph");
+    if(!pCurGraph) return false;
+    graph->copyTo(pCurGraph);
+    return true;
 }
 
 //拷贝画面

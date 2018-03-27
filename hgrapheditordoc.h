@@ -68,7 +68,7 @@ public:
     void delGraph(const QString& name,const int id);
 
     //打开画面
-    void openGraph(const QString& name,const int id);
+    bool openGraph(const QString& name,const int id);
 
     //拷贝画面
     void copyGraph(HGraph* graph);

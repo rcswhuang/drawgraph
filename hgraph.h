@@ -65,6 +65,8 @@ public:
 
     bool findObjID(int nObjID);
 
+    QList<HBaseObj*> getObjList();
+
     //模板部分
     int iconTemplateNum();
 

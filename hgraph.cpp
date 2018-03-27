@@ -510,6 +510,11 @@ void HGraph::removeObj(HBaseObj* pObj)
     pObjList.removeOne(pObj);
 }
 
+QList<HBaseObj*> HGraph::getObjList()
+{
+    return pObjList;
+}
+
 //模板部分
 int HGraph::iconTemplateNum()
 {

@@ -234,9 +234,26 @@ void HGraphEditorMainWindow::New(const QString& graphName)
     pGraphEditorMgr->refreshView();
 }
 
-void HGraphEditorMainWindow::Open(const QString&,const int graphID)
+void HGraphEditorMainWindow::Open(const QString& name,const int id)
 {
+    //主要要先保存，然后删除当前的，然后新建graph对象(mgr->doc)，然后树新增
+    if(!pGraphEditorMgr)
+        return;
 
+    //如果有修改的
+    if(pGraphEditorMgr->isGraphModify())
+    {
+        if(QMessageBox::Ok == QMessageBox::information(NULL,QStringLiteral("提醒"),QStringLiteral("需要保存当前的画面文件吗？"),QMessageBox::Yes|QMessageBox::No))
+        {
+
+             //Save();
+        }
+    }
+
+    //view 或者 scene里面要清除掉所有内容
+    pGraphEditorMgr->Open(name,id);
+    pGraphEditorMgr->openGraphScene();
+    pGraphEditorMgr->refreshView();
 }
 
 void HGraphEditorMainWindow::Del(const QString&,const int graphID)

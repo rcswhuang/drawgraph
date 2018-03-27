@@ -26,6 +26,7 @@ HGraphEditorMgr::HGraphEditorMgr()
 
     pGraphEditorScene = new HGraphEditorScene(this);
     pGraphEditorView = NULL;
+    drawShape = enumSelection;
 
 }
 
@@ -143,11 +144,26 @@ void HGraphEditorMgr::New(const QString& graphName)
     pGraphEditorDoc->addGraph(graphName);
 }
 
+bool HGraphEditorMgr::Open(const QString& graphName,int id)
+{
+    if(!pGraphEditorDoc)
+        return false;
+    return pGraphEditorDoc->openGraph(graphName,id);
+}
+
 void HGraphEditorMgr::refreshView()
 {
     if(!pGraphEditorView)
         return;
     pGraphEditorView->refresh();
+}
+
+void HGraphEditorMgr::openGraphScene()
+{
+    if(!pGraphEditorScene)
+        return;
+    delGraphSceneItem();
+    pGraphEditorScene->openGraphEditorSceneItems();
 }
 
 void HGraphEditorMgr::delGraphSceneItem()

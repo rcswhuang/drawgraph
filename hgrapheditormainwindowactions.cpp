@@ -2,6 +2,7 @@
 #include "ui_grapheditormainwindow.h"
 #include "hiconapi.h"
 #include "hgrapheditormgr.h"
+#include "hgrapheditordoc.h"
 //文件部分
 void HGraphEditorMainWindow::actionNew_clicked()
 {
@@ -15,7 +16,9 @@ void HGraphEditorMainWindow::actionOpen_clicked()
 
 void HGraphEditorMainWindow::actionSave_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorDoc())
+        return;
+    pGraphEditorMgr->graphEditorDoc()->saveAllGraph();
 }
 
 void HGraphEditorMainWindow::actionSaveAs_clicked()
@@ -30,7 +33,7 @@ void HGraphEditorMainWindow::actionPrint_clicked()
 
 void HGraphEditorMainWindow::actionExit_clicked()
 {
-
+    //退出之前需要将curGrpah拷贝到对应的graph里面 然后delete curGraph
 }
 
 //编辑部分

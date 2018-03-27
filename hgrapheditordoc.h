@@ -49,6 +49,9 @@ public:
     //加载画面信息
     void loadAllGraph();
 
+    //保存画面信息
+    void saveAllGraph();
+
     //或者画面ID
     int getGraphID();
 
@@ -69,6 +72,9 @@ public:
 
     //拷贝画面
     void copyGraph(HGraph* graph);
+
+    //保存画面
+    void saveGraph(HGraph* graph,QString& path);
 
     //获取模板对象列表
     QList<HIconTemplate*> getIconTemplateList();

@@ -147,10 +147,9 @@ void HGraph::readXmlFile(const QString& fileName)
     QDomElement root = doc.documentElement();
     if(root.isNull())
         return;
+    QString strRoot = root.tagName();
     readXml(&root);
     file.close();
-
-    sName = fileName;
 }
 
 //读具体的信息
@@ -173,7 +172,7 @@ void HGraph::readXml(QDomElement *d)
     for(int i = 0;!n.isNull();n=n.nextSibling(),i++)
     {
         QDomElement e = n.toElement();
-        QUuid uuid = QUuid(e.attribute("UUID"));
+        QUuid uuid = QUuid(e.attribute("Uuid"));
         HIconTemplate *pIconTemplate = new HIconTemplate(uuid);//需要定义一个不带uuid的参数
         if(!pIconTemplate) continue;
         pIconTemplate->readXml(&e);
@@ -183,11 +182,11 @@ void HGraph::readXml(QDomElement *d)
 
     QDomElement elementsDom = d->namedItem("Elements").toElement();
     QDomNode n1 = elementsDom.firstChild();
-    for(int i = 0;!n1.isNull();n1=n.nextSibling(),i++)
+    for(int i = 0;!n1.isNull();n1=n1.nextSibling(),i++)
     {
         QDomElement e = n1.toElement();
         QString strTagName = e.tagName();
-        QString strUuid = e.attribute("UUID");
+        QString strUuid = e.attribute("Uuid");
         HBaseObj* pObj = newObj(strTagName,strUuid);
         if(!pObj) continue;
         pObj->readXml(&e);
@@ -206,13 +205,13 @@ void HGraph::writeXmlFile(const QString& fileName)
     QString strLocal = QString("version=\"1.0\" encoding=\"GB2312\"");
     QDomProcessingInstruction instruct = doc.createProcessingInstruction("xml",strLocal);
     doc.appendChild(instruct);
-    QDomElement root = doc.createElement("IconTemplate");
+    QDomElement root = doc.createElement("Graph");
     if(root.isNull())
         return;
     doc.appendChild(root);
     writeXml(&root);
     dsm.setCodec("GB2312");
-    doc.save(dsm,4);
+    doc.save(dsm,1);
     file.close();
 }
 
@@ -233,7 +232,10 @@ void HGraph::writeXml(QDomElement *d)
     for(int i = 0; i < pIconTemplateList.count();i++)
     {
         HIconTemplate* iconTemplate = (HIconTemplate*)pIconTemplateList[i];
-        iconTemplate->writeXml(&templateDom);
+        if(!iconTemplate) continue;
+        QDomElement tempDom = templateDom.ownerDocument().createElement("IconTemplate");
+        templateDom.appendChild(tempDom);
+        iconTemplate->writeXml(&tempDom);
     }
 
     //创建复杂和简单图元
@@ -242,7 +244,10 @@ void HGraph::writeXml(QDomElement *d)
     for(int i = 0; i < pObjList.count();i++)
     {
         HBaseObj* pObj = (HBaseObj*)pObjList[i];
-        pObj->writeXml(&elementDom);
+        if(!pObj) continue;
+        QDomElement tempDom = elementDom.ownerDocument().createElement(pObj->TagName());
+        elementDom.appendChild(tempDom);
+        pObj->writeXml(&tempDom);
     }
 }
 
@@ -292,6 +297,8 @@ void HGraph::clear()
 
 void HGraph::copyTo(HGraph* graph)
 {
+    if(!graph) return;
+    graph->clear();
     graph->sName = sName;
     graph->nGraphID = nGraphID;
     graph->nGraphWidth = nGraphWidth;
@@ -375,7 +382,7 @@ void HGraph::copyTo(HGraph* graph)
             //要从graph里面去寻找
             HIconTemplate* icontemp = graph->findIconTemplate(QUuid(pObj1->getUuid()));
             HIconObj* pComplexObj = new HIconObj(icontemp);
-            pObj->clone(pComplexObj);
+            pObj1->clone(pComplexObj);
             graph->addObj(pComplexObj);
         }
     }
@@ -403,7 +410,7 @@ HBaseObj* HGraph::newObj(QString tagName,const QString &strUuid)
         drawShape = enumText;
     else if(tagName == "Polygon")
         drawShape = enumPolygon;
-    else if(tagName == "ComplexObj")
+    else if(tagName == "WfPointObj")
         drawShape = enumComplex;
     return newObj(drawShape,strUuid);
 }
@@ -454,19 +461,53 @@ HBaseObj* HGraph::newObj(int nObjType,const QString &strUuid)
         pObj = new HIconObj(icontemp);
     }
     pObj->setShapeType((DRAWSHAPE)nObjType);
-
+    if(pObj)
+    {
+        int objID = getObjID();
+        pObj->setObjID(objID);
+    }
     return pObj;
 }
 
+//获取ObjID
+int HGraph::getObjID()
+{
+    int nObjID = 1;
+    while(findObjID(nObjID))
+        nObjID++;
+    return nObjID;
+}
+
+bool HGraph::findObjID(int nObjID)
+{
+    if(pObjList.count() == 0) return false;
+    for(int i = 0;i < pObjList.count();i++)
+    {
+        HBaseObj* pObj = (HBaseObj*)pObjList[i];
+        if(pObj && pObj->getObjID() == nObjID)
+            return true;
+    }
+    return false;
+}
 
 void HGraph::addObj(HBaseObj* pObj)
 {
-
+    if(!pObj) return;
+    QString strObjName = QString("%1_%2_%3").arg(pObj->TagName()).arg(pObj->getShapeType()).arg(pObj->getObjID());
+    if(pObj->getShapeType() == enumComplex)
+    {
+        HIconObj* pIconObj = (HIconObj*)pObj;
+        if(pIconObj->iconTemplate() && pIconObj->getIconSymbol())
+            strObjName = pIconObj->iconTemplate()->getCatalogName() + " " + pIconObj->getIconSymbol()->getSymolName();
+    }
+    pObj->setObjName(strObjName);
+    pObjList.append(pObj);
 }
 
 void HGraph::removeObj(HBaseObj* pObj)
 {
-
+    if(!pObj) return;
+    pObjList.removeOne(pObj);
 }
 
 //模板部分

@@ -128,6 +128,7 @@ void HGraphEditorDoc::loadIconTemplate()
     }
 }
 
+
 //寻找模板
 HIconTemplate* HGraphEditorDoc::findIconTemplate(const QString &uuid)
 {
@@ -159,14 +160,14 @@ void HGraphEditorDoc::loadAllGraph()
     foreach(QFileInfo info,iconsDirList)
     {
         if(info.isFile())continue; //icons文件夹下面文件是不读取的
-        QString strChildFilePath = iconsPath + "/" + info.fileName();
+        QString strChildFilePath = iconsPath + "/" + info.fileName();//graph/110kV测试变主接线图 文件夹
 
         //在对应测点类型的文件夹里面搜索添加完成
         QDir dirIconsFilePath(strChildFilePath);
         if(!dirIconsFilePath.exists())
-            return;
+            continue;
         QStringList filters;
-        filters<<"*.grh";
+        filters<<"*.grf";
         dirIconsFilePath.setNameFilters(filters);
         QFileInfoList graphsFileInfoList = dirIconsFilePath.entryInfoList(QDir::Files);
         foreach(QFileInfo info,graphsFileInfoList)
@@ -179,6 +180,82 @@ void HGraphEditorDoc::loadAllGraph()
         }
     }
 }
+
+
+void HGraphEditorDoc::saveAllGraph()
+{
+    QString graphsPath = QString(getenv("wfsystem_dir"));;
+#ifdef WIN32
+    graphsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
+#else
+    iconsPath = "/users/huangw";
+#endif
+    graphsPath.append("/graph");
+    QDir dirIconsPath(graphsPath);
+    if(!dirIconsPath.exists())
+        dirIconsPath.mkdir(graphsPath);
+
+    //先扫描一下当前文件夹内所有的画面名称
+    QStringList curExistFolderList;
+    QFileInfoList iconsFileInfoList = dirIconsPath.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach(QFileInfo info,iconsFileInfoList)
+    {
+        if(info.isFile())continue;
+        curExistFolderList<<info.fileName();
+    }
+
+    for(int i = 0; i < pGraphList.count();i++)
+    {
+        HGraph* pGraph = (HGraph*)pGraphList[i];
+        if(!pGraph)
+            continue;
+        QString strGraphName = pGraph->getGraphName();
+        if((int)-1 != curExistFolderList.indexOf(strGraphName)) //当前画面找到了
+        {
+            //saveGraph(path,graph)
+            QString strFilePath = graphsPath + "/" +strGraphName;
+            saveGraph(pGraph,strFilePath);
+            curExistFolderList.removeOne(strGraphName);
+        }
+        else
+        {
+            //新增一个画面
+            QString strFilePath = graphsPath + "/" +strGraphName;
+            if(!QDir(strFilePath).exists())
+            {
+                if(!QDir(graphsPath).mkdir(strFilePath))
+                    continue;
+            }
+            saveGraph(pGraph,strFilePath);
+        }
+    }
+
+    //最后要把curExistFolderList剩下来的所有文件夹全部删除
+}
+
+
+void HGraphEditorDoc::saveGraph(HGraph* graph,QString& path)
+{
+    if(NULL == graph)
+        return;
+    if(pCurGraph)
+    {
+        if(pCurGraph->getGraphID() == graph->getGraphID())
+            pCurGraph->copyTo(graph);
+    }
+
+    QDir dirIconsFilePath(path);
+    if(!dirIconsFilePath.exists())
+        return;
+    QString strFileName = path + "/" +  "0.grf";
+    //如果有文件存在 就删除
+    if(QFile::exists(strFileName))
+    {
+        QFile::remove(strFileName);
+    }
+    graph->writeXmlFile(strFileName);
+}
+
 
 //获取一个新graph的ID
 int HGraphEditorDoc::getGraphID()

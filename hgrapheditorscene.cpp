@@ -239,7 +239,7 @@ void HGraphEditorScene::setItemProperty(QGraphicsItem* item)
             HAnaloguePage dlg(pComplexObj);
             dlg.exec();
         }
-        else if(nPointType == TEMPLATE_TYPE_RELAY)
+        else if(nPointType == TEMPLATE_TYPE_RELAY || nPointType == TEMPLATE_TYPE_CONTROL)
         {
             HRelayPage dlg(pComplexObj);
             dlg.exec();

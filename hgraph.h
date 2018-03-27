@@ -61,6 +61,10 @@ public:
 
     void removeObj(HBaseObj* pObj);
 
+    int getObjID();
+
+    bool findObjID(int nObjID);
+
     //模板部分
     int iconTemplateNum();
 

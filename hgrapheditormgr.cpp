@@ -176,6 +176,7 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
 
     HBaseObj* pObj = pGraphEditorDoc->getCurGraph()->newObj(enumComplex,uuid);
     HIconObj* pIconObj = (HIconObj*)pObj;
+    pIconObj->initIconTemplate();
     //设置图元坐标位置
     double width = 100;
     double height = 100;

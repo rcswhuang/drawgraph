@@ -63,11 +63,15 @@ void HGraphTreeWidget::initGraphTreeWidget()
         HGraph* graph = (HGraph*)graphList[i];
         if(!graph)
             continue;
-        //触发此item会引发文件打开的动作
-        HGraphTreeWidgetItem* item = new HGraphTreeWidgetItem(rootItem,GRAPHTREE_TYPE_FILE);
-        item->setGraphTreeID((int)graph->getGraphID());
-        item->setText(0,graph->getGraphName());      
-        //HGraphTreeWidgetItem* citem = new HGraphTreeWidgetItem(item,GRAPHTREE_TYPE_CFILE)
+        HGraphTreeWidgetItem* newItem = new HGraphTreeWidgetItem(rootItem,GRAPHTREE_TYPE_FILE);
+        newItem->setGraphTreeID(graph->getGraphID());
+        newItem->setText(0,graph->getGraphName());
+        newItem->setIcon(0,QIcon(":/images/Folder_Documents.png"));
+        rootItem->addChild(newItem);
+        HGraphTreeWidgetItem* fileItem = new HGraphTreeWidgetItem(newItem,GRAPHTREE_TYPE_CFILE);
+        fileItem->setGraphTreeID(graph->getGraphID());
+        fileItem->setIcon(0,QIcon(":/images/document-text.png"));
+        fileItem->setText(0,QStringLiteral("最新版本"));
     }
     connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),SLOT(clickGraphItem(QTreeWidgetItem*,int)));
 }

@@ -12,8 +12,10 @@
 #include "hiconvieweditor.h"
 #include "hfonthelper.h"
 #include <QLineEdit>
+#include <QFileInfo>
 #include <QComboBox>
 #include <QMessageBox>
+#include <QDir>
 #include <QDebug>
 HGraphEditorMainWindow::HGraphEditorMainWindow(HGraphEditorMgr *pMgr,QWidget *parent)
 :QMainWindow (parent),
@@ -182,6 +184,8 @@ void HGraphEditorMainWindow::createDockWidget()
     connect(pGraphTreeWidget,SIGNAL(graphNew(const QString&)),this,SLOT(New(const QString&)));//新建
     connect(pGraphTreeWidget,SIGNAL(graphOpen(const QString&,const int)),this,SLOT(Open(const QString&,const int)));//打开
     connect(pGraphTreeWidget,SIGNAL(graphDel(const QString&,const int )),this,SLOT(Del(const QString&,const int)));//删除
+    connect(pGraphTreeWidget,SIGNAL(graphImport(const QString&)),this,SLOT(ImportFile(const QString&)));
+    connect(pGraphTreeWidget,SIGNAL(graphImportPath(const QString&)),this,SLOT(ImportGraphFolder(const QString&)));
 }
 
 void HGraphEditorMainWindow::initGraphEditorMgr()
@@ -229,6 +233,7 @@ void HGraphEditorMainWindow::New(const QString& graphName)
     }
 
     //view 或者 scene里面要清除掉所有内容
+    pGraphEditorMgr->delGraphSceneItem();
     pGraphEditorMgr->New(graphName);
     pGraphTreeWidget->addGraphTreeWidgetItem();
     pGraphEditorMgr->refreshView();
@@ -250,14 +255,76 @@ void HGraphEditorMainWindow::Open(const QString& name,const int id)
         }
     }
 
-    //view 或者 scene里面要清除掉所有内容
+    //先删除原来的，在打开文件，最后显示
+    pGraphEditorMgr->delGraphSceneItem();
     pGraphEditorMgr->Open(name,id);
     pGraphEditorMgr->openGraphScene();
     pGraphEditorMgr->refreshView();
 }
 
-void HGraphEditorMainWindow::Del(const QString&,const int graphID)
+void HGraphEditorMainWindow::ImportFile(const QString& name)
 {
+    if(!pGraphEditorMgr)
+        return;
+    //对文件进行判断
+    QFileInfo fileInfo(name);
+    QString strName = fileInfo.completeSuffix();
+    if(strName.compare("grf") != 0)
+    {
+        if(QMessageBox::Ok == QMessageBox::information(NULL,QStringLiteral("警告"),QStringLiteral("画面后缀为grf,请修改"),QMessageBox::Yes))
+        {
+             return;
+        }
+    }
+    int graphID = pGraphEditorMgr->ImportFile(name);
+    if((int)-1 == graphID)
+    {
+        //提示导入失败
+        return;
+    }
+    if(pGraphEditorMgr->isGraphModify())
+    {
+        if(QMessageBox::Ok == QMessageBox::information(NULL,QStringLiteral("提醒"),QStringLiteral("需要保存当前的画面文件吗？"),QMessageBox::Yes|QMessageBox::No))
+        {
+             //Save();
+        }
+    }
+    //通知属性控件刷新
+    pGraphEditorMgr->Open("",graphID);
+    pGraphTreeWidget->addGraphTreeWidgetItem();
+    pGraphEditorMgr->refreshView();
+}
+
+
+void HGraphEditorMainWindow::ImportGraphFolder(const QString& path)
+{
+    //判断文件个数是否过多
+    QDir graphsDir(path);
+    QFileInfoList graphFolderList = graphsDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    if(graphFolderList.count() > 1 || graphFolderList.count() == 0)
+    {
+
+    }
+    foreach(QFileInfo info,graphFolderList)
+    {
+    }
+
+    QString strName = QFileInfo(graphFolderList[0]).fileName();
+    ImportFile(path + "/" + strName);
+}
+
+void HGraphEditorMainWindow::Del(const QString& graphName,const int graphID)
+{
+    if(!pGraphEditorMgr)
+        return;
+    if(QMessageBox::No == QMessageBox::information(NULL,QStringLiteral("提醒"),QStringLiteral("确定需要删除该画面吗？"),QMessageBox::Yes|QMessageBox::No))
+    {
+        return;
+    }
+    pGraphEditorMgr->delGraphSceneItem();
+    pGraphEditorMgr->Del(graphName,graphID);
+    pGraphTreeWidget->delGraphTreeWidgetItem();
+    pGraphEditorMgr->refreshView();
 
 }
 

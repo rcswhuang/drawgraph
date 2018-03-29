@@ -38,6 +38,8 @@ public slots:
    void New(const QString&);
    void Open(const QString&,const int graphID);
    void Del(const QString&,const int graphID);
+   void ImportGraphFolder(const QString&);
+   void ImportFile(const QString&);
 
    //文件部分
    void actionNew_clicked();

@@ -11,6 +11,7 @@ class HGraphTreeWidgetItem:public QTreeWidgetItem
 public:
     HGraphTreeWidgetItem(QTreeWidget * parent, int type = UserType);
     HGraphTreeWidgetItem(QTreeWidgetItem * parent, int type = UserType);
+    ~HGraphTreeWidgetItem();
 
 public:
     void setGraphTreeID(int graphTreeID);
@@ -58,8 +59,11 @@ public slots:
     //另存画面
     void saveAsGraph();
 
-    //导入画面
-    void importGraph();
+    //导入画面文件夹
+    void importFolderGraph();
+
+    //导入画面文件
+    void importFileGraph();
 
     //点击树
     void clickGraphItem(QTreeWidgetItem*,int);
@@ -70,7 +74,8 @@ signals:
     void graphNew(const QString&);
     void graphOpen(const QString&,const int graphID);
     void graphDel(const QString&,const int graphID);
-
+    void graphImport(const QString&);
+    void graphImportPath(const QString&);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

@@ -448,7 +448,7 @@ void HGraphEditorScene::newIconGraphicsObj()
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
             HPolygon* pObj1 = (HPolygon*)pObj;
             pObj1->pylist<<prePoint<<prePoint;
-            addIconGraphicsItem(pObj);
+            addIconGraphicsItem(pObj1);
             //addNewIconCommand(polygon->getItemObj());
         }
         else
@@ -657,8 +657,8 @@ void HGraphEditorScene::delGraphEditorSceneItems()
     {
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
         if(!pItem) continue;
-        removeItem(item);
-        delete item;
+        removeItem(pItem);
+        delete pItem;
      }
 }
 

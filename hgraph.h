@@ -28,9 +28,9 @@ public:
 
     virtual void writeDateFile(const QString&);
 
-    virtual void readXmlFile(const QString&);
+    virtual bool readXmlFile(const QString&);
 
-    virtual void writeXmlFile(const QString&);
+    virtual bool writeXmlFile(const QString&);
 
     virtual void readData(int,QDataStream *d);
 

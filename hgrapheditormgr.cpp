@@ -30,7 +30,6 @@ HGraphEditorMgr::HGraphEditorMgr()
 
 }
 
-
 //启动时加载数据库
 void HGraphEditorMgr::loadStation()
 {
@@ -151,6 +150,20 @@ bool HGraphEditorMgr::Open(const QString& graphName,int id)
     return pGraphEditorDoc->openGraph(graphName,id);
 }
 
+bool HGraphEditorMgr::Del(const QString& graphName,int id)
+{
+    if(!pGraphEditorDoc)
+        return false;
+    return pGraphEditorDoc->delGraph(graphName,id);
+}
+
+int HGraphEditorMgr::ImportFile(const QString& graphName)
+{
+    if(!pGraphEditorDoc)
+        return false;
+    return pGraphEditorDoc->importGraph(graphName);
+}
+
 void HGraphEditorMgr::refreshView()
 {
     if(!pGraphEditorView)
@@ -162,7 +175,6 @@ void HGraphEditorMgr::openGraphScene()
 {
     if(!pGraphEditorScene)
         return;
-    delGraphSceneItem();
     pGraphEditorScene->openGraphEditorSceneItems();
 }
 

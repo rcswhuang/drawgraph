@@ -6,6 +6,7 @@
 TARGET = graphEditor
 TEMPLATE = app
 
+#QMAKE_LFLAGS += /MANIFESTUAC:"level='requireAdministrator'uiAccess='false'"
 
 INCLUDEPATH += \
     ../include \

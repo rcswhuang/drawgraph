@@ -65,7 +65,7 @@ public:
     HGraph* addGraph(const QString& name);
 
     //删除画面
-    void delGraph(const QString& name,const int id);
+    bool delGraph(const QString& name,const int id);
 
     //打开画面
     bool openGraph(const QString& name,const int id);
@@ -75,6 +75,9 @@ public:
 
     //保存画面
     void saveGraph(HGraph* graph,QString& path);
+
+    //导入画面
+    int importGraph(const QString& name);
 
     //获取模板对象列表
     QList<HIconTemplate*> getIconTemplateList();

@@ -128,11 +128,11 @@ void HGraph::writeData(int n,QDataStream *d)
 }
 
  //先打开文件
-void HGraph::readXmlFile(const QString& fileName)
+bool HGraph::readXmlFile(const QString& fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
-        return;
+        return false;
     QTextStream dsm(&file);
     QDomDocument doc;
     dsm.setCodec("GB2312");
@@ -142,14 +142,14 @@ void HGraph::readXmlFile(const QString& fileName)
     if(!doc.setContent(&file,false,&errorString,&errorLine,&errorColumn))
     {
         file.close();
-        return;
+        return false;
     }
     QDomElement root = doc.documentElement();
     if(root.isNull())
-        return;
-    QString strRoot = root.tagName();
+        return false;
     readXml(&root);
     file.close();
+    return true;
 }
 
 //读具体的信息
@@ -194,11 +194,11 @@ void HGraph::readXml(QDomElement *d)
     }
 }
 
-void HGraph::writeXmlFile(const QString& fileName)
+bool HGraph::writeXmlFile(const QString& fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly))
-        return;
+        return false;
     QTextStream dsm(&file);
     QDomDocument doc;
     QTextCodec* c = QTextCodec::codecForLocale();
@@ -207,12 +207,13 @@ void HGraph::writeXmlFile(const QString& fileName)
     doc.appendChild(instruct);
     QDomElement root = doc.createElement("Graph");
     if(root.isNull())
-        return;
+        return false;
     doc.appendChild(root);
     writeXml(&root);
     dsm.setCodec("GB2312");
     doc.save(dsm,1);
     file.close();
+    return true;
 }
 
 void HGraph::writeXml(QDomElement *d)

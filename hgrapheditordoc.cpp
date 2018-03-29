@@ -5,6 +5,7 @@
 #include "hicontemplate.h"
 #include "hstation.h"
 #include <QDir>
+#include <QFile>
 #include <QFileInfoList>
 #include <QProcessEnvironment>
 //图形文件存储类
@@ -128,7 +129,6 @@ void HGraphEditorDoc::loadIconTemplate()
     }
 }
 
-
 //寻找模板
 HIconTemplate* HGraphEditorDoc::findIconTemplate(const QString &uuid)
 {
@@ -181,7 +181,6 @@ void HGraphEditorDoc::loadAllGraph()
     }
 }
 
-
 void HGraphEditorDoc::saveAllGraph()
 {
     QString graphsPath = QString(getenv("wfsystem_dir"));;
@@ -192,7 +191,7 @@ void HGraphEditorDoc::saveAllGraph()
 #endif
     graphsPath.append("/graph");
     QDir dirIconsPath(graphsPath);
-    if(!dirIconsPath.exists())
+    if(!dirIconsPath.exists()) //---huangw 只能上层路径创建子文件夹
         dirIconsPath.mkdir(graphsPath);
 
     //先扫描一下当前文件夹内所有的画面名称
@@ -238,13 +237,11 @@ void HGraphEditorDoc::saveAllGraph()
         foreach(QFileInfo info,iconsFileInfoList)
         {
             if(info.isFile())
-                QFile::remove(info.fileName());
+                QFile::remove(strPath+"/"+info.fileName());
         }
-
         dirIconsPath.rmpath(strPath);
     }
 }
-
 
 void HGraphEditorDoc::saveGraph(HGraph* graph,QString& path)
 {
@@ -268,6 +265,72 @@ void HGraphEditorDoc::saveGraph(HGraph* graph,QString& path)
     graph->writeXmlFile(strFileName);
 }
 
+int HGraphEditorDoc::importGraph(const QString& name)
+{
+    QString graphsPath = QString(getenv("wfsystem_dir"));;
+#ifdef WIN32
+    graphsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
+#else
+    iconsPath = "/users/huangw";
+#endif
+    graphsPath.append("/graph");
+    //需要判一下 这个文件是否已经在graph里面了
+    bool bFind = false;
+    QString strNewFile = name;
+    QFileInfo graphInfo(name);
+    QString strGraphName = graphInfo.fileName();
+    QString strFolderPath = name.left(name.lastIndexOf('/',-(strGraphName.length()+1)));
+    strFolderPath = strFolderPath.left(strFolderPath.lastIndexOf('/',-1));
+    if(QDir::toNativeSeparators(strFolderPath).compare(QDir::toNativeSeparators(graphsPath)) == 0)
+        bFind = true;
+    QString strFolder;
+    if(!bFind)
+    {
+        strFolder = name.section('/',-2,-2);
+
+        //搜索是否有重名的文件夹
+        int nCount = 0;
+        QDir graphsDir(graphsPath);
+        QFileInfoList graphFolderList = graphsDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+        foreach(QFileInfo info,graphFolderList)
+        {
+            if(info.isFile())continue;
+            if(info.fileName().contains(strFolder))
+                nCount++;
+        }
+
+        if(!QDir(strFolder).exists())
+        {   if(nCount > 0)
+            {
+                strFolder = strFolder + QString("_%2").arg(nCount);
+            }
+            if(!graphsDir.mkdir(strFolder))
+                return (int)-1;
+        }
+        //将源文件拷贝过来 如果失败了，还需要删除文件夹
+        strNewFile = graphsPath + "/" + strFolder + "/0.grf";
+        if(!QFile::copy(name,strNewFile))
+            return false;
+    }
+    HGraph* pGraph = new HGraph("");
+    if(!pGraph)
+        return (int)-1;
+    if(!pGraph->readXmlFile(strNewFile))
+    {
+        delete pGraph;
+        pGraph = NULL;
+        return (int)-1;
+    }
+    if(pGraph->getGraphName().compare(strFolder) != 0)
+        pGraph->setGraphName(strFolder);
+    //在里面寻找graphID 如果找到了，graphID就要更改了
+    if(findGraph(pGraph->getGraphID()))
+        pGraph->setGraphID(getGraphID());
+    pGraph->writeXmlFile(strNewFile);//更新完要写进去
+    pGraphList.append(pGraph);
+
+    return pGraph->getGraphID();
+}
 
 //获取一个新graph的ID
 int HGraphEditorDoc::getGraphID()
@@ -324,11 +387,11 @@ HGraph* HGraphEditorDoc::addGraph(const QString& name)
 }
 
 //删除画面(名字可以唯一，但内部采用id)
-void HGraphEditorDoc::delGraph(const QString& name,const int id)
+bool HGraphEditorDoc::delGraph(const QString& name,const int id)
 {
     HGraph* graph = findGraph(id);
     if(!graph)
-        return;
+        return false;
     pGraphList.removeOne(graph);
     delete graph;
     graph = NULL;
@@ -338,21 +401,24 @@ void HGraphEditorDoc::delGraph(const QString& name,const int id)
         delete pCurGraph;
         pCurGraph = NULL;
     }
+    return true;
 }
 
 //打开画面
 bool HGraphEditorDoc::openGraph(const QString& name,const int id)
 {
+    HGraph* graph = findGraph(id);
+    if(!graph)
+        return false;
+
     if(pCurGraph)
     {
+        if(pCurGraph->getGraphID() == graph->getGraphID())
+            return true;
         pCurGraph->clear();
         delete pCurGraph;
         pCurGraph = NULL;
     }
-
-    HGraph* graph = findGraph(id);
-    if(!graph)
-        return false;
 
     pCurGraph = new HGraph("tempGraph");
     if(!pCurGraph) return false;

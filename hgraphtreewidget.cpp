@@ -5,6 +5,7 @@
 #include "hgraph.h"
 #include <QMenu>
 #include <QInputDialog>
+#include <QFileDialog>
 #include <QMessageBox>
 
 #define GRAPHTREE_TYPE_ROOT  0
@@ -20,6 +21,19 @@ HGraphTreeWidgetItem::HGraphTreeWidgetItem(QTreeWidgetItem * parent, int type)
     :QTreeWidgetItem (parent,type)
 {
 
+}
+
+HGraphTreeWidgetItem::~HGraphTreeWidgetItem()
+{
+    for(int i = 0; i < childCount();i++)
+    {
+        HGraphTreeWidgetItem* item = (HGraphTreeWidgetItem*)child(i);
+        if(item)
+        {
+            delete item;
+            item = NULL;
+        }
+    }
 }
 
 void HGraphTreeWidgetItem::setGraphTreeID(int graphTreeID)
@@ -104,10 +118,14 @@ void HGraphTreeWidget::initGraphMenu(QContextMenuEvent* event)
     menu->addAction(newAct);
     connect(newAct,SIGNAL(triggered(bool)),SLOT(newGraph()));
     menu->addSeparator();
-    QAction *importAct = new QAction(QStringLiteral("导入文件夹"),this);
-    importAct->setStatusTip(QStringLiteral("导入一个画面文件"));
-    menu->addAction(importAct);
-
+    QAction *importFolderAct = new QAction(QStringLiteral("导入文件夹"),this);
+    importFolderAct->setStatusTip(QStringLiteral("导入一个画面文件夹"));
+    menu->addAction(importFolderAct);
+    connect(importFolderAct,SIGNAL(triggered(bool)),this,SLOT(importFolderGraph()));
+    QAction *importFileAct = new QAction(QStringLiteral("导入文件"),this);
+    importFileAct->setStatusTip(QStringLiteral("导入一个画面文件"));
+    menu->addAction(importFileAct);
+    connect(importFileAct,SIGNAL(triggered(bool)),this,SLOT(importFileGraph()));
     menu->popup(event->globalPos());
 }
 
@@ -130,8 +148,6 @@ void HGraphTreeWidget::intGraphFileMenu(QContextMenuEvent* event)
 void HGraphTreeWidget::clickGraphItem(QTreeWidgetItem* item,int column)
 {
     HGraphTreeWidgetItem* clickItem = dynamic_cast<HGraphTreeWidgetItem*>(item);
-    //HGraphTreeWidgetItem* pCurItem = dynamic_cast<HGraphTreeWidgetItem*> (currentItem());
-
     int nCurGraphID = clickItem->getGraphTreeID();
     if(nCurGraphID != nPreGraphID)
     {
@@ -221,11 +237,24 @@ void HGraphTreeWidget::saveAsGraph()
 
 }
 
-void HGraphTreeWidget::importGraph()
+void HGraphTreeWidget::importFolderGraph()
 {
-
+    QString dirPath = QFileDialog::getExistingDirectory(this, tr("打开文件夹"),
+                  "../",QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);
+    if(dirPath.isEmpty() || dirPath.isNull())
+        return;
+    emit graphImportPath(dirPath);
 }
 
+
+
+void HGraphTreeWidget::importFileGraph()
+{
+    QString graphName = QFileDialog::getOpenFileName(this, QStringLiteral("打开文件"),"../","Files(*.grf)");
+    if(graphName.isEmpty() || graphName.isNull())
+        return;
+    emit graphImport(graphName);
+}
 void HGraphTreeWidget::addGraphTreeWidgetItem()
 {
     if(!pGraphEditorMgr)
@@ -261,9 +290,9 @@ void HGraphTreeWidget::delGraphTreeWidgetItem()
     HGraphTreeWidgetItem* childItem = dynamic_cast<HGraphTreeWidgetItem*>(curItem->child(0));
     if(!childItem)
         return;
-    curItem->removeChild(childItem);
-    delete childItem;
-    childItem = NULL;
+    parentItem->removeChild(curItem);
+    delete curItem;
+    curItem = NULL;
     setCurrentItem(parentItem);
 }
 

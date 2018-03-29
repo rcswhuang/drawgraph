@@ -56,6 +56,10 @@ public:
 
     bool Open(const QString&,int);
 
+    bool Del(const QString&,int);
+
+    int ImportFile(const QString&);
+
    /* virtual void refresh();
 
     virtual void reset();
@@ -89,6 +93,7 @@ public:
     DRAWSHAPE getDrawShape();
 
     virtual void ObjCreated(HBaseObj* pObj);
+
     //增加对象
     virtual void addIconObj(HBaseObj* pObj,bool bPaste = false);
 

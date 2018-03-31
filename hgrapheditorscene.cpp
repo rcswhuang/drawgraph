@@ -22,6 +22,7 @@
 #include "hanaloguepage.h"
 #include "hrelaypage.h"
 #include "hiconproperty.h"
+#include "hgraphpage.h"
 #include <QMimeData>
 HGraphEditorScene::HGraphEditorScene(HGraphEditorMgr *mgr)
     :pGraphEditorMgr(mgr)
@@ -210,11 +211,21 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void HGraphEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
+    if(!pGraphEditorMgr->graphEditorDoc() || !pGraphEditorMgr->graphEditorDoc()->getCurGraph())
+        return;
     QList<QGraphicsItem*> itemList = selectedItems();
     if(itemList.size()== 1)
     {
         QGraphicsItem* pItem = itemList.first();
         setItemProperty(pItem);
+    }
+    else
+    {
+        {
+            HGraph* graph = pGraphEditorMgr->graphEditorDoc()->getCurGraph();
+            HGraphPage page(graph);
+            page.exec();
+        }
     }
     QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
 }

@@ -191,7 +191,7 @@ void HGraphEditorMgr::createIconObj(const QString& TypeName,const QString& uuid,
 {
     HIconTemplate* pIconTemplate;// = new HIconTemplate("");
     //先到画面模板中去寻找
-    if(!pGraphEditorDoc && !pGraphEditorDoc->getCurGraph())
+    if(!pGraphEditorDoc || !pGraphEditorDoc->getCurGraph())
         return;
     pIconTemplate = pGraphEditorDoc->getCurGraph()->findIconTemplate(uuid);
     if(!pIconTemplate)//没找到

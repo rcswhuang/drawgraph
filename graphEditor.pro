@@ -18,7 +18,7 @@ CONFIG += qt warn_off thread exceptions
 #LIBS datafile.lib
 # Input
 HEADERS += \
-           hgraph.h \
+           #hgraph.h \
            hgrapheditordoc.h \
            hgrapheditormainwindow.h \
            hgrapheditormgr.h \
@@ -30,17 +30,19 @@ HEADERS += \
 
 
 
-SOURCES += hgraph.cpp \
+SOURCES += \
+           #hgraph.cpp \
            hgrapheditordoc.cpp \
            hgrapheditormainwindow.cpp \
+           hgrapheditormainwindowactions.cpp \
            hgrapheditormgr.cpp \
            hgrapheditorscene.cpp \
            hgrapheditorview.cpp \
            hgraphtreewidget.cpp \
            hicontabwidget.cpp \
            hiconvieweditor.cpp \
-           main.cpp \
-           hgrapheditormainwindowactions.cpp
+           main.cpp
+
 
 FORMS += \
          UI/grapheditormainwindow.ui

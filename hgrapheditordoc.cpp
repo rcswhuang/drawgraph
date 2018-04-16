@@ -4,6 +4,7 @@
 #include "hgraph.h"
 #include "hicontemplate.h"
 #include "hstation.h"
+#include "hgraphhelper.h"
 #include <QDir>
 #include <QFile>
 #include <QFileInfoList>
@@ -90,43 +91,7 @@ HStation* HGraphEditorDoc::findStation(int nIndex)
 //加载模板信息
 void HGraphEditorDoc::loadIconTemplate()
 {
-    //先找路径，在找文件夹，然后文件夹里面搜索添加完成
-    QString iconsPath  = QString(qgetenv("wfsystem_dir"));
-#ifdef WIN32
-    iconsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
-#else
-    iconsPath = "/users/huangw";
-#endif
-    iconsPath.append("/icons");
-
-    QDir dirIconsPath(iconsPath);
-    if(!dirIconsPath.exists())
-        return;
-    QFileInfoList iconsDirList = dirIconsPath.entryInfoList(QDir::Dirs  | QDir::NoDotAndDotDot);
-    foreach(QFileInfo info,iconsDirList)
-    {
-        if(info.isFile())continue; //icons文件夹下面文件是不读取的
-        QString strChildFilePath = iconsPath + "/" + info.fileName();
-
-        //在对应测点类型的文件夹里面搜索添加完成
-        QDir dirIconsFilePath(strChildFilePath);
-        if(!dirIconsFilePath.exists())
-            return;
-        QStringList filters;
-        filters<<"*.xic";
-        dirIconsFilePath.setNameFilters(filters);
-        QFileInfoList iconsFileInfoList = dirIconsFilePath.entryInfoList(QDir::Files);
-        foreach(QFileInfo info,iconsFileInfoList)
-        {
-            if(!info.isFile())continue;
-            QString strIconTemplateFile = strChildFilePath + "/" + info.fileName();
-            QUuid uuid = QUuid(info.fileName());
-            HIconTemplate *pIconTemplate = new HIconTemplate(uuid);
-            if(!pIconTemplate) continue;
-            pIconTemplate->readXml(strIconTemplateFile);
-            pIconTemplateList.append(pIconTemplate);
-        }
-    }
+    HGraphHelper::Instance()->loadIconTemplate(&pIconTemplateList);
 }
 
 //寻找模板
@@ -144,103 +109,12 @@ HIconTemplate* HGraphEditorDoc::findIconTemplate(const QString &uuid)
 //加载画面信息
 void HGraphEditorDoc::loadAllGraph()
 {
-    //先找路径，在找文件夹，然后文件夹里面搜索添加完成
-    QString iconsPath  = QString(qgetenv("wfsystem_dir"));
-#ifdef WIN32
-    iconsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
-#else
-    iconsPath = "/users/huangw";
-#endif
-    iconsPath.append("/graph");
-
-    QDir dirIconsPath(iconsPath);
-    if(!dirIconsPath.exists())
-        return;
-    QFileInfoList iconsDirList = dirIconsPath.entryInfoList(QDir::Dirs  | QDir::NoDotAndDotDot);
-    foreach(QFileInfo info,iconsDirList)
-    {
-        if(info.isFile())continue; //icons文件夹下面文件是不读取的
-        QString strChildFilePath = iconsPath + "/" + info.fileName();//graph/110kV测试变主接线图 文件夹
-
-        //在对应测点类型的文件夹里面搜索添加完成
-        QDir dirIconsFilePath(strChildFilePath);
-        if(!dirIconsFilePath.exists())
-            continue;
-        QStringList filters;
-        filters<<"*.grf";
-        dirIconsFilePath.setNameFilters(filters);
-        QFileInfoList graphsFileInfoList = dirIconsFilePath.entryInfoList(QDir::Files);
-        foreach(QFileInfo info,graphsFileInfoList)
-        {
-            if(!info.isFile())continue;
-            QString strGraphName = strChildFilePath + "/" + info.fileName();
-            HGraph* pGraph = new HGraph("");
-            pGraph->readXmlFile(strGraphName);
-            pGraphList.append(pGraph);
-        }
-    }
+    HGraphHelper::Instance()->loadAllGraph(&pGraphList);
 }
 
 void HGraphEditorDoc::saveAllGraph()
 {
-    QString graphsPath = QString(getenv("wfsystem_dir"));;
-#ifdef WIN32
-    graphsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
-#else
-    iconsPath = "/users/huangw";
-#endif
-    graphsPath.append("/graph");
-    QDir dirIconsPath(graphsPath);
-    if(!dirIconsPath.exists()) //---huangw 只能上层路径创建子文件夹
-        dirIconsPath.mkdir(graphsPath);
-
-    //先扫描一下当前文件夹内所有的画面名称
-    QStringList curExistFolderList;
-    QFileInfoList iconsFileInfoList = dirIconsPath.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
-    foreach(QFileInfo info,iconsFileInfoList)
-    {
-        if(info.isFile())continue;
-        curExistFolderList<<info.fileName();
-    }
-
-    for(int i = 0; i < pGraphList.count();i++)
-    {
-        HGraph* pGraph = (HGraph*)pGraphList[i];
-        if(!pGraph)
-            continue;
-        QString strGraphName = pGraph->getGraphName();
-        if((int)-1 != curExistFolderList.indexOf(strGraphName)) //当前画面找到了
-        {
-            //saveGraph(path,graph)
-            QString strFilePath = graphsPath + "/" +strGraphName;
-            saveGraph(pGraph,strFilePath);
-            curExistFolderList.removeOne(strGraphName);
-        }
-        else
-        {
-            //新增一个画面
-            QString strFilePath = graphsPath + "/" +strGraphName;
-            if(!QDir(strFilePath).exists())
-            {
-                if(!QDir(graphsPath).mkdir(strFilePath))
-                    continue;
-            }
-            saveGraph(pGraph,strFilePath);
-        }
-    }
-
-    //最后要把curExistFolderList剩下来的所有文件夹全部删除
-    for(int i = 0; i < curExistFolderList.count();i++)
-    {
-        QString strPath = graphsPath + "/" + curExistFolderList[i];
-        QFileInfoList iconsFileInfoList = QDir(strPath).entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
-        foreach(QFileInfo info,iconsFileInfoList)
-        {
-            if(info.isFile())
-                QFile::remove(strPath+"/"+info.fileName());
-        }
-        dirIconsPath.rmpath(strPath);
-    }
+    HGraphHelper::Instance()->saveAllGraph(&pGraphList,getCurGraph());
 }
 
 void HGraphEditorDoc::saveGraph(HGraph* graph,QString& path)

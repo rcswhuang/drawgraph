@@ -90,9 +90,8 @@ public:
 
     //判断graph文件是否修改
     bool isGraphModify();
-protected:
 
-    HGraphEditorMgr* pGraphEditorMgr;
+public:
     //厂站列表
     QList<HStation*> pStationList;
 
@@ -101,6 +100,10 @@ protected:
 
     //图形文件列表
     QList<HGraph*> pGraphList;
+
+protected:
+
+    HGraphEditorMgr* pGraphEditorMgr;
 
     //当前文件
     HGraph* pCurGraph;

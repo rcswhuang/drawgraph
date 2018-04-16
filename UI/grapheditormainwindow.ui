@@ -301,7 +301,7 @@
   </widget>
   <action name="actionNew_N">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/new.png</normaloff>:/images/new.png</iconset>
    </property>
    <property name="text">
@@ -310,7 +310,7 @@
   </action>
   <action name="actionOpen_O">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/open.png</normaloff>:/images/open.png</iconset>
    </property>
    <property name="text">
@@ -319,7 +319,7 @@
   </action>
   <action name="actionSave_S">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
    </property>
    <property name="text">
@@ -343,7 +343,7 @@
   </action>
   <action name="actionUndo_U">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/edit-undo.png</normaloff>:/images/edit-undo.png</iconset>
    </property>
    <property name="text">
@@ -352,7 +352,7 @@
   </action>
   <action name="actionRedo_R">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/edit-redo.png</normaloff>:/images/edit-redo.png</iconset>
    </property>
    <property name="text">
@@ -361,7 +361,7 @@
   </action>
   <action name="actionCut_X">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/cut.png</normaloff>:/images/cut.png</iconset>
    </property>
    <property name="text">
@@ -370,7 +370,7 @@
   </action>
   <action name="actionCopy_C">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/copy.png</normaloff>:/images/copy.png</iconset>
    </property>
    <property name="text">
@@ -379,7 +379,7 @@
   </action>
   <action name="actionPaste_V">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/paste.png</normaloff>:/images/paste.png</iconset>
    </property>
    <property name="text">
@@ -388,7 +388,7 @@
   </action>
   <action name="actionDelete">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/delete.png</normaloff>:/images/delete.png</iconset>
    </property>
    <property name="text">
@@ -397,7 +397,7 @@
   </action>
   <action name="actionTop_T">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_move_front.png</normaloff>:/images/shape_move_front.png</iconset>
    </property>
    <property name="text">
@@ -406,7 +406,7 @@
   </action>
   <action name="actionBottom_B">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_move_back.png</normaloff>:/images/shape_move_back.png</iconset>
    </property>
    <property name="text">
@@ -415,7 +415,7 @@
   </action>
   <action name="actionAttribute">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/config.png</normaloff>:/images/config.png</iconset>
    </property>
    <property name="text">
@@ -424,7 +424,7 @@
   </action>
   <action name="actionAlignTop">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_align_top.png</normaloff>:/images/shape_align_top.png</iconset>
    </property>
    <property name="text">
@@ -433,7 +433,7 @@
   </action>
   <action name="actionAlignHCenter">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_align_middle.png</normaloff>:/images/shape_align_middle.png</iconset>
    </property>
    <property name="text">
@@ -442,7 +442,7 @@
   </action>
   <action name="actionAlignBottom">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_align_bottom.png</normaloff>:/images/shape_align_bottom.png</iconset>
    </property>
    <property name="text">
@@ -451,7 +451,7 @@
   </action>
   <action name="actionAlignLeft">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_align_left.png</normaloff>:/images/shape_align_left.png</iconset>
    </property>
    <property name="text">
@@ -460,7 +460,7 @@
   </action>
   <action name="actionAlignVCenter">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_align_center.png</normaloff>:/images/shape_align_center.png</iconset>
    </property>
    <property name="text">
@@ -469,7 +469,7 @@
   </action>
   <action name="actionAlignRight">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_align_right.png</normaloff>:/images/shape_align_right.png</iconset>
    </property>
    <property name="text">
@@ -478,7 +478,7 @@
   </action>
   <action name="actionRotate">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/rotate.png</normaloff>:/images/rotate.png</iconset>
    </property>
    <property name="text">
@@ -487,7 +487,7 @@
   </action>
   <action name="actionFilpLeft">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_rotate_anticlockwise.png</normaloff>:/images/shape_rotate_anticlockwise.png</iconset>
    </property>
    <property name="text">
@@ -496,7 +496,7 @@
   </action>
   <action name="actionFlipRight">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_rotate_clockwise.png</normaloff>:/images/shape_rotate_clockwise.png</iconset>
    </property>
    <property name="text">
@@ -505,7 +505,7 @@
   </action>
   <action name="actionFlipHorizon">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_flip_horizontal.png</normaloff>:/images/shape_flip_horizontal.png</iconset>
    </property>
    <property name="text">
@@ -514,7 +514,7 @@
   </action>
   <action name="actionFlipVertical">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_flip_vertical.png</normaloff>:/images/shape_flip_vertical.png</iconset>
    </property>
    <property name="text">
@@ -523,7 +523,7 @@
   </action>
   <action name="actionBold">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/text_bold.png</normaloff>:/images/text_bold.png</iconset>
    </property>
    <property name="text">
@@ -532,7 +532,7 @@
   </action>
   <action name="actionItalic">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/text_italic.png</normaloff>:/images/text_italic.png</iconset>
    </property>
    <property name="text">
@@ -541,7 +541,7 @@
   </action>
   <action name="actionTextUnder">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/text_underline.png</normaloff>:/images/text_underline.png</iconset>
    </property>
    <property name="text">
@@ -550,7 +550,7 @@
   </action>
   <action name="actionColor">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/format_stroke_color.png</normaloff>:/images/format_stroke_color.png</iconset>
    </property>
    <property name="text">
@@ -559,7 +559,7 @@
   </action>
   <action name="actionFillColor">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/format_fill_color.png</normaloff>:/images/format_fill_color.png</iconset>
    </property>
    <property name="text">
@@ -568,7 +568,7 @@
   </action>
   <action name="actionBackPicture">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/games_config_background.png</normaloff>:/images/games_config_background.png</iconset>
    </property>
    <property name="text">
@@ -577,7 +577,7 @@
   </action>
   <action name="actionGroup">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_group.png</normaloff>:/images/shape_group.png</iconset>
    </property>
    <property name="text">
@@ -586,7 +586,7 @@
   </action>
   <action name="actionUngroup">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/shape_ungroup.png</normaloff>:/images/shape_ungroup.png</iconset>
    </property>
    <property name="text">
@@ -595,7 +595,7 @@
   </action>
   <action name="actionSelect">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/select.png</normaloff>:/images/select.png</iconset>
    </property>
    <property name="text">
@@ -604,7 +604,7 @@
   </action>
   <action name="actionZoomin">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/zoom_in.png</normaloff>:/images/zoom_in.png</iconset>
    </property>
    <property name="text">
@@ -613,7 +613,7 @@
   </action>
   <action name="actionZoomout">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/zoom_out.png</normaloff>:/images/zoom_out.png</iconset>
    </property>
    <property name="text">
@@ -622,7 +622,7 @@
   </action>
   <action name="actionZoom">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/zoom.png</normaloff>:/images/zoom.png</iconset>
    </property>
    <property name="text">
@@ -631,7 +631,7 @@
   </action>
   <action name="actionText">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/text.png</normaloff>:/images/text.png</iconset>
    </property>
    <property name="text">
@@ -640,7 +640,7 @@
   </action>
   <action name="actionZoomSame">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/zoom_same.png</normaloff>:/images/zoom_same.png</iconset>
    </property>
    <property name="text">
@@ -649,7 +649,7 @@
   </action>
   <action name="actionLine">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/line.png</normaloff>:/images/line.png</iconset>
    </property>
    <property name="text">
@@ -658,7 +658,7 @@
   </action>
   <action name="actionRectangle">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/rectangle.png</normaloff>:/images/rectangle.png</iconset>
    </property>
    <property name="text">
@@ -667,7 +667,7 @@
   </action>
   <action name="actionPolyline">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/polyline.png</normaloff>:/images/polyline.png</iconset>
    </property>
    <property name="text">
@@ -676,7 +676,7 @@
   </action>
   <action name="actionPolygon">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/polygon.png</normaloff>:/images/polygon.png</iconset>
    </property>
    <property name="text">
@@ -685,7 +685,7 @@
   </action>
   <action name="actionCircle">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/circle.png</normaloff>:/images/circle.png</iconset>
    </property>
    <property name="text">
@@ -694,7 +694,7 @@
   </action>
   <action name="actionArc">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/arc.png</normaloff>:/images/arc.png</iconset>
    </property>
    <property name="text">
@@ -708,7 +708,7 @@
   </action>
   <action name="actionSameWidth">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/edit_samewidth.png</normaloff>:/images/edit_samewidth.png</iconset>
    </property>
    <property name="text">
@@ -717,7 +717,7 @@
   </action>
   <action name="actionSameHeight">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/edit_sameheight.png</normaloff>:/images/edit_sameheight.png</iconset>
    </property>
    <property name="text">
@@ -726,7 +726,7 @@
   </action>
   <action name="actionSame">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/edit_samesize.png</normaloff>:/images/edit_samesize.png</iconset>
    </property>
    <property name="text">
@@ -735,7 +735,7 @@
   </action>
   <action name="actionHSameSpace">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/edit_align_samespace_h.png</normaloff>:/images/edit_align_samespace_h.png</iconset>
    </property>
    <property name="text">
@@ -744,7 +744,7 @@
   </action>
   <action name="actionVSameSpace">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset resource="../images.qrc">
      <normaloff>:/images/edit_align_samespace_v.png</normaloff>:/images/edit_align_samespace_v.png</iconset>
    </property>
    <property name="text">
@@ -754,7 +754,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="images.qrc"/>
+  <include location="../images.qrc"/>
  </resources>
  <connections/>
 </ui>

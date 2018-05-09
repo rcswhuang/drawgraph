@@ -677,7 +677,7 @@ void HGraphEditorScene::setItemCursor(QGraphicsSceneMouseEvent *mouseEvent)
 {
     QList<QGraphicsItem*> itemList = selectedItems();
     //获取所在item，只要item选择到即可
-    //这个地方要改，只要获取当前选择那个，如果是多个选择则返回
+    //这个地方要改，只要获取当前选择那个，如果是多个选择则返回 ---huangw
     QPointF pointF = mouseEvent->scenePos();
     if(itemList.count()>=2 || itemList.count() == 0) return;
     QGraphicsItem* item = itemList.at(0);

@@ -70,7 +70,35 @@ void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if(mouseEvent->button() != Qt::LeftButton)
         return;
 
+    if(!pGraphEditorMgr)
+        return;
+
     prePoint = mouseEvent->scenePos();
+    //处于选择状态同时没有选到任何item,就是多选状态
+    DRAWSHAPE drawShape = pGraphEditorMgr->getDrawShape();
+    if(drawShape == enumSelection)
+    {
+        //如果选择到东西 先把选择到的取消掉 就可以了
+        QPointF pt = mouseEvent->scenePos();
+        if(!getItemAt(pt))
+        {
+            drawShape = enumMulSelection;
+            pGraphEditorMgr->setDrawShape(enumMulSelection);
+            //nSelectMode = enumNo;
+        }
+        else
+        {
+            //nSelectMode = enumSelect;
+        }
+        /*
+        if(nSelectMode == enumSelect)
+        {
+            if(pointInRect(pt) != 0)
+                nSelectMode = enumSize;
+            else
+                nSelectMode = enumMove;
+        }*/
+    }
     newIconGraphicsObj();
     QGraphicsScene::mousePressEvent(mouseEvent);
 }
@@ -130,7 +158,7 @@ void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         QRectF newRect = QRectF(prePoint,curPoint).normalized();
         text->setRect(newRect);
     }
-    else if(drawShape == enumMulSelection)
+    else if(drawShape == enumMulSelection && select != 0)
     {
         QRectF newRect = QRectF(prePoint,curPoint).normalized();
         select->setRect(newRect.normalized());
@@ -202,11 +230,14 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         //计算选择点
         QRectF rectF = select->rect();
-        //calcSelectedItem(rectF);//判断item是否选到 选到就是enumSelect否则enumNo
+        calcSelectedItem(rectF);//判断item是否选到 选到就是enumSelect否则enumNo
+        //还要出发工具栏一些功能action的变化
         removeItem(select);
         delete select;
         select = 0;
     }
+    pGraphEditorMgr->setDrawShape(enumSelection);
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
 void HGraphEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent)
@@ -685,4 +716,24 @@ void HGraphEditorScene::setItemCursor(QGraphicsSceneMouseEvent *mouseEvent)
     HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
     int location = pItem->pointInRect(pointF);
     pItem->setItemCursor(location);
+}
+
+bool HGraphEditorScene::getItemAt(const QPointF &pos)
+{
+    //判断当前点位置是否有item被选择
+    QTransform transform;
+    QGraphicsItem* item = itemAt(pos,transform);
+    if(item)
+    {
+        return true;
+    }
+    return false;
+}
+
+void HGraphEditorScene::calcSelectedItem(const QRectF &rectF)
+{
+    QPainterPath path;
+    path.addRect(rectF);
+    QTransform transform;
+    setSelectionArea(path,transform);
 }

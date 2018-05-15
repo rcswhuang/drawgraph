@@ -34,6 +34,8 @@ public:
     void newIconGraphicsObj();//新建obj
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);
+    bool getItemAt(const QPointF &pos);
+    void calcSelectedItem(const QRectF &rectF);
 protected:
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);

@@ -79,6 +79,9 @@ public:
     //导入画面
     int importGraph(const QString& name);
 
+    //更新所有画面里面的模板信息
+    void updateGraphList();
+
     //获取模板对象列表
     QList<HIconTemplate*> getIconTemplateList();
 

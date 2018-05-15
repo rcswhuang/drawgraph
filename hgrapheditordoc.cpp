@@ -110,6 +110,46 @@ HIconTemplate* HGraphEditorDoc::findIconTemplate(const QString &uuid)
 void HGraphEditorDoc::loadAllGraph()
 {
     HGraphHelper::Instance()->loadAllGraph(&pGraphList);
+
+    //加载完画面之后需要更新每一个画面里面的图元控件
+    updateGraphList();
+
+}
+
+//更新所有画面里面的模板信息
+void HGraphEditorDoc::updateGraphList()
+{
+    for(int i = 0; i < pGraphList.count();i++)
+    {
+        HGraph* pGraph = (HGraph*)pGraphList[i];
+        if(!pGraph) continue;
+        HIconTemplate* findTemp = NULL;
+        for(int j = 0; j < pGraph->pIconTemplateList.count();j++)
+        {
+            HIconTemplate* pGraphTemp = (HIconTemplate*)pGraph->pIconTemplateList[j];
+            if(!pGraphTemp)
+                continue;
+            findTemp = findIconTemplate(pGraphTemp->getUuid().toString());
+            if(findTemp)
+            {
+                findTemp->copyTo(pGraphTemp);
+            }
+            for(int k = 0; k < pGraph->getObjList().count();k++)
+            {
+                HBaseObj* pObj = (HBaseObj*)pGraph->getObjList().at(k);
+                if(pObj->getShapeType() == enumComplex)
+                {
+                    HIconObj* pObj1 = (HIconObj*)pObj;//
+                    if(!pObj1->iconTemplate()->getUuid().toString().compare(findTemp->getUuid().toString()))
+                    {
+                        findTemp->getSymbol()->copyTo(pObj1->getIconSymbol());
+                        pObj1->updateResize();
+                        int a = 0;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void HGraphEditorDoc::saveAllGraph()

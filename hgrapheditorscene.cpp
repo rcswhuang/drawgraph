@@ -232,8 +232,8 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         QRectF rectF = select->rect();
         calcSelectedItem(rectF);//判断item是否选到 选到就是enumSelect否则enumNo
         //还要出发工具栏一些功能action的变化
-        removeItem(select);
-        delete select;
+        //removeItem(select);
+        //delete select;
         select = 0;
     }
     pGraphEditorMgr->setDrawShape(enumSelection);
@@ -736,4 +736,15 @@ void HGraphEditorScene::calcSelectedItem(const QRectF &rectF)
     path.addRect(rectF);
     QTransform transform;
     setSelectionArea(path,transform);
+    //设置选中的item
+    int nIndex = (int)-1;
+    foreach (QGraphicsItem *item, selectedItems())
+    {
+        HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
+        if(!pItem) continue;
+        pItem->bMulSelect = true;
+        nIndex++;
+        if(nIndex == 0)
+            pItem->bBenchmark = true;
+     }
 }

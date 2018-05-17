@@ -35,7 +35,8 @@ public:
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);
     bool getItemAt(const QPointF &pos);
-    void calcSelectedItem(const QRectF &rectF);
+    bool calcSelectedItem(const QRectF &rectF,bool bAreaSelect = true);
+    QRectF getSelectedItemsRect();
 protected:
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);

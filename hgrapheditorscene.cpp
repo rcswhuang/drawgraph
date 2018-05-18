@@ -207,42 +207,49 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if(drawShape == enumLine && line != 0)
     {
         line->getItemObj()->setModify(true);
+        line->setFlag(QGraphicsItem::ItemIsSelectable,true);
         emit itemInserted(line->type());
         line = 0;
     }
     else if(drawShape == enumRectangle && rectangle != 0)
     {
         rectangle->getItemObj()->setModify(true);
+        rectangle->setFlag(QGraphicsItem::ItemIsSelectable,true);
         emit itemInserted(rectangle->type());
         rectangle = 0;
     }
     else if(drawShape == enumEllipse && ellipse != 0)
     {
         ellipse->getItemObj()->setModify(true);
+        ellipse->setFlag(QGraphicsItem::ItemIsSelectable,true);
         emit itemInserted(ellipse->type());
         ellipse = 0;
     }
     else if(drawShape == enumCircle && circle != 0)
     {
         circle->getItemObj()->setModify(true);
+        circle->setFlag(QGraphicsItem::ItemIsSelectable,true);
         emit itemInserted(circle->type());
         circle = 0;
     }
     else if(drawShape == enumArc && arc !=0)
     {
         arc->getItemObj()->setModify(true);
+        arc->setFlag(QGraphicsItem::ItemIsSelectable,true);
         emit itemInserted(arc->type());
         arc = 0;
     }
     else if(drawShape == enumPie && pie !=0)
     {
         pie->getItemObj()->setModify(true);
+        pie->setFlag(QGraphicsItem::ItemIsSelectable,true);
         emit itemInserted(pie->type());
         pie = 0;
     }
     else if(drawShape == enumText && text != 0)
     {
         text->getItemObj()->setModify(true);
+        text->setFlag(QGraphicsItem::ItemIsSelectable,true);
         emit itemInserted(text->type());
         text = 0;
     }
@@ -256,9 +263,8 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if(drawShape == enumMulSelection && select != 0)
     {
-        //计算选择点
         QRectF rectF = select->rect();
-        if(calcSelectedItem(rectF))//判断item是否选到 选到就是enumSelect否则enumNo
+        if(calcSelectedItem(rectF))
         {
             select->setRect(getSelectedItemsRect());
             select->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -268,7 +274,6 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         else
         {
             removeItem(select);
-            delete select;
             select = 0;
         }
     }
@@ -297,6 +302,52 @@ void HGraphEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEve
         }
     }
     QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
+}
+
+void HGraphEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    DRAWSHAPE drawShape = pGraphEditorMgr->getDrawShape();
+    if(drawShape == enumPolygon && polygon != 0)
+    {
+        if(polygon->polygon().size()<=2)
+        {
+            HBaseObj* pObj = polygon->getItemObj();
+            pObj->setDeleted(true);
+            polygon->setVisible(false);
+        }
+        else
+        {
+            QPolygonF tempF = polygon->polygon();
+            tempF.replace(tempF.size()-1,event->scenePos());
+            tempF.append(tempF.at(0));
+            polygon->setPolygon(tempF);
+        }
+        polygon->getItemObj()->setModify(true);
+        polygon->setFlag(QGraphicsItem::ItemIsSelectable,true);
+        emit itemInserted(polygon->type());
+        polygon = 0;
+        return;
+    }
+    else if(drawShape == enumPolyline && polyline != 0)
+    {
+        if(polyline->polygon().size()<=2)
+        {
+            HBaseObj* pObj = polyline->getItemObj();
+            pObj->setDeleted(true);
+            polyline->setVisible(false);
+        }
+        else
+        {
+            QPolygonF tempF = polyline->polygon();
+            tempF.replace(tempF.size()-1,event->scenePos());
+            polyline->setPolygon(tempF);
+        }
+        polyline->getItemObj()->setModify(true);
+        polyline->setFlag(QGraphicsItem::ItemIsSelectable,true);
+        emit itemInserted(polyline->type());
+        polyline = 0;
+        return;
+    }
 }
 
 void HGraphEditorScene::setItemProperty(QGraphicsItem* item)
@@ -337,50 +388,6 @@ void HGraphEditorScene::drawForeground(QPainter *painter, const QRectF &rect)
 
 }
 
-void HGraphEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    DRAWSHAPE drawShape = pGraphEditorMgr->getDrawShape();
-    if(drawShape == enumPolygon && polygon != 0)
-    {
-        if(polygon->polygon().size()<=2)
-        {
-            HBaseObj* pObj = polygon->getItemObj();
-            pObj->setDeleted(true);
-            polygon->setVisible(false);
-        }
-        else
-        {
-            QPolygonF tempF = polygon->polygon();
-            tempF.replace(tempF.size()-1,event->scenePos());
-            tempF.append(tempF.at(0));
-            polygon->setPolygon(tempF);
-        }
-        polygon->getItemObj()->setModify(true);
-        emit itemInserted(polygon->type());
-        polygon = 0;
-        return;
-    }
-    else if(drawShape == enumPolyline && polyline != 0)
-    {
-        if(polyline->polygon().size()<=2)
-        {
-            HBaseObj* pObj = polyline->getItemObj();
-            pObj->setDeleted(true);
-            polyline->setVisible(false);
-        }
-        else
-        {
-            QPolygonF tempF = polyline->polygon();
-            tempF.replace(tempF.size()-1,event->scenePos());
-            polyline->setPolygon(tempF);
-        }
-        polyline->getItemObj()->setModify(true);
-        emit itemInserted(polyline->type());
-        polyline = 0;
-        return;
-    }
-
-}
 
 void HGraphEditorScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
@@ -782,7 +789,7 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos)
                 pItem->setSelected(false);
             }
             removeItem(select);
-            delete select;
+            //delete select;
             select = 0;
         }
     }
@@ -824,6 +831,7 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
 QRectF HGraphEditorScene::getSelectedItemsRect()
 {
     QRectF rectF(0,0,0,0);
+    //要重写 判select 通过pObjList来获取united
     foreach (QGraphicsItem *item, selectedItems())
     {
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);

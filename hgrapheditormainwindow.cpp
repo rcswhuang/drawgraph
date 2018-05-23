@@ -204,8 +204,8 @@ void HGraphEditorMainWindow::initMainWindow()
 
     ui->gridLayout->addWidget(pGraphEditorView,0,1,1,1);
     pGraphEditorMgr->setGraphEditorView(pGraphEditorView);
-    connect(pGraphEditorMgr->GraphEditorScene(),SIGNAL(itemInserted(int)),this,SLOT(itemInserted(int)));
-    connect(pGraphEditorMgr->GraphEditorScene(),SIGNAL(mousePosChanged(const QPointF&)),this,SLOT(viewMousePosChanged(const QPointF&)));
+    connect(pGraphEditorMgr->graphEditorScene(),SIGNAL(itemInserted(int)),this,SLOT(itemInserted(int)));
+    connect(pGraphEditorMgr->graphEditorScene(),SIGNAL(mousePosChanged(const QPointF&)),this,SLOT(viewMousePosChanged(const QPointF&)));
 
 }
 

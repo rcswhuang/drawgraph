@@ -30,13 +30,14 @@ public:
 public:
     void openGraphEditorSceneItems();
     void delGraphEditorSceneItems();
-    void addIconGraphicsItem(HBaseObj* pObj,bool del = false);//obj->item
+    HIconGraphicsItem* addIconGraphicsItem(HBaseObj* pObj,bool del = false);//obj->item
     void newIconGraphicsObj();//新建obj
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);
     bool getItemAt(const QPointF &pos);
     bool calcSelectedItem(const QRectF &rectF,bool bAreaSelect = true);
     QRectF getSelectedItemsRect();
+    void refreshSelectedItemRect();
 protected:
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -75,6 +76,7 @@ public:
 
 public:
     QList<HIconGraphicsItem*> dragMoveItems;
+    QList<HIconGraphicsItem*> m_pIconSelectItems;
 };
 
 #endif // HGRAPHEDITORSCENE_H

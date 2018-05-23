@@ -31,3 +31,4 @@ void HGraphEditorView::refresh()
     resize(width-1,height-1);
     resize(width,height);
 }
+

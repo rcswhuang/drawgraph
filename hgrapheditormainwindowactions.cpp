@@ -3,6 +3,8 @@
 #include "hiconapi.h"
 #include "hgrapheditormgr.h"
 #include "hgrapheditordoc.h"
+#include "hgrapheditorview.h"
+#include "hgrapheditorop.h"
 //文件部分
 void HGraphEditorMainWindow::actionNew_clicked()
 {
@@ -49,33 +51,45 @@ void HGraphEditorMainWindow::actionRedo_clicked()
 
 void HGraphEditorMainWindow::actionCut_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->cut();
 }
 
 void HGraphEditorMainWindow::actionCopy_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorView())
+        return;
+    pGraphEditorMgr->graphEditorOp()->copy();
 }
 
 void HGraphEditorMainWindow::actionPaste_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorView())
+        return;
+    pGraphEditorMgr->graphEditorOp()->paste();
 }
 
 void HGraphEditorMainWindow::actionDelete_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorView())
+        return;
+    pGraphEditorMgr->graphEditorOp()->del();
 }
 
 //置顶置底
 void HGraphEditorMainWindow::actionTop_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->bringToTop();
 }
 
 void HGraphEditorMainWindow::actionBottom_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->bringToBottom();
 }
 
 //属性
@@ -87,32 +101,44 @@ void HGraphEditorMainWindow::actionAttribute_clicked()
 //排列
 void HGraphEditorMainWindow::actionAlignTop_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->alignTop();
 }
 
 void HGraphEditorMainWindow::actionAlignHCenter_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->alignHCenter();
 }
 
 void HGraphEditorMainWindow::actionAlignBottom_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->alignBottom();
 }
 
 void HGraphEditorMainWindow::actionAlignLeft_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->alignLeft();
 }
 
 void HGraphEditorMainWindow::actionAlignVCenter_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->alignVCenter();
 }
 
 void HGraphEditorMainWindow::actionAlignRight_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->alignRight();
 }
 
 //旋转
@@ -185,12 +211,16 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
  //组合
  void HGraphEditorMainWindow::actionGroup_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->groupObj();
  }
 
  void HGraphEditorMainWindow::actionUnGroup_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->ungroupObj();
  }
 
  //选择,工具
@@ -206,6 +236,7 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
      if(!pGraphEditorMgr)
          return;
      pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumText);
+     pGraphEditorMgr->setSelectMode(enumDraw);
  }
 
  void HGraphEditorMainWindow::actionLine_clicked()
@@ -213,6 +244,7 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
      if(!pGraphEditorMgr)
          return;
      pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumLine);
+     pGraphEditorMgr->setSelectMode(enumDraw);
  }
 
  void HGraphEditorMainWindow::actionRectagle_clicked()
@@ -220,6 +252,7 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
      if(!pGraphEditorMgr)
          return;
      pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumRectangle);
+     pGraphEditorMgr->setSelectMode(enumDraw);
  }
 
  void HGraphEditorMainWindow::actionPolyline_clicked()
@@ -227,6 +260,7 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
      if(!pGraphEditorMgr)
          return;
      pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumPolyline);
+     pGraphEditorMgr->setSelectMode(enumDraw);
  }
 
  void HGraphEditorMainWindow::actionPolygon_clicked()
@@ -234,6 +268,7 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
      if(!pGraphEditorMgr)
          return;
      pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumPolygon);
+     pGraphEditorMgr->setSelectMode(enumDraw);
  }
 
  void HGraphEditorMainWindow::actionCircle_clicked()
@@ -241,6 +276,7 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
      if(!pGraphEditorMgr)
          return;
      pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumCircle);
+     pGraphEditorMgr->setSelectMode(enumDraw);
  }
 
  void HGraphEditorMainWindow::actionArc_clicked()
@@ -248,6 +284,7 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
      if(!pGraphEditorMgr)
          return;
      pGraphEditorMgr->setDrawShape(DRAWSHAPE::enumArc);
+     pGraphEditorMgr->setSelectMode(enumDraw);
  }
 
  //缩放

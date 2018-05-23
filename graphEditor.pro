@@ -26,7 +26,8 @@ HEADERS += \
            hgrapheditorview.h \
            hgraphtreewidget.h \
            hicontabwidget.h \
-           hiconvieweditor.h
+           hiconvieweditor.h \
+    hgrapheditorop.h
 
 
 
@@ -41,7 +42,8 @@ SOURCES += \
            hgraphtreewidget.cpp \
            hicontabwidget.cpp \
            hiconvieweditor.cpp \
-           main.cpp
+           main.cpp \
+    hgrapheditorop.cpp
 
 
 FORMS += \

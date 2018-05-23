@@ -11,6 +11,9 @@ public:
 public:
     //目前只刷新界面
     void refresh();
+
+public:
+
 };
 
 #endif // HGRAPHEDITORVIEW_H

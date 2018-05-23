@@ -9,6 +9,7 @@
 class HGraphEditorScene;
 class HGraphEditorView;
 class HGraphEditorDoc;
+class HGraphEditorOp;
 class HIconGraphicsItem;
 class HBaseObj;
 class HGraph;
@@ -25,12 +26,11 @@ class HGraphEditorMgr : public QObject
 public:
     HGraphEditorMgr();
 
-
-    //
-    HGraphEditorScene* GraphEditorScene();
+    HGraphEditorScene* graphEditorScene();
     virtual void setGraphEditorView(HGraphEditorView* view);
     HGraphEditorView* graphEditorView();
     HGraphEditorDoc* graphEditorDoc();
+    HGraphEditorOp* graphEditorOp();
 
 public:
 
@@ -59,6 +59,17 @@ public:
     bool Del(const QString&,int);
 
     int ImportFile(const QString&);
+
+    //cut copy paste del放在view上面
+    void cut();
+
+    void copy();
+
+    void paste();
+
+    void del();
+
+    QString getClipboardFile();
 
    /* virtual void refresh();
 
@@ -90,7 +101,13 @@ public:
     void reName(const QString& newName);*/
 
     void setDrawShape(DRAWSHAPE ds);
+
     DRAWSHAPE getDrawShape();
+
+    void setSelectMode(SELECTMODE ds);
+
+    SELECTMODE getSelectMode();
+
 
     virtual void ObjCreated(HBaseObj* pObj);
 
@@ -126,8 +143,10 @@ protected:
 
     QUndoStack* pCommand;
 
+    HGraphEditorOp* m_pGraphEditorOp;
 private:
     DRAWSHAPE drawShape;
+    SELECTMODE selectMode;
     QRectF logicRectF;  //scene的大小
     HGraph* pTempGraph; //临时画面文件
     QString strGraphFile;

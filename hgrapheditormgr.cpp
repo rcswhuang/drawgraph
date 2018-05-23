@@ -2,9 +2,11 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QScrollBar>
+#include <QDir>
 #include "hgrapheditorview.h"
 #include "hgrapheditordoc.h"
 #include "hgrapheditorscene.h"
+#include "hgrapheditorop.h"
 #include "hgraph.h"
 //图形文件管理总类
 HGraphEditorMgr::HGraphEditorMgr()
@@ -26,8 +28,9 @@ HGraphEditorMgr::HGraphEditorMgr()
 
     pGraphEditorScene = new HGraphEditorScene(this);
     pGraphEditorView = NULL;
-    drawShape = enumSelection;
-
+    m_pGraphEditorOp = new HGraphEditorOp(this);
+    drawShape = enumNo;
+    selectMode = enumSelect;
 }
 
 //启动时加载数据库
@@ -54,7 +57,12 @@ void HGraphEditorMgr::loadGraphs()
     pGraphEditorDoc->loadAllGraph();
 }
 
-HGraphEditorScene* HGraphEditorMgr::GraphEditorScene()
+HGraphEditorOp* HGraphEditorMgr::graphEditorOp()
+{
+    return m_pGraphEditorOp;
+}
+
+HGraphEditorScene* HGraphEditorMgr::graphEditorScene()
 {
     return pGraphEditorScene;
 }
@@ -82,7 +90,6 @@ void HGraphEditorMgr::setGraphEditorView(HGraphEditorView* view)
     {
         pBar->setSliderPosition(pBar->minimum());
     }
-
 }
 
 HGraphEditorView* HGraphEditorMgr::graphEditorView()
@@ -133,6 +140,16 @@ void HGraphEditorMgr::setDrawShape(DRAWSHAPE ds)
 DRAWSHAPE HGraphEditorMgr::getDrawShape()
 {
     return drawShape;
+}
+
+void HGraphEditorMgr::setSelectMode(SELECTMODE mode)
+{
+    selectMode = mode;
+}
+
+SELECTMODE HGraphEditorMgr::getSelectMode()
+{
+    return selectMode;
 }
 
 //新建文件
@@ -249,3 +266,5 @@ void HGraphEditorMgr::ObjCreated(HBaseObj* pObj)
 {
     pGraphEditorScene->addIconGraphicsItem(pObj);
 }
+
+

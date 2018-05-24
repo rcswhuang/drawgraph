@@ -54,6 +54,21 @@ public:
 
     void alignAlgorithm();
 
+    //等宽
+    void sizeSameWidth();
+
+    //等高
+    void sizeSameHeight();
+
+    //完全相等
+    void sizeSameComplete();
+
+    //横向等间距
+    void sizeHSameSpace();
+
+    //纵向等间距
+    void sizeVSameSpace();
+
 private:
     HGraphEditorMgr* m_pGraphEditorMgr;
     Qt::Alignment m_Alignment;

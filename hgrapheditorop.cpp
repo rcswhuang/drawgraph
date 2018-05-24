@@ -8,6 +8,7 @@
 #include "hgrapheditorview.h"
 #include "hicongraphicsitem.h"
 #include "hiconlineitem.h"
+#include "hiconselectionitem.h"
 #include "hiconitemgroup.h"
 #include "hbaseobj.h"
 #include "hiconobj.h"
@@ -220,23 +221,51 @@ void HGraphEditorOp::groupObj()
     for(int i = 0; i < items.count();i++)
     {
         HIconGraphicsItem* item = (HIconGraphicsItem*)items.at(i);
+        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)
+            continue;
         HBaseObj* pObj = item->getItemObj();
         groupRect = groupRect.united(item->rect());
-        m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->removeObj(pObj);//应该是take操作 不是删除
-        ((HGroupObj*)pGroupObj)->addObj(pObj);
+        if(item->type() == enumGroup)
+        {
+            HGroupObj* pDelGroup = (HGroupObj*)pObj;
+            while(!pDelGroup->isEmpty())
+            {
+                HBaseObj* pObj = (HBaseObj*)pDelGroup->takeFirst();
+                ((HGroupObj*)pGroupObj)->addObj(pObj);
+            }
+            delete pDelGroup;
+            pDelGroup = NULL;
+        }
+        else
+        {
+            m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->removeObj(pObj);//移除
+            ((HGroupObj*)pGroupObj)->addObj(pObj);
+        }
     }
     //矩形
     HIconItemGroup *itemGroup = new HIconItemGroup(QRectF(0,0,groupRect.width(),groupRect.height()));
+    itemGroup->setFlag(QGraphicsItem::ItemIsSelectable,true);
     m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pGroupObj);
     itemGroup->setItemObj(pGroupObj);
     itemGroup->setRect(groupRect);
     foreach(QGraphicsItem* item,items)
     {
+        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)
+            continue;
         m_pGraphEditorMgr->graphEditorScene()->removeItem(item);
         HBaseObj* pObj = ((HIconGraphicsItem*)item)->getItemObj();
         pObj->setIconGraphicsItem(NULL);
+        delete item;
+        item = NULL;
     }
     m_pGraphEditorMgr->graphEditorScene()->addItem(itemGroup);
+    itemGroup->setSelected(true);
+    if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
+    {
+        m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
+        m_pGraphEditorMgr->graphEditorScene()->select->setRect(QRectF(0,0,0,0));
+        m_pGraphEditorMgr->graphEditorScene()->select->setSelected(false);
+    }
     m_pGraphEditorMgr->setDrawShape(enumNo);
     m_pGraphEditorMgr->setSelectMode(enumSelect);
 }
@@ -250,6 +279,8 @@ void HGraphEditorOp::ungroupObj()
     for(int i = 0; i < items.count();i++)
     {
         HIconGraphicsItem* item = (HIconGraphicsItem*)items.at(i);
+        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)
+            continue;
         if(item->type() != enumGroup) continue;
         HBaseObj* pObj = item->getItemObj();
         HGroupObj* pGroupObj = (HGroupObj*)pObj;
@@ -261,7 +292,17 @@ void HGraphEditorOp::ungroupObj()
         }
         m_pGraphEditorMgr->graphEditorScene()->removeItem(item);
         m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->delObj(pObj);
+        delete item;
+        item = NULL;
     }
+
+    if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
+    {
+        m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
+        m_pGraphEditorMgr->graphEditorScene()->select->setRect(QRectF(0,0,0,0));
+        m_pGraphEditorMgr->graphEditorScene()->select->setSelected(false);
+    }
+
     m_pGraphEditorMgr->setDrawShape(enumNo);
     m_pGraphEditorMgr->setSelectMode(enumSelect);
 }
@@ -536,4 +577,35 @@ void HGraphEditorOp::alignHCenter()
         return;
     m_Alignment = Qt::AlignHCenter;
     alignAlgorithm();
+}
+
+
+//等宽
+void HGraphEditorOp::sizeSameWidth()
+{
+
+}
+
+//等高
+void HGraphEditorOp::sizeSameHeight()
+{
+
+}
+
+//完全相等
+void HGraphEditorOp::sizeSameComplete()
+{
+
+}
+
+//横向等间距
+void HGraphEditorOp::sizeHSameSpace()
+{
+
+}
+
+//纵向等间距
+void HGraphEditorOp::sizeVSameSpace()
+{
+
 }

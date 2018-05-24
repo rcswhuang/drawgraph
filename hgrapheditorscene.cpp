@@ -266,6 +266,7 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             if(select)
             {
                 removeItem(select);
+                delete select;
                 select = 0;
             }
         }
@@ -283,8 +284,10 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos)
     QGraphicsItem* item = itemAt(pos,transform);
     if(item)
     {
-        if(select && select == item)
-            return true;
+        if(select){
+            if(select == item)
+                return true;
+        }
         return true;
     }
     else
@@ -299,6 +302,7 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos)
                 item->setSelected(false);
             }
             removeItem(select);
+            delete select;
             select = 0;
         }
     }
@@ -872,11 +876,20 @@ void HGraphEditorScene::openGraphEditorSceneItems()
 
 void HGraphEditorScene::delGraphEditorSceneItems()
 {
+    if(!pGraphEditorMgr)
+        return;
+    if(!pGraphEditorMgr->graphEditorDoc())
+        return;
     foreach (QGraphicsItem *item, items())
     {
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
         if(!pItem) continue;
+        //删除必须是以下顺序
+        HBaseObj* pObj = pItem->getItemObj();
         removeItem(pItem);
+        if(pObj)
+            pGraphEditorMgr->graphEditorDoc()->getCurGraph()->delObj(pObj);
+
      }
 }
 

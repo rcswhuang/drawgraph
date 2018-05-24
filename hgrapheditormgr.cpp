@@ -264,6 +264,7 @@ void HGraphEditorMgr::addIconObj(HBaseObj* pObj,bool bPaste)
 
 void HGraphEditorMgr::ObjCreated(HBaseObj* pObj)
 {
+    //添加Item之后不能删除，后面还有拖拽移动等操作，等到拖拽释放之后才能删除
     pGraphEditorScene->addIconGraphicsItem(pObj);
 }
 

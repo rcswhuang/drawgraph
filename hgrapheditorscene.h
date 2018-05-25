@@ -39,7 +39,6 @@ public:
     QRectF getSelectedItemsRect();
     void refreshSelectedItemRect();
 protected:
-
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -55,6 +54,7 @@ protected:
 signals:
     void itemInserted(int);
     void mousePosChanged(QPointF logPos);
+    void selectItemChanged(int);
 
 public:
     QPointF ptStart;

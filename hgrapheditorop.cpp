@@ -104,7 +104,7 @@ void HGraphEditorOp::paste()
         item->setSelected(false);
     }
 
-    //有可能不是同一个画面拷贝，从A画面拷贝到B画面
+    //有可能不是同一个画面拷贝，从A画面拷贝到B画面 ---huangw
     foreach(HIconGraphicsItem* item,copyItemList)
     {
         item->setSelected(true);
@@ -581,31 +581,146 @@ void HGraphEditorOp::alignHCenter()
 
 
 //等宽
-void HGraphEditorOp::sizeSameWidth()
+void HGraphEditorOp::sizeEqualWidth()
 {
-
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    m_Equalway = IconSize::EqualWidth;
+    equalAlgorithm();
 }
 
 //等高
-void HGraphEditorOp::sizeSameHeight()
+void HGraphEditorOp::sizeEqualHeight()
 {
-
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    m_Equalway = IconSize::EqualHeight;
+    equalAlgorithm();
 }
 
 //完全相等
-void HGraphEditorOp::sizeSameComplete()
+void HGraphEditorOp::sizeEqualComplete()
 {
-
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    m_Equalway = IconSize::EqualComplete;
+    equalAlgorithm();
 }
 
 //横向等间距
-void HGraphEditorOp::sizeHSameSpace()
+void HGraphEditorOp::sizeHEqualSpace()
 {
 
 }
 
 //纵向等间距
-void HGraphEditorOp::sizeVSameSpace()
+void HGraphEditorOp::sizeVEqualSpace()
 {
 
+}
+
+bool HGraphEditorOp::getbenchMarkSize(QPointF& pt)
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
+        return false;
+    HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
+    QPointF benchMarkPt = QPoint(0,0);
+    bool bok = false;
+    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    {
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        if(iconItem && iconItem->bBenchmark && iconItem->bMulSelect)
+        {
+            HBaseObj* pObj = iconItem->getItemObj();
+            ushort shapeType = pObj->getShapeType();
+            if(shapeType == enumRectangle || shapeType == enumEllipse || shapeType == enumCircle || shapeType == enumPie || shapeType == enumText
+                    || shapeType == enumArc || shapeType == enumPolygon || shapeType == enumPolyline || shapeType == enumComplex)
+            {
+                QRectF iconRect = iconItem->rect();
+               if(m_Equalway == IconSize::EqualWidth || m_Equalway == IconSize::EqualHeight || m_Equalway == IconSize::EqualComplete)
+               {
+                   benchMarkPt.setX(iconRect.width());
+                   benchMarkPt.setY(iconRect.height());
+                   bok = true;
+               }
+
+            }
+            else if(shapeType == enumLine)// || shapeType == enumPolyline)
+            {
+                HIconLineItem* lineItem = (HIconLineItem*)iconItem;
+                QPointF pt1(((HLine*)lineItem->getItemObj())->getHeadPoint());
+                QPointF pt2(((HLine*)lineItem->getItemObj())->getTailPoint());
+                if(m_Equalway == IconSize::EqualWidth || m_Equalway == IconSize::EqualHeight || m_Equalway == IconSize::EqualComplete)
+                {
+                    benchMarkPt.setX(qAbs(pt1.x() - pt2.x()));
+                    benchMarkPt.setY(qAbs(pt1.y() - pt2.y()));
+                    bok = true;
+                }
+            }
+            else
+                bok = false;
+        }
+    }
+    pt = benchMarkPt;
+    return bok;
+}
+
+void HGraphEditorOp::equalAlgorithm()
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    QPointF benchMarkPt;
+    if(!getbenchMarkSize(benchMarkPt))
+        return;
+    HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
+    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    {
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        if(iconItem && !iconItem->bBenchmark && iconItem->bMulSelect)
+        {
+            HBaseObj* pObj = iconItem->getItemObj();
+            ushort shapeType = pObj->getShapeType();
+            if(shapeType == enumRectangle || shapeType == enumEllipse || shapeType == enumCircle || shapeType == enumPie || shapeType == enumText
+                    || shapeType == enumArc || shapeType == enumPolygon || shapeType == enumPolyline || shapeType == enumComplex)
+            {
+                QRectF iconRect = iconItem->rect();
+                QRectF newRect = iconRect;
+                qreal dx = 0,dy = 0;
+                if(m_Equalway == IconSize::EqualWidth)
+                {
+                    newRect.setWidth(benchMarkPt.x());
+                    dx = (iconRect.width() - benchMarkPt.x())/2;
+                }
+                else if(m_Equalway == IconSize::EqualHeight)
+                {
+                    newRect.setHeight(benchMarkPt.y());
+                    dy = (iconRect.height() - benchMarkPt.y())/2;
+                }
+                else if(m_Equalway == IconSize::EqualComplete)
+                {
+                    newRect.setWidth(benchMarkPt.x());
+                    newRect.setHeight(benchMarkPt.y());
+                    dx = (iconRect.width() - benchMarkPt.x())/2;
+                    dy = (iconRect.height() - benchMarkPt.y())/2;
+                }
+                QRectF rectNew = newRect.translated(dx,dy);
+                iconItem->setRect(rectNew);
+            }
+            else if(shapeType == enumLine)
+            {
+                HIconLineItem* lineItem = (HIconLineItem*)iconItem;
+                QPointF pt1(((HLine*)lineItem->getItemObj())->getHeadPoint());
+                QPointF pt2(((HLine*)lineItem->getItemObj())->getTailPoint());
+                qreal dx = 0,dy = 0;
+
+
+
+                QLineF newLineF = lineItem->line().translated(dx,dy);
+                lineItem->setLine(newLineF);
+            }
+        }
+    }
+
+    //还要刷新一下selection 才可以
+    m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 }

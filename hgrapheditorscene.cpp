@@ -265,6 +265,7 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         {
             if(select)
             {
+                m_pIconSelectItems.clear();
                 removeItem(select);
                 delete select;
                 select = 0;
@@ -301,6 +302,7 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos)
                 item->bMulSelect = false;
                 item->setSelected(false);
             }
+            m_pIconSelectItems.clear();
             removeItem(select);
             delete select;
             select = 0;
@@ -319,12 +321,13 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         setSelectionArea(path,Qt::ContainsItemShape,transform);
     }
 
-    m_pIconSelectItems.clear();
+    //m_pIconSelectItems.clear();
     foreach (QGraphicsItem *item, selectedItems())
     {
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
         if(!pItem || pItem->type() == enumMulSelection|| pItem->type() == enumSelection)
             continue;
+        if(m_pIconSelectItems.indexOf(pItem)>=0) continue;
         m_pIconSelectItems.append(pItem);
     }
     bool bMulSelected = true;
@@ -339,6 +342,7 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         {
             item->bMulSelect = false;
             item->bBenchmark = false;
+            nIndex++;
         }
         else
         {
@@ -349,6 +353,16 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
             select->pObjList.append(item->getItemObj());
         }
     }
+
+    //so low......
+    if(nIndex == (int)-1)
+        emit selectItemChanged(SELECT_MODE_NO);
+    else if(nIndex == 0)
+        emit selectItemChanged(SELECT_MODE_SINGLE);
+    else if(nIndex == 1)
+        emit selectItemChanged(SELECT_MODE_2MULTIPLE);
+    else
+        emit selectItemChanged(SELECT_MODE_MULTIPLE);
     return bMulSelected;
 }
 
@@ -885,11 +899,12 @@ void HGraphEditorScene::delGraphEditorSceneItems()
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
         if(!pItem) continue;
         //删除必须是以下顺序
-        HBaseObj* pObj = pItem->getItemObj();
         removeItem(pItem);
+        HBaseObj* pObj = pItem->getItemObj();
         if(pObj)
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->delObj(pObj);
-
+        delete pItem;
+        pItem = NULL;
      }
 }
 

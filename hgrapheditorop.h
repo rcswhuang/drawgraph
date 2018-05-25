@@ -2,6 +2,7 @@
 #define HGRAPHEDITOROP_H
 
 #include <QObject>
+#include "hiconapi.h"
 class HGraphEditorMgr;
 class HGraphEditorOp
 {
@@ -52,26 +53,33 @@ public:
     //不同对齐方式不同点
     bool getbenchMarkPoint(QPointF& pt);
 
+    //对齐
     void alignAlgorithm();
 
     //等宽
-    void sizeSameWidth();
+    void sizeEqualWidth();
 
     //等高
-    void sizeSameHeight();
+    void sizeEqualHeight();
 
     //完全相等
-    void sizeSameComplete();
+    void sizeEqualComplete();
 
     //横向等间距
-    void sizeHSameSpace();
+    void sizeHEqualSpace();
 
     //纵向等间距
-    void sizeVSameSpace();
+    void sizeVEqualSpace();
 
+    //相等数据获取
+    bool getbenchMarkSize(QPointF& pt);
+
+    //相等关系算法
+    void equalAlgorithm();
 private:
     HGraphEditorMgr* m_pGraphEditorMgr;
     Qt::Alignment m_Alignment;
+    IconSize m_Equalway;
 };
 
 #endif // HGRAPHEDITOROP_H

@@ -311,27 +311,37 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
  //等比
  void HGraphEditorMainWindow::actionSameWidth_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->sizeEqualWidth();
  }
 
  void HGraphEditorMainWindow::actionSameHeight_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->sizeEqualHeight();
  }
 
  void HGraphEditorMainWindow::actionSame_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->sizeEqualComplete();
  }
 
  void HGraphEditorMainWindow::actionHSameSpace_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     //pGraphEditorMgr->graphEditorOp()->alignVCenter();
  }
 
  void HGraphEditorMainWindow::actionVSameSpace_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     //pGraphEditorMgr->graphEditorOp()->alignVCenter();
  }
 
  //关于

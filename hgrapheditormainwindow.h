@@ -15,6 +15,7 @@ class HGraphEditorDoc;
 class HIconViewEditor;
 class QLineEdit;
 class QComboBox;
+class QActionGroup;
 class HGraphEditorMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -124,6 +125,7 @@ public slots:
 public slots:
     void itemInserted(int);
     void viewMousePosChanged(const QPointF &logPos);
+    void selectItemChanged(int);
 
 private:
     HGraphEditorMgr *pGraphEditorMgr;
@@ -135,7 +137,11 @@ private:
     Ui::GraphEditorMainWindow *ui;
 
 
-
+    QActionGroup* m_pAlignGroup;
+    QActionGroup* m_pEqualGroup;
+    QActionGroup* m_pDivideGroup;
+    QActionGroup* m_pFlipGroup;
+    QActionGroup* m_pEditAndBringGroup;
     QComboBox* pFontBox;
     QComboBox* pFontSizeBox;
     QLineEdit* pTextEdit;

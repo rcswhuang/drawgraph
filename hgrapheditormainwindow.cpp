@@ -41,6 +41,12 @@ HGraphEditorMainWindow::~HGraphEditorMainWindow()
 void HGraphEditorMainWindow::createActions()
 {
 
+    m_pAlignGroup = new QActionGroup(this);
+    m_pEqualGroup = new QActionGroup(this);
+    m_pDivideGroup = new QActionGroup(this);
+    m_pFlipGroup = new QActionGroup(this);
+    m_pEditAndBringGroup = new QActionGroup(this);
+    m_pEditAndBringGroup->setEnabled(false);
     //文件部分
     connect(ui->actionNew_N,SIGNAL(triggered(bool)),this,SLOT(actionNew_clicked()));
     connect(ui->actionOpen_O,SIGNAL(triggered(bool)),this,SLOT(actionOpen_clicked()));
@@ -49,17 +55,29 @@ void HGraphEditorMainWindow::createActions()
     connect(ui->actionPrint_P,SIGNAL(triggered(bool)),this,SLOT(actionPrint_clicked()));
     connect(ui->actionExit_E,SIGNAL(triggered(bool)),this,SLOT(actionExit_clicked()));
 
-    //编辑部分
+    //undo redo部分
     connect(ui->actionUndo_U,SIGNAL(triggered(bool)),this,SLOT(acitonUndo_clicked()));
     connect(ui->actionRedo_R,SIGNAL(triggered(bool)),this,SLOT(actionRedo_clicked()));
-    connect(ui->actionCopy_C,SIGNAL(triggered(bool)),this,SLOT(actionCut_clicked()));
+
+    //编辑部分
+    connect(ui->actionCut_X,SIGNAL(triggered(bool)),this,SLOT(actionCut_clicked()));
     connect(ui->actionCopy_C,SIGNAL(triggered(bool)),this,SLOT(actionCopy_clicked()));
     connect(ui->actionPaste_V,SIGNAL(triggered(bool)),this,SLOT(actionPaste_clicked()));
     connect(ui->actionDelete,SIGNAL(triggered(bool)),this,SLOT(actionDelete_clicked()));
+    m_pEditAndBringGroup->addAction(ui->actionCut_X);
+    m_pEditAndBringGroup->addAction(ui->actionCopy_C);
+    //m_pEditAndBringGroup->addAction(ui->actionPaste_V);
+    //ui->actionPaste_V->setEnabled(true);
+    m_pEditAndBringGroup->addAction(ui->actionDelete);
+
 
     //置顶置底
     connect(ui->actionTop_T,SIGNAL(triggered(bool)),this,SLOT(actionTop_clicked()));
     connect(ui->actionBottom_B,SIGNAL(triggered(bool)),this,SLOT(actionBottom_clicked()));
+    m_pEditAndBringGroup->addAction(ui->actionTop_T);
+    m_pEditAndBringGroup->addAction(ui->actionBottom_B);
+
+
 
     //属性
     connect(ui->actionAttribute,SIGNAL(triggered(bool)),this,SLOT(actionAttribute_clicked()));
@@ -71,6 +89,13 @@ void HGraphEditorMainWindow::createActions()
     connect(ui->actionAlignLeft,SIGNAL(triggered(bool)),this,SLOT(actionAlignLeft_clicked()));
     connect(ui->actionAlignVCenter,SIGNAL(triggered(bool)),this,SLOT(actionAlignVCenter_clicked()));
     connect(ui->actionAlignRight,SIGNAL(triggered(bool)),this,SLOT(actionAlignRight_clicked()));
+    m_pAlignGroup->addAction(ui->actionAlignTop);
+    m_pAlignGroup->addAction(ui->actionAlignHCenter);
+    m_pAlignGroup->addAction(ui->actionAlignBottom);
+    m_pAlignGroup->addAction(ui->actionAlignLeft);
+    m_pAlignGroup->addAction(ui->actionAlignVCenter);
+    m_pAlignGroup->addAction(ui->actionAlignRight);
+    m_pAlignGroup->setEnabled(false);
 
     //旋转
     connect(ui->actionRotate,SIGNAL(triggered(bool)),this,SLOT(actionRotate_clicked()));
@@ -78,6 +103,12 @@ void HGraphEditorMainWindow::createActions()
     connect(ui->actionFlipRight,SIGNAL(triggered(bool)),this,SLOT(actionFlipRight_clicked()));
     connect(ui->actionFlipHorizon,SIGNAL(triggered(bool)),this,SLOT(actionFlipHorizon_clicked()));
     connect(ui->actionFlipHorizon,SIGNAL(triggered(bool)),this,SLOT(actionFlipVertical_clicked()));
+    m_pEqualGroup->addAction(ui->actionRotate);
+    m_pEqualGroup->addAction(ui->actionFilpLeft);
+    m_pEqualGroup->addAction(ui->actionFlipRight);
+    m_pEqualGroup->addAction(ui->actionFlipHorizon);
+    m_pEqualGroup->addAction(ui->actionFlipHorizon);
+    m_pEqualGroup->setEnabled(false);
 
 
     //字体部分的actions()
@@ -128,8 +159,15 @@ void HGraphEditorMainWindow::createActions()
     connect(ui->actionSameWidth,SIGNAL(triggered(bool)),this,SLOT(actionSameWidth_clicked()));
     connect(ui->actionSameHeight,SIGNAL(triggered(bool)),this,SLOT(actionSameHeight_clicked()));
     connect(ui->actionSame,SIGNAL(triggered(bool)),this,SLOT(actionSame_clicked()));
+    m_pEqualGroup->addAction(ui->actionSameWidth);
+    m_pEqualGroup->addAction(ui->actionSameHeight);
+    m_pEqualGroup->addAction(ui->actionSame);
+    m_pEqualGroup->setEnabled(false);
     connect(ui->actionHSameSpace,SIGNAL(triggered(bool)),this,SLOT(actionHSameSpace_clicked()));
     connect(ui->actionVSameSpace,SIGNAL(triggered(bool)),this,SLOT(actionVSameSpace_clicked()));
+    m_pDivideGroup->addAction(ui->actionHSameSpace);
+    m_pDivideGroup->addAction(ui->actionVSameSpace);
+    m_pDivideGroup->setEnabled(false);
 
     //关于
     connect(ui->actionAbout_A,SIGNAL(triggered(bool)),this,SLOT(about()));
@@ -205,6 +243,7 @@ void HGraphEditorMainWindow::initMainWindow()
     ui->gridLayout->addWidget(pGraphEditorView,0,1,1,1);
     pGraphEditorMgr->setGraphEditorView(pGraphEditorView);
     connect(pGraphEditorMgr->graphEditorScene(),SIGNAL(itemInserted(int)),this,SLOT(itemInserted(int)));
+    connect(pGraphEditorMgr->graphEditorScene(),SIGNAL(selectItemChanged(int)),this,SLOT(selectItemChanged(int)));
     connect(pGraphEditorMgr->graphEditorScene(),SIGNAL(mousePosChanged(const QPointF&)),this,SLOT(viewMousePosChanged(const QPointF&)));
 
 }
@@ -331,6 +370,34 @@ void HGraphEditorMainWindow::itemInserted(int type)
 {
     ui->actionSelect->setChecked(true);
     emit ui->actionSelect->triggered();
+}
+
+void HGraphEditorMainWindow::selectItemChanged(int nSelectMode)
+{
+    m_pFlipGroup->setEnabled(true);
+    m_pEditAndBringGroup->setEnabled(true);
+    if(nSelectMode == SELECT_MODE_NO)
+    {
+        m_pAlignGroup->setEnabled(false);
+        m_pEqualGroup->setEnabled(false);
+        m_pDivideGroup->setEnabled(false);
+        m_pFlipGroup->setEnabled(false);
+        m_pEditAndBringGroup->setEnabled(false);
+    }
+    else if(nSelectMode == SELECT_MODE_SINGLE)
+    {
+        m_pAlignGroup->setEnabled(false);
+        m_pEqualGroup->setEnabled(false);
+        m_pDivideGroup->setEnabled(false);
+    }
+    else if(nSelectMode == SELECT_MODE_2MULTIPLE || nSelectMode == SELECT_MODE_MULTIPLE)
+    {
+        m_pAlignGroup->setEnabled(true);
+        m_pEqualGroup->setEnabled(true);
+        m_pDivideGroup->setEnabled(false);
+        if(nSelectMode == SELECT_MODE_MULTIPLE)
+            m_pDivideGroup->setEnabled(true);
+    }
 }
 
 void HGraphEditorMainWindow::viewMousePosChanged(const QPointF &logPos)

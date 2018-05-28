@@ -334,14 +334,14 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
  {
      if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
          return;
-     //pGraphEditorMgr->graphEditorOp()->alignVCenter();
+     pGraphEditorMgr->graphEditorOp()->sizeHEqualSpace();
  }
 
  void HGraphEditorMainWindow::actionVSameSpace_clicked()
  {
      if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
          return;
-     //pGraphEditorMgr->graphEditorOp()->alignVCenter();
+     pGraphEditorMgr->graphEditorOp()->sizeVEqualSpace();
  }
 
  //关于

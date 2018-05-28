@@ -36,7 +36,7 @@ void HGraphEditorOp::copy()
         return;
     QByteArray bytes;
     QDataStream stream(&bytes,QIODevice::WriteOnly);
-    QList<QGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
+    QList<QGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->m_pIconSelectItems;
     stream<<itemSelectList.count();
     for(int i =0; i < itemSelectList.count();i++)
     {
@@ -105,6 +105,7 @@ void HGraphEditorOp::paste()
     }
 
     //有可能不是同一个画面拷贝，从A画面拷贝到B画面 ---huangw
+    //要加一个selectItem,全部放到selectItem里面
     foreach(HIconGraphicsItem* item,copyItemList)
     {
         item->setSelected(true);
@@ -125,7 +126,7 @@ void HGraphEditorOp::del()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
         return;
-    QList<QGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
+    QList<QGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->m_pIconSelectItems;//selectedItems();
     QList<HBaseObj*> objList;
     foreach(QGraphicsItem* item,itemSelectList)
     {
@@ -216,23 +217,28 @@ void HGraphEditorOp::groupObj()
     QList<QGraphicsItem*> items = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
     if(items.count() < 2) return;
 
+    //1.增加一个group
     HBaseObj* pGroupObj = m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumGroup);//pIconMgr->getIconTemplate()->getSymbol()->newObj(enumGroup);
     QRectF groupRect;
     for(int i = 0; i < items.count();i++)
     {
         HIconGraphicsItem* item = (HIconGraphicsItem*)items.at(i);
-        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)
+        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)//去掉selectItem
             continue;
         HBaseObj* pObj = item->getItemObj();
         groupRect = groupRect.united(item->rect());
         if(item->type() == enumGroup)
         {
             HGroupObj* pDelGroup = (HGroupObj*)pObj;
-            while(!pDelGroup->isEmpty())
+            items.removeOne(item);//注意删除后i--
+            i--;
+            m_pGraphEditorMgr->graphEditorScene()->removeItem(item);//从scene中删除
+            while(!pDelGroup->isEmpty())//加到group里面
             {
                 HBaseObj* pObj = (HBaseObj*)pDelGroup->takeFirst();
                 ((HGroupObj*)pGroupObj)->addObj(pObj);
             }
+            m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->removeObj(pDelGroup);//graph删除
             delete pDelGroup;
             pDelGroup = NULL;
         }
@@ -242,7 +248,7 @@ void HGraphEditorOp::groupObj()
             ((HGroupObj*)pGroupObj)->addObj(pObj);
         }
     }
-    //矩形
+    //2.增加groupItem
     HIconItemGroup *itemGroup = new HIconItemGroup(QRectF(0,0,groupRect.width(),groupRect.height()));
     itemGroup->setFlag(QGraphicsItem::ItemIsSelectable,true);
     m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pGroupObj);
@@ -254,12 +260,14 @@ void HGraphEditorOp::groupObj()
             continue;
         m_pGraphEditorMgr->graphEditorScene()->removeItem(item);
         HBaseObj* pObj = ((HIconGraphicsItem*)item)->getItemObj();
-        pObj->setIconGraphicsItem(NULL);
+        if(pObj)
+            pObj->setIconGraphicsItem(NULL);
         delete item;
         item = NULL;
     }
     m_pGraphEditorMgr->graphEditorScene()->addItem(itemGroup);
     itemGroup->setSelected(true);
+    //3.刷新一下选择区域
     if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
     {
         m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
@@ -291,7 +299,8 @@ void HGraphEditorOp::ungroupObj()
             m_pGraphEditorMgr->graphEditorScene()->addIconGraphicsItem(pObj,true);
         }
         m_pGraphEditorMgr->graphEditorScene()->removeItem(item);
-        m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->delObj(pObj);
+        if(pGroupObj)
+            m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->delObj(pGroupObj);
         delete item;
         item = NULL;
     }
@@ -607,15 +616,154 @@ void HGraphEditorOp::sizeEqualComplete()
     equalAlgorithm();
 }
 
+bool caseInsensitiveLessThan(const HIconGraphicsItem* s1, const HIconGraphicsItem* s2)
+{
+    return s1->rect().x() < s2->rect().x();
+}
+
 //横向等间距
 void HGraphEditorOp::sizeHEqualSpace()
 {
+    //1.先求出等分的距离
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
+        return;
+    HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
+    QPointF benchMarkPt = QPoint(0,0);
+    qreal fSelectlength = 0.0,fIconlength = 0.0;
+    QRectF rectUnit;
+    int nCount = 0;
+    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    {
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        if(iconItem && iconItem->bBenchmark && iconItem->bMulSelect)
+        {
+            benchMarkPt = iconItem->rect().topLeft();
+        }
+        rectUnit = rectUnit.united(iconItem->rect());
+        fIconlength += iconItem->rect().width();
+        nCount++;
+    }
+    fSelectlength = rectUnit.width();
+    if(fSelectlength < fIconlength)
+         return;
+    //2.计算出item新的位置
+    qreal equalX = (fSelectlength - fIconlength)/(nCount-1);
+    qSort(graphScene->m_pIconSelectItems.begin(),graphScene->m_pIconSelectItems.end(),caseInsensitiveLessThan);
+    HIconGraphicsItem *iconFirstItem = graphScene->m_pIconSelectItems.first();
+    fIconlength = 0;
+    fIconlength += iconFirstItem->rect().width();
+    for(int i = 1; i < graphScene->m_pIconSelectItems.count();i++)
+    {
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        if(!iconItem) continue;
+        HBaseObj* pObj = iconItem->getItemObj();
+        ushort shapeType = pObj->getShapeType();
+        if(shapeType == enumRectangle || shapeType == enumEllipse || shapeType == enumCircle || shapeType == enumPie || shapeType == enumText
+                || shapeType == enumArc || shapeType == enumPolygon || shapeType == enumPolyline || shapeType == enumComplex)
+        {
+            QRectF iconRect = iconItem->rect();
+            QRectF newRect = iconRect;
+            newRect.setLeft(iconFirstItem->rect().left() + fIconlength + i*equalX);
+            newRect.setWidth(iconRect.width());
+            fIconlength += iconRect.width();
+            iconItem->setRect(newRect);
+        }
+        else if(shapeType == enumLine)
+        {
+            HIconLineItem* lineItem = (HIconLineItem*)iconItem;
+            QPointF pt1(((HLine*)lineItem->getItemObj())->getHeadPoint());
+            QPointF pt2(((HLine*)lineItem->getItemObj())->getTailPoint());
+            QPointF pt11,pt22;
+            if(pt1.x() < pt2.x())
+            {
+                pt11.setX(iconFirstItem->rect().left() + fIconlength + i*equalX);
+                pt11.setY(pt1.y());
+                pt22.setX(pt11.x() + (pt2.x() - pt1.x()));
+                pt22.setY(pt2.y());
+            }
+            else
+            {
+                pt22.setX(iconFirstItem->rect().left() + fIconlength + i*equalX);
+                pt22.setY(pt2.y());
+                pt11.setX(pt22.x() + (pt1.x() - pt2.x()));
+                pt11.setY(pt1.y());
+            }
+            fIconlength += lineItem->rect().width();
+            QLineF newLineF = QLineF(pt11,pt22);
+            lineItem->setLine(newLineF);
+        }
+    }
 
+    m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 }
 
 //纵向等间距
 void HGraphEditorOp::sizeVEqualSpace()
 {
+    //1.先求出等分的距离
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
+        return;
+    HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
+    qreal fSelectlength = 0.0,fIconlength = 0.0;
+    QRectF rectUnit;
+    int nCount = 0;
+    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    {
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        rectUnit = rectUnit.united(iconItem->rect());
+        fIconlength += iconItem->rect().height();
+        nCount++;
+    }
+    fSelectlength = rectUnit.height();
+    if(fSelectlength < fIconlength)
+         return;
+    //2.计算出item新的位置
+    qreal equalY = (fSelectlength - fIconlength)/(nCount-1);
+    qSort(graphScene->m_pIconSelectItems.begin(),graphScene->m_pIconSelectItems.end(),caseInsensitiveLessThan);
+    HIconGraphicsItem *iconFirstItem = graphScene->m_pIconSelectItems.first();
+    fIconlength = 0;
+    fIconlength += iconFirstItem->rect().height();
+    for(int i = 1; i < graphScene->m_pIconSelectItems.count();i++)
+    {
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        if(!iconItem) continue;
+        HBaseObj* pObj = iconItem->getItemObj();
+        ushort shapeType = pObj->getShapeType();
+        if(shapeType == enumRectangle || shapeType == enumEllipse || shapeType == enumCircle || shapeType == enumPie || shapeType == enumText
+                || shapeType == enumArc || shapeType == enumPolygon || shapeType == enumPolyline || shapeType == enumComplex)
+        {
+            QRectF iconRect = iconItem->rect();
+            QRectF newRect = iconRect;
+            newRect.setTop(iconFirstItem->rect().top() + fIconlength + i*equalY);
+            newRect.setHeight(iconRect.height());
+            fIconlength += iconRect.height();
+            iconItem->setRect(newRect);
+        }
+        else if(shapeType == enumLine)
+        {
+            HIconLineItem* lineItem = (HIconLineItem*)iconItem;
+            QPointF pt1(((HLine*)lineItem->getItemObj())->getHeadPoint());
+            QPointF pt2(((HLine*)lineItem->getItemObj())->getTailPoint());
+            QPointF pt11,pt22;
+            if(pt1.y() < pt2.y())
+            {
+                pt11.setY(iconFirstItem->rect().top() + fIconlength + i*equalY);
+                pt11.setX(pt1.x());
+                pt22.setY(pt11.y() + (pt2.y() - pt1.y()));
+                pt22.setX(pt2.x());
+            }
+            else
+            {
+                pt22.setY(iconFirstItem->rect().top() + fIconlength + i*equalY);
+                pt22.setX(pt2.x());
+                pt11.setY(pt22.y() + (pt1.y() - pt2.y()));
+                pt11.setX(pt1.x());
+            }
+            fIconlength += lineItem->rect().width();
+            QLineF newLineF = QLineF(pt11,pt22);
+            lineItem->setLine(newLineF);
+        }
+    }
 
 }
 
@@ -712,15 +860,38 @@ void HGraphEditorOp::equalAlgorithm()
                 QPointF pt1(((HLine*)lineItem->getItemObj())->getHeadPoint());
                 QPointF pt2(((HLine*)lineItem->getItemObj())->getTailPoint());
                 qreal dx = 0,dy = 0;
+                if(m_Equalway == IconSize::EqualWidth || m_Equalway == IconSize::EqualComplete)
+                {
+                    if(pt1.x() < pt2.x())
+                    {
+                        dx = pt1.x() + benchMarkPt.x();//new width
+                        pt2.setX(dx);
+                    }
+                    else if(pt1.x() > pt2.x())
+                    {
+                        dx = pt2.x() + benchMarkPt.x();
+                        pt1.setX(dx);
 
+                    }
+                }
 
-
-                QLineF newLineF = lineItem->line().translated(dx,dy);
+                if(m_Equalway == IconSize::EqualHeight || m_Equalway == IconSize::EqualComplete)
+                {
+                    if(pt1.y() < pt2.y())
+                    {
+                        dy = pt1.y() + benchMarkPt.y();//new width
+                        pt2.setY(dy);
+                    }
+                    else if(pt1.y() > pt2.y())
+                    {
+                        dy = pt2.y() + benchMarkPt.y();
+                        pt1.setY(dy);
+                    }
+                }
+                QLineF newLineF = QLineF(pt1,pt2);
                 lineItem->setLine(newLineF);
             }
         }
     }
-
-    //还要刷新一下selection 才可以
     m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 }

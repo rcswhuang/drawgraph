@@ -321,12 +321,15 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         setSelectionArea(path,Qt::ContainsItemShape,transform);
     }
 
-    //m_pIconSelectItems.clear();
+    m_pIconSelectItems.clear();
     foreach (QGraphicsItem *item, selectedItems())
     {
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
         if(!pItem || pItem->type() == enumMulSelection|| pItem->type() == enumSelection)
+        {
+            m_pIconSelectItems.removeOne(pItem);
             continue;
+        }
         if(m_pIconSelectItems.indexOf(pItem)>=0) continue;
         m_pIconSelectItems.append(pItem);
     }
@@ -350,6 +353,7 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
             nIndex++;
             if(nIndex == 0)
                 item->bBenchmark = true;
+            HBaseObj* pObj = item->getItemObj();
             select->pObjList.append(item->getItemObj());
         }
     }

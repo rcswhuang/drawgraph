@@ -36,14 +36,22 @@ void HGraphEditorOp::copy()
         return;
     QByteArray bytes;
     QDataStream stream(&bytes,QIODevice::WriteOnly);
-    QList<QGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->m_pIconSelectItems;
+    QList<HIconGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->getSelectedItems();
     stream<<itemSelectList.count();
+    quint8 btType = 0;
+    QString s = "";
     for(int i =0; i < itemSelectList.count();i++)
     {
         HBaseObj* pObj = qgraphicsitem_cast<HIconGraphicsItem*>(itemSelectList[i])->getItemObj();
         if(!pObj) continue;
-        stream<<(quint8)pObj->getShapeType();
-        HBaseObj* pNewObj = m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(pObj->getShapeType());
+        btType = (quint8)pObj->getShapeType();
+        stream<<btType;
+        if(enumComplex == btType)
+        {
+            s = ((HIconObj*)pObj)->getUuid();
+            stream<<s;
+        }
+        HBaseObj* pNewObj = m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(pObj->getShapeType(),s);
         if(!pNewObj) continue;
         pObj->clone(pNewObj);//需要clone吗？
         pNewObj->writeData(&stream);
@@ -79,13 +87,27 @@ void HGraphEditorOp::paste()
     int num;
     stream>>num;
     quint8 nType;
+    QString s;
     QList<HBaseObj*> objList;
     for(int i = 0; i < num;i++)
     {
         stream>>nType;
-        HBaseObj *pObj = m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(nType);
+        if(enumComplex == nType)
+        {
+            stream>>s;
+        }
+        HBaseObj *pObj = m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(nType,s);
         if(!pObj) continue;
         pObj->readData(&stream);
+        if(enumComplex == nType)
+        {
+            HIconObj* pObj1 = (HIconObj*)pObj;
+            QSizeF pt = pObj1->iconTemplate()->getDefaultSize();
+            double w1 = pObj1->getRectWidth()/(pt.width()*20);
+            double h1 = pObj1->getRectHeight()/(pt.height()*20);
+            pObj1->resetRectPoint(pObj1->getTopLeft(),QPointF(-pt.width()*10,-pt.height()*10));
+            pObj1->resize(w1,h1);
+        }
         objList.append(pObj);
         HIconGraphicsItem* item = m_pGraphEditorMgr->graphEditorScene()->addIconGraphicsItem(pObj,true);
         if(!item)
@@ -103,21 +125,17 @@ void HGraphEditorOp::paste()
     {
         item->setSelected(false);
     }
+    m_pGraphEditorMgr->graphEditorScene()->clearSeleteItem();
 
-    //有可能不是同一个画面拷贝，从A画面拷贝到B画面 ---huangw
-    //要加一个selectItem,全部放到selectItem里面
-    foreach(HIconGraphicsItem* item,copyItemList)
+    foreach(HIconGraphicsItem* item,copyItemList)//有可能不是同一个画面拷贝，从A画面拷贝到B画面 ---huangw
     {
         item->setSelected(true);
         QPointF pt(10,10);
-        item->moveBy(pt.x(),pt.y());
-        item->getItemObj()->moveBy(pt.x(),pt.y());
-    }
+        item->moveItemBy(pt.x(),pt.y());
+         m_pGraphEditorMgr->graphEditorScene()->addItemInScene(item);
+    } 
+    m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 
-
-    if(m_pGraphEditorMgr->graphEditorView())
-        m_pGraphEditorMgr->graphEditorView()->refresh();
-    //iconScene()->update(getLogicRect());
     //HPasteIconCommand* pasteIconCommand = new HPasteIconCommand(pIconMgr,objList);
     //pIconMgr->getIconUndoStack()->push(pasteIconCommand);
 }
@@ -126,17 +144,23 @@ void HGraphEditorOp::del()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
         return;
-    QList<QGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->m_pIconSelectItems;//selectedItems();
+    QList<QGraphicsItem*> itemSelectList = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
     QList<HBaseObj*> objList;
     foreach(QGraphicsItem* item,itemSelectList)
     {
         if(!item) continue;
+        //选择框要删除
+        if(((HIconGraphicsItem*)item)->type() == enumSelection)
+        {
+            continue;
+        }
         HBaseObj* pObj = ((HIconGraphicsItem*)item)->getItemObj();
         pObj->setDeleted(true);
         pObj->setVisible(false);
         item->setVisible(false);
         objList.append(pObj);
     }
+    m_pGraphEditorMgr->graphEditorScene()->clearSeleteItem();//必须要清除
     //HDelIconCommand *delIconCommand = new HDelIconCommand(pIconMgr,objList);
     //pIconMgr->getIconUndoStack()->push(delIconCommand);
 }
@@ -159,15 +183,15 @@ void HGraphEditorOp::bringToTop()
         return;
 
     int maxZValue = 0;
-    QList<QGraphicsItem*> itemList = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
+    QList<HIconGraphicsItem*> itemList = m_pGraphEditorMgr->graphEditorScene()->getSelectedItems();
     if(itemList.count() > 1) return;
-    QGraphicsItem* pItem = itemList.at(0);
+    HIconGraphicsItem* pItem = itemList.at(0);
     QList<QGraphicsItem*> collItemList = pItem->collidingItems();
     if(collItemList.count()<=0) return;
     maxZValue = collItemList.at(0)->zValue();
     for(int i = 1; i < collItemList.count();i++)
     {
-        QGraphicsItem* item = collItemList[i];
+        HIconGraphicsItem* item = (HIconGraphicsItem*)collItemList[i];
         if(item->zValue() > maxZValue)
             maxZValue = item->zValue();
     }
@@ -187,15 +211,15 @@ void HGraphEditorOp::bringToBottom()
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
         return;
     int minZValue = 0;
-    QList<QGraphicsItem*> itemList = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
+    QList<HIconGraphicsItem*> itemList = m_pGraphEditorMgr->graphEditorScene()->getSelectedItems();
     if(itemList.count() > 1) return;
-    QGraphicsItem* pItem = itemList.at(0);
+    HIconGraphicsItem* pItem = itemList.at(0);
     QList<QGraphicsItem*> collItemList = pItem->collidingItems();
     if(collItemList.count()<=0) return;
     minZValue = (int)(collItemList.at(0)->zValue());
     for(int i = 1; i < collItemList.count();i++)
     {
-        QGraphicsItem* item = collItemList[i];
+        HIconGraphicsItem* item = (HIconGraphicsItem*)collItemList[i];
         if(item->zValue() < minZValue)
             minZValue = item->zValue();
     }
@@ -214,7 +238,7 @@ void HGraphEditorOp::groupObj()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
         return;
-    QList<QGraphicsItem*> items = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
+    QList<HIconGraphicsItem*> items = m_pGraphEditorMgr->graphEditorScene()->getSelectedItems();
     if(items.count() < 2) return;
 
     //1.增加一个group
@@ -223,8 +247,6 @@ void HGraphEditorOp::groupObj()
     for(int i = 0; i < items.count();i++)
     {
         HIconGraphicsItem* item = (HIconGraphicsItem*)items.at(i);
-        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)//去掉selectItem
-            continue;
         HBaseObj* pObj = item->getItemObj();
         groupRect = groupRect.united(item->rect());
         if(item->type() == enumGroup)
@@ -232,7 +254,7 @@ void HGraphEditorOp::groupObj()
             HGroupObj* pDelGroup = (HGroupObj*)pObj;
             items.removeOne(item);//注意删除后i--
             i--;
-            m_pGraphEditorMgr->graphEditorScene()->removeItem(item);//从scene中删除
+            m_pGraphEditorMgr->graphEditorScene()->removeItemInScene(item);//从scene中删除
             while(!pDelGroup->isEmpty())//加到group里面
             {
                 HBaseObj* pObj = (HBaseObj*)pDelGroup->takeFirst();
@@ -254,11 +276,9 @@ void HGraphEditorOp::groupObj()
     m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pGroupObj);
     itemGroup->setItemObj(pGroupObj);
     itemGroup->setRect(groupRect);
-    foreach(QGraphicsItem* item,items)
+    foreach(HIconGraphicsItem* item,items)
     {
-        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)
-            continue;
-        m_pGraphEditorMgr->graphEditorScene()->removeItem(item);
+        m_pGraphEditorMgr->graphEditorScene()->removeItemInScene(item);
         HBaseObj* pObj = ((HIconGraphicsItem*)item)->getItemObj();
         if(pObj)
             pObj->setIconGraphicsItem(NULL);
@@ -267,13 +287,15 @@ void HGraphEditorOp::groupObj()
     }
     m_pGraphEditorMgr->graphEditorScene()->addItem(itemGroup);
     itemGroup->setSelected(true);
-    //3.刷新一下选择区域
-    if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
+    //3.刷新一下选择区域,不能删除吗？--huangw
+    /*if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
     {
         m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
         m_pGraphEditorMgr->graphEditorScene()->select->setRect(QRectF(0,0,0,0));
         m_pGraphEditorMgr->graphEditorScene()->select->setSelected(false);
-    }
+    }*/
+    m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
+    //m_pGraphEditorMgr->graphEditorView()->refresh();
     m_pGraphEditorMgr->setDrawShape(enumNo);
     m_pGraphEditorMgr->setSelectMode(enumSelect);
 }
@@ -283,12 +305,10 @@ void HGraphEditorOp::ungroupObj()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
         return;
-    QList<QGraphicsItem*> items = m_pGraphEditorMgr->graphEditorScene()->selectedItems();
+    QList<HIconGraphicsItem*> items = m_pGraphEditorMgr->graphEditorScene()->getSelectedItems();
     for(int i = 0; i < items.count();i++)
     {
         HIconGraphicsItem* item = (HIconGraphicsItem*)items.at(i);
-        if(!item || item->type() == enumMulSelection|| item->type() == enumSelection)
-            continue;
         if(item->type() != enumGroup) continue;
         HBaseObj* pObj = item->getItemObj();
         HGroupObj* pGroupObj = (HGroupObj*)pObj;
@@ -298,19 +318,21 @@ void HGraphEditorOp::ungroupObj()
             m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
             m_pGraphEditorMgr->graphEditorScene()->addIconGraphicsItem(pObj,true);
         }
-        m_pGraphEditorMgr->graphEditorScene()->removeItem(item);
+        m_pGraphEditorMgr->graphEditorScene()->removeItemInScene(item);
         if(pGroupObj)
             m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->delObj(pGroupObj);
         delete item;
         item = NULL;
     }
 
+    /*
     if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
     {
         m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
         m_pGraphEditorMgr->graphEditorScene()->select->setRect(QRectF(0,0,0,0));
         m_pGraphEditorMgr->graphEditorScene()->select->setSelected(false);
-    }
+    }*/
+    m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 
     m_pGraphEditorMgr->setDrawShape(enumNo);
     m_pGraphEditorMgr->setSelectMode(enumSelect);
@@ -325,9 +347,9 @@ bool HGraphEditorOp::getbenchMarkPoint(QPointF& pt)
     //找到标杆
     QPointF benchMarkPt = QPoint(0,0);
     bool bok = false;
-    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 0; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         if(iconItem && iconItem->bBenchmark && iconItem->bMulSelect)
         {
             HBaseObj* pObj = iconItem->getItemObj();
@@ -420,9 +442,9 @@ void HGraphEditorOp::alignAlgorithm()
     if(!getbenchMarkPoint(benchMarkPt))
         return;
     HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
-    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 0; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         if(iconItem && !iconItem->bBenchmark && iconItem->bMulSelect)
         {
             HBaseObj* pObj = iconItem->getItemObj();
@@ -632,9 +654,9 @@ void HGraphEditorOp::sizeHEqualSpace()
     qreal fSelectlength = 0.0,fIconlength = 0.0;
     QRectF rectUnit;
     int nCount = 0;
-    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 0; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         if(iconItem && iconItem->bBenchmark && iconItem->bMulSelect)
         {
             benchMarkPt = iconItem->rect().topLeft();
@@ -648,13 +670,13 @@ void HGraphEditorOp::sizeHEqualSpace()
          return;
     //2.计算出item新的位置
     qreal equalX = (fSelectlength - fIconlength)/(nCount-1);
-    qSort(graphScene->m_pIconSelectItems.begin(),graphScene->m_pIconSelectItems.end(),caseInsensitiveLessThan);
-    HIconGraphicsItem *iconFirstItem = graphScene->m_pIconSelectItems.first();
+    qSort(graphScene->m_pIconMulSelectItemsList.begin(),graphScene->m_pIconMulSelectItemsList.end(),caseInsensitiveLessThan);
+    HIconGraphicsItem *iconFirstItem = graphScene->m_pIconMulSelectItemsList.first();
     fIconlength = 0;
     fIconlength += iconFirstItem->rect().width();
-    for(int i = 1; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 1; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         if(!iconItem) continue;
         HBaseObj* pObj = iconItem->getItemObj();
         ushort shapeType = pObj->getShapeType();
@@ -707,9 +729,9 @@ void HGraphEditorOp::sizeVEqualSpace()
     qreal fSelectlength = 0.0,fIconlength = 0.0;
     QRectF rectUnit;
     int nCount = 0;
-    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 0; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         rectUnit = rectUnit.united(iconItem->rect());
         fIconlength += iconItem->rect().height();
         nCount++;
@@ -719,13 +741,13 @@ void HGraphEditorOp::sizeVEqualSpace()
          return;
     //2.计算出item新的位置
     qreal equalY = (fSelectlength - fIconlength)/(nCount-1);
-    qSort(graphScene->m_pIconSelectItems.begin(),graphScene->m_pIconSelectItems.end(),caseInsensitiveLessThan);
-    HIconGraphicsItem *iconFirstItem = graphScene->m_pIconSelectItems.first();
+    qSort(graphScene->m_pIconMulSelectItemsList.begin(),graphScene->m_pIconMulSelectItemsList.end(),caseInsensitiveLessThan);
+    HIconGraphicsItem *iconFirstItem = graphScene->m_pIconMulSelectItemsList.first();
     fIconlength = 0;
     fIconlength += iconFirstItem->rect().height();
-    for(int i = 1; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 1; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         if(!iconItem) continue;
         HBaseObj* pObj = iconItem->getItemObj();
         ushort shapeType = pObj->getShapeType();
@@ -774,9 +796,9 @@ bool HGraphEditorOp::getbenchMarkSize(QPointF& pt)
     HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
     QPointF benchMarkPt = QPoint(0,0);
     bool bok = false;
-    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 0; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         if(iconItem && iconItem->bBenchmark && iconItem->bMulSelect)
         {
             HBaseObj* pObj = iconItem->getItemObj();
@@ -821,9 +843,9 @@ void HGraphEditorOp::equalAlgorithm()
     if(!getbenchMarkSize(benchMarkPt))
         return;
     HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
-    for(int i = 0; i < graphScene->m_pIconSelectItems.count();i++)
+    for(int i = 0; i < graphScene->m_pIconMulSelectItemsList.count();i++)
     {
-        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconSelectItems[i];
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
         if(iconItem && !iconItem->bBenchmark && iconItem->bMulSelect)
         {
             HBaseObj* pObj = iconItem->getItemObj();

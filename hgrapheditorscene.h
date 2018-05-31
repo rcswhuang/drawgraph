@@ -35,9 +35,13 @@ public:
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);
     bool getItemAt(const QPointF &pos);
-    bool calcSelectedItem(const QRectF &rectF,bool bAreaSelect = true);
-    QRectF getSelectedItemsRect();
-    void refreshSelectedItemRect();
+    quint8 calcSelectedItem(const QRectF &rectF,bool bAreaSelect = true);
+    void removeItemInScene(HIconGraphicsItem* item);
+    void clearSeleteItem();//清除select操作
+    QList<HIconGraphicsItem*> getSelectedItems();//不带选择框
+    QRectF getMulSelectedItemsRect();
+    void refreshSelectedItemRect(const QRectF &rectF = QRectF(0,0,0,0),bool bAreaSelect = false);
+    void addItemInScene(HIconGraphicsItem* item);
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -76,7 +80,7 @@ public:
 
 public:
     QList<HIconGraphicsItem*> dragMoveItems;
-    QList<HIconGraphicsItem*> m_pIconSelectItems;
+    QList<HIconGraphicsItem*> m_pIconMulSelectItemsList; //多选item列表
 };
 
 #endif // HGRAPHEDITORSCENE_H

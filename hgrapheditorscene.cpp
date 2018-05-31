@@ -25,6 +25,9 @@
 #include "hgraphpage.h"
 #include <QMimeData>
 #include <QDebug>
+#define TYPE_SELECT_NONE     0x00
+#define TYPE_SELECT_SINGLE   0x01
+#define TYPE_SELECT_MULTIPLE 0x02
 HGraphEditorScene::HGraphEditorScene(HGraphEditorMgr *mgr)
     :pGraphEditorMgr(mgr)
 {
@@ -66,6 +69,22 @@ void HGraphEditorScene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->restore();
 }
 
+//获取选择状态
+QList<HIconGraphicsItem*> HGraphEditorScene::getSelectedItems()
+{
+    QList<HIconGraphicsItem*> pList;
+    foreach (QGraphicsItem *item, selectedItems())
+    {
+        HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
+        if(!pItem || pItem->type() == enumSelection)
+        {
+            continue;
+        }
+        pList.append(pItem);
+    }
+    return pList;
+}
+
 void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if(mouseEvent->button() != Qt::LeftButton)
@@ -78,7 +97,7 @@ void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         if(!getItemAt(prePoint))
         {
-            pGraphEditorMgr->setDrawShape(enumMulSelection);
+            pGraphEditorMgr->setDrawShape(enumSelection);
             selectMode = enumDraw;
         }
         else
@@ -156,15 +175,15 @@ void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         QRectF newRect = QRectF(prePoint,curPoint).normalized();
         text->setRect(newRect);
     }
-    else if(drawShape == enumMulSelection && select != 0)
+    else if(drawShape == enumSelection && select != 0)
     {
         QRectF newRect = QRectF(prePoint,curPoint).normalized();
         select->setRect(newRect.normalized());
     }
     //判断当前是否处于选择状态
-    if(drawShape == enumSelection)
+    if(pGraphEditorMgr->getSelectMode() == enumSelect)
     {
-        setItemCursor(mouseEvent);
+        //setItemCursor(mouseEvent);
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
@@ -176,31 +195,20 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if(!pGraphEditorMgr)
         return;
     bool multiSelect = (mouseEvent->modifiers() & Qt::ControlModifier) != 0;
-    if (multiSelect)
+    if(multiSelect)
     {
         if(!select)
         {
             pGraphEditorMgr->setSelectMode(enumDraw);
-            pGraphEditorMgr->setDrawShape(enumMulSelection);
+            pGraphEditorMgr->setDrawShape(enumSelection);
             newIconGraphicsObj();
         }
         QGraphicsScene::mouseReleaseEvent(mouseEvent);
-        if(calcSelectedItem(QRectF(0,0,0,0),false))
-        {
-            select->setRect(getSelectedItemsRect());
-            select->setFlag(QGraphicsItem::ItemIsSelectable,true);
-            select->setSelected(true);
-        }
-        else
-        {
-            select->setRect(QRectF(0,0,0,0));
-            select->setSelected(false);
-        }
+        refreshSelectedItemRect();
         pGraphEditorMgr->setSelectMode(enumSelect);
         pGraphEditorMgr->setDrawShape(enumNo);
         return;
     }
-
     DRAWSHAPE drawShape = pGraphEditorMgr->getDrawShape();
     if(drawShape == enumLine && line != 0)
     {
@@ -252,67 +260,58 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         return QGraphicsScene::mouseReleaseEvent(mouseEvent);;
     }
-    else if(drawShape == enumMulSelection && select != 0)
+    else if(drawShape == enumSelection && select != 0)
     {
         QRectF rectF = select->rect();
-        if(calcSelectedItem(rectF))
-        {
-            select->setRect(getSelectedItemsRect());
-            select->setFlag(QGraphicsItem::ItemIsSelectable,true);
-            select->setSelected(true);
-        }
-        else
-        {
-            if(select)
-            {
-                m_pIconSelectItems.clear();
-                removeItem(select);
-                delete select;
-                select = 0;
-            }
-        }
+        refreshSelectedItemRect(rectF,true);
     }
     pGraphEditorMgr->setDrawShape(enumNo);
     pGraphEditorMgr->setSelectMode(enumSelect);
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
-//改为判断删除select,表示重新选择
+/*
+ * m_pIconMulSelectItemsList 说明:scene自带的selectedItems没有顺序
+ * 为了对齐，大小等功能必须有一个带顺序的(有一个标杆，其他参考这个标杆)
+ * 为了统一，其他比如组合解除组合，拷贝复制粘贴等其他功能都是用m_pIconMulSelectItemsList来实现
+ * 缺点就是m_pIconMulSelectItemsList必须要自己来维护
+*/
 bool HGraphEditorScene::getItemAt(const QPointF &pos)
 {
     //判断当前点位置是否有item被选择
     QTransform transform;
     QGraphicsItem* item = itemAt(pos,transform);
-    if(item)
+    if(item)//点选择到item,既是一般item也包含select项
     {
+        //如果点落入select所在区域就刷新，否则删除select
         if(select){
-            if(select == item)
+            QRectF rectF = select->rect();
+            if(rectF.contains(pos))
+            {
                 return true;
+            }
+            else
+            {
+                clearSeleteItem();
+            }
+
         }
+        addItemInScene((HIconGraphicsItem*)item);
         return true;
     }
     else
     {
-        if(select)
-        {
-            foreach (HIconGraphicsItem *item, m_pIconSelectItems)
-            {
-                if(!item) continue;
-                item->bBenchmark = false;
-                item->bMulSelect = false;
-                item->setSelected(false);
-            }
-            m_pIconSelectItems.clear();
-            removeItem(select);
-            delete select;
-            select = 0;
-        }
+        clearSeleteItem();
     }
     return false;
 }
 
-bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
+/*
+ * 计算选择的Item，返回选择结果，包含无选择，单选，多选
+*/
+quint8 HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
 {
+    quint8 nResult = SELECT_MODE_MULTIPLE;
     if(bAreaSelect)//区域选择为真，ctrl选择为假
     {
         QPainterPath path;
@@ -321,25 +320,20 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         setSelectionArea(path,Qt::ContainsItemShape,transform);
     }
 
-    m_pIconSelectItems.clear();
-    foreach (QGraphicsItem *item, selectedItems())
+    //m_pIconMulSelectItemsList.clear();//主要是手动选择标杆的问题,和组合的问题
+    foreach(HIconGraphicsItem *item, getSelectedItems())
     {
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
-        if(!pItem || pItem->type() == enumMulSelection|| pItem->type() == enumSelection)
-        {
-            m_pIconSelectItems.removeOne(pItem);
-            continue;
-        }
-        if(m_pIconSelectItems.indexOf(pItem)>=0) continue;
-        m_pIconSelectItems.append(pItem);
+        if(m_pIconMulSelectItemsList.indexOf(pItem)>=0) continue;
+        m_pIconMulSelectItemsList.append(pItem);
     }
     bool bMulSelected = true;
-    if(m_pIconSelectItems.count() <= 1)
+    if(m_pIconMulSelectItemsList.count() <= 1)
         bMulSelected = false;
     int nIndex = (int)-1;
     if(select)
         select->clear();
-    foreach (HIconGraphicsItem *item,m_pIconSelectItems)
+    foreach (HIconGraphicsItem *item,m_pIconMulSelectItemsList)
     {
         if(!bMulSelected)
         {
@@ -353,27 +347,33 @@ bool HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
             nIndex++;
             if(nIndex == 0)
                 item->bBenchmark = true;
-            HBaseObj* pObj = item->getItemObj();
             select->pObjList.append(item->getItemObj());
         }
     }
 
     //so low......
     if(nIndex == (int)-1)
+    {
+        nResult = SELECT_MODE_NO;
         emit selectItemChanged(SELECT_MODE_NO);
+    }
     else if(nIndex == 0)
+    {
+        nResult = SELECT_MODE_SINGLE;
         emit selectItemChanged(SELECT_MODE_SINGLE);
+    }
     else if(nIndex == 1)
         emit selectItemChanged(SELECT_MODE_2MULTIPLE);
+
     else
         emit selectItemChanged(SELECT_MODE_MULTIPLE);
-    return bMulSelected;
+    return nResult;
 }
 
-QRectF HGraphEditorScene::getSelectedItemsRect()
+QRectF HGraphEditorScene::getMulSelectedItemsRect()
 {
     QRectF rectF(0,0,0,0);
-    foreach (HIconGraphicsItem *item, m_pIconSelectItems)
+    foreach (HIconGraphicsItem *item, m_pIconMulSelectItemsList)
     {
         if(!item )
             continue;
@@ -382,11 +382,58 @@ QRectF HGraphEditorScene::getSelectedItemsRect()
     return rectF.adjusted(-5,-5,5,5);
 }
 
-void HGraphEditorScene::refreshSelectedItemRect()
+//对scene之外统一接口,针对select及其选择对象进行刷新
+void HGraphEditorScene::refreshSelectedItemRect(const QRectF &rectF,bool bAreaSelect)
 {
-    QRectF rectF = getSelectedItemsRect();
-    if(select)
+    if(!select)
+    {
+        pGraphEditorMgr->setSelectMode(enumDraw);
+        pGraphEditorMgr->setDrawShape(enumSelection);
+        newIconGraphicsObj();
+        pGraphEditorMgr->setSelectMode(enumSelect);
+        pGraphEditorMgr->setDrawShape(enumNo);
+    }
+    quint8 bResult = calcSelectedItem(rectF,bAreaSelect);
+    if(SELECT_MODE_NO == bResult)
+    {
+        clearSeleteItem();
+        return;
+    }
+    else if(SELECT_MODE_SINGLE == bResult)
+    {
+        select->setRect(QRectF(0,0,0,0));
+        select->setSelected(false);
+    }
+    else
+    {
+        QRectF rectF = getMulSelectedItemsRect();
         select->setRect(rectF);
+        select->setFlag(QGraphicsItem::ItemIsSelectable,true);
+        select->setSelected(true);
+    }
+}
+
+/*
+ * 参数的作用:如果重新操作新的选择区域，则必须要删除select，重新构建
+ * 如果在复制粘贴等操作中，将select移到新的区域，此时不需删除select，只要将多选清除掉即可
+ * 但在删除过程中，由于对象被删除，此时select已经没有存在的意义，所以释放
+*/
+void HGraphEditorScene::clearSeleteItem()
+{
+    if(select)
+    {
+        foreach (HIconGraphicsItem *item, m_pIconMulSelectItemsList)
+        {
+            if(!item) continue;
+            item->bBenchmark = false;
+            item->bMulSelect = false;
+            item->setSelected(false);
+        }  
+        removeItem(select);
+        delete select;
+        select = 0;
+    }
+    m_pIconMulSelectItemsList.clear();
 }
 
 void HGraphEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent)
@@ -532,10 +579,11 @@ void HGraphEditorScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
             double dx,dy;
             dx = pointF.x()-ptStart.x();
             dy = pointF.y()-ptStart.y();
-            complex->moveItemBy(dx,dy);
+
             //HBaseObj* pObj = complex->getItemObj();
-            //HIconComplexObj* pObj1 = (HIconComplexObj*)pObj;
-            //pObj->moveBy(dx,dy);
+            //HIconObj* pObj1 = (HIconObj*)complex->getItemObj();
+            //pObj1->moveBy(dx,dy);
+            complex->moveItemBy(dx,dy);
             ptStart = pointF;
         }
         event->setDropAction(Qt::MoveAction);
@@ -706,7 +754,7 @@ void HGraphEditorScene::newIconGraphicsObj()
         addItem(text);
         break;
     }
-    case enumMulSelection:
+    case enumSelection:
     {
         QRectF tempF = QRectF(prePoint,prePoint).normalized();
         select = new HIconSelectionItem(tempF);
@@ -826,7 +874,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
         }
         else if(drawShape == enumRectangle && rectangle != 0)
         {
-            item == rectangle;
+            item = rectangle;
             rectangle = 0;
         }
         else if(drawShape == enumEllipse && ellipse != 0)
@@ -903,13 +951,14 @@ void HGraphEditorScene::delGraphEditorSceneItems()
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
         if(!pItem) continue;
         //删除必须是以下顺序
-        removeItem(pItem);
+        removeItemInScene(pItem);
         HBaseObj* pObj = pItem->getItemObj();
         if(pObj)
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->delObj(pObj);
         delete pItem;
         pItem = NULL;
-     }
+    }
+    m_pIconMulSelectItemsList.clear();
 }
 
 void HGraphEditorScene::setItemCursor(QGraphicsSceneMouseEvent *mouseEvent)
@@ -926,3 +975,15 @@ void HGraphEditorScene::setItemCursor(QGraphicsSceneMouseEvent *mouseEvent)
     pItem->setItemCursor(location);
 }
 
+void HGraphEditorScene::removeItemInScene(HIconGraphicsItem* item)
+{
+    if(!item) return;
+    removeItem(item);
+    m_pIconMulSelectItemsList.removeOne(item);
+}
+
+void HGraphEditorScene::addItemInScene(HIconGraphicsItem *item)
+{
+    if(!item) return;
+    m_pIconMulSelectItemsList.append(item);
+}

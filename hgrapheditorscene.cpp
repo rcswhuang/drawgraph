@@ -25,9 +25,7 @@
 #include "hgraphpage.h"
 #include <QMimeData>
 #include <QDebug>
-#define TYPE_SELECT_NONE     0x00
-#define TYPE_SELECT_SINGLE   0x01
-#define TYPE_SELECT_MULTIPLE 0x02
+
 HGraphEditorScene::HGraphEditorScene(HGraphEditorMgr *mgr)
     :pGraphEditorMgr(mgr)
 {

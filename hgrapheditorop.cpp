@@ -917,3 +917,50 @@ void HGraphEditorOp::equalAlgorithm()
     }
     m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 }
+
+
+void HGraphEditorOp::FilpLeft90()
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
+        return;
+    HGraphEditorScene* graphScene = m_pGraphEditorMgr->graphEditorScene();
+    for(int i = 0; i < graphScene->m_pIconMulSelectItemsList.count();i++)
+    {
+        HIconGraphicsItem *iconItem = (HIconGraphicsItem*)graphScene->m_pIconMulSelectItemsList[i];
+        if(!iconItem) continue;
+        HBaseObj* pObj = iconItem->getItemObj();
+        if(!pObj) continue;
+        float fRotate = pObj->getRotateAngle();
+        if(IconFlip::LeftFlip90 == m_Flipway)
+        {
+            fRotate -= 90;
+        }
+        else if(IconFlip::RightFlip90 == m_Flipway)
+        {
+            fRotate += 90;
+        }
+        else if(IconFlip::HorizonFlip == m_Flipway)
+        {
+
+        }
+        else if(IconFlip::VerticalFlip == m_Flipway)
+        {
+
+        }
+    }
+}
+
+void HGraphEditorOp::FlipRight90()
+{
+
+}
+
+void HGraphEditorOp::FlipHorizon()
+{
+
+}
+
+void HGraphEditorOp::FlipVertical()
+{
+
+}

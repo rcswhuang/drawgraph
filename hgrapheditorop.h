@@ -76,10 +76,26 @@ public:
 
     //相等关系算法
     void equalAlgorithm();
+
+    //逆时针翻转90
+    void FilpLeft90();
+
+    //顺时针翻转90
+    void FlipRight90();
+
+    //水平翻转
+    void FlipHorizon();
+
+    //垂直翻转
+    void FlipVertical();
+
+
 private:
     HGraphEditorMgr* m_pGraphEditorMgr;
     Qt::Alignment m_Alignment;
     IconSize m_Equalway;
+    IconFlip m_Flipway;
+
 };
 
 #endif // HGRAPHEDITOROP_H

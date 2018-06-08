@@ -147,9 +147,11 @@ void HGraphEditorMainWindow::actionRotate_clicked()
 
 }
 
-void HGraphEditorMainWindow::actionFilpLeft_clicked()
+void HGraphEditorMainWindow::actionFlipLeft_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->FlipLeft90();
 }
 
 void HGraphEditorMainWindow::actionFlipRight_clicked()

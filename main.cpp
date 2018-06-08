@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     QPixmap pixmap(":/pixmaps/splash.png");
 
     QSplashScreen *splash = new QSplashScreen(pixmap);
-    splash->show();
+    //splash->show();
 
     HGraphEditorMgr* pMgr = new HGraphEditorMgr;
     // Loading station

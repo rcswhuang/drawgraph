@@ -99,7 +99,7 @@ void HGraphEditorMainWindow::createActions()
 
     //旋转
     connect(ui->actionRotate,SIGNAL(triggered(bool)),this,SLOT(actionRotate_clicked()));
-    connect(ui->actionFilpLeft,SIGNAL(triggered(bool)),this,SLOT(actionFilpLeft_clicked()));
+    connect(ui->actionFilpLeft,SIGNAL(triggered(bool)),this,SLOT(actionFlipLeft_clicked()));
     connect(ui->actionFlipRight,SIGNAL(triggered(bool)),this,SLOT(actionFlipRight_clicked()));
     connect(ui->actionFlipHorizon,SIGNAL(triggered(bool)),this,SLOT(actionFlipHorizon_clicked()));
     connect(ui->actionFlipHorizon,SIGNAL(triggered(bool)),this,SLOT(actionFlipVertical_clicked()));

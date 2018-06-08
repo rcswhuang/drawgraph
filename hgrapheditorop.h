@@ -78,7 +78,7 @@ public:
     void equalAlgorithm();
 
     //逆时针翻转90
-    void FilpLeft90();
+    void FlipLeft90();
 
     //顺时针翻转90
     void FlipRight90();
@@ -88,6 +88,9 @@ public:
 
     //垂直翻转
     void FlipVertical();
+
+    //旋转算法
+    void flipAlgorithm();
 
 
 private:

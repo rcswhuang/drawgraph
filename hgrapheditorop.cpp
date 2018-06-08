@@ -918,8 +918,7 @@ void HGraphEditorOp::equalAlgorithm()
     m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 }
 
-
-void HGraphEditorOp::FilpLeft90()
+void HGraphEditorOp::flipAlgorithm()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene() || !m_pGraphEditorMgr->graphEditorDoc())
         return;
@@ -934,33 +933,55 @@ void HGraphEditorOp::FilpLeft90()
         if(IconFlip::LeftFlip90 == m_Flipway)
         {
             fRotate -= 90;
+            pObj->setRotateAngle(fRotate);
         }
         else if(IconFlip::RightFlip90 == m_Flipway)
         {
             fRotate += 90;
+            pObj->setRotateAngle(fRotate);
         }
         else if(IconFlip::HorizonFlip == m_Flipway)
         {
-
+            pObj->setTurn(true,false);
         }
         else if(IconFlip::VerticalFlip == m_Flipway)
         {
-
+            pObj->setTurn(false,true);
         }
+
     }
+    m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
+}
+
+void HGraphEditorOp::FlipLeft90()
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    m_Flipway = IconFlip::LeftFlip90;
+    flipAlgorithm();
+
 }
 
 void HGraphEditorOp::FlipRight90()
 {
-
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    m_Flipway = IconFlip::RightFlip90;
+    flipAlgorithm();
 }
 
 void HGraphEditorOp::FlipHorizon()
 {
-
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    m_Flipway = IconFlip::HorizonFlip;
+    flipAlgorithm();
 }
 
 void HGraphEditorOp::FlipVertical()
 {
-
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
+        return;
+    m_Flipway = IconFlip::VerticalFlip;
+    flipAlgorithm();
 }

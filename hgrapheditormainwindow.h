@@ -75,7 +75,7 @@ public slots:
    
    //旋转
    void actionRotate_clicked();
-   void actionFilpLeft_clicked();
+   void actionFlipLeft_clicked();
    void actionFlipRight_clicked();
    void actionFlipHorizon_clicked();
    void actionFlipVertical_clicked();

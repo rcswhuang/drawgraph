@@ -20,7 +20,7 @@
 HGraphEditorOp::HGraphEditorOp(HGraphEditorMgr* mgr)
     :m_pGraphEditorMgr(mgr)
 {
-
+    m_scale = 1.0;
 }
 
 void HGraphEditorOp::cut()
@@ -287,15 +287,7 @@ void HGraphEditorOp::groupObj()
     }
     m_pGraphEditorMgr->graphEditorScene()->addItem(itemGroup);
     itemGroup->setSelected(true);
-    //3.刷新一下选择区域,不能删除吗？--huangw
-    /*if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
-    {
-        m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
-        m_pGraphEditorMgr->graphEditorScene()->select->setRect(QRectF(0,0,0,0));
-        m_pGraphEditorMgr->graphEditorScene()->select->setSelected(false);
-    }*/
     m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
-    //m_pGraphEditorMgr->graphEditorView()->refresh();
     m_pGraphEditorMgr->setDrawShape(enumNo);
     m_pGraphEditorMgr->setSelectMode(enumSelect);
 }
@@ -325,15 +317,7 @@ void HGraphEditorOp::ungroupObj()
         item = NULL;
     }
 
-    /*
-    if(m_pGraphEditorMgr->graphEditorScene()->select && !m_pGraphEditorMgr->graphEditorScene()->calcSelectedItem(QRectF(0,0,0,0),false))
-    {
-        m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
-        m_pGraphEditorMgr->graphEditorScene()->select->setRect(QRectF(0,0,0,0));
-        m_pGraphEditorMgr->graphEditorScene()->select->setSelected(false);
-    }*/
     m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
-
     m_pGraphEditorMgr->setDrawShape(enumNo);
     m_pGraphEditorMgr->setSelectMode(enumSelect);
 }
@@ -953,7 +937,7 @@ void HGraphEditorOp::flipAlgorithm()
     m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
 }
 
-void HGraphEditorOp::FlipLeft90()
+void HGraphEditorOp::flipLeft90()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
         return;
@@ -962,7 +946,7 @@ void HGraphEditorOp::FlipLeft90()
 
 }
 
-void HGraphEditorOp::FlipRight90()
+void HGraphEditorOp::flipRight90()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
         return;
@@ -970,7 +954,7 @@ void HGraphEditorOp::FlipRight90()
     flipAlgorithm();
 }
 
-void HGraphEditorOp::FlipHorizon()
+void HGraphEditorOp::flipHorizon()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
         return;
@@ -978,10 +962,57 @@ void HGraphEditorOp::FlipHorizon()
     flipAlgorithm();
 }
 
-void HGraphEditorOp::FlipVertical()
+void HGraphEditorOp::flipVertical()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorScene())
         return;
     m_Flipway = IconFlip::VerticalFlip;
     flipAlgorithm();
+}
+
+void HGraphEditorOp::setupMatrix()
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorView())
+        return;
+    QMatrix oldMatrix = m_pGraphEditorMgr->graphEditorView()->matrix();
+    m_pGraphEditorMgr->graphEditorView()->resetMatrix();
+    m_pGraphEditorMgr->graphEditorView()->translate(oldMatrix.dx(), oldMatrix.dy());
+    m_pGraphEditorMgr->graphEditorView()->scale(m_scale, m_scale);
+}
+
+//放大
+void HGraphEditorOp::zoomIn()
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorView())
+        return;
+    m_scale -= (qreal)0.1;
+    if(m_scale > (qreal)2.0) m_scale = (qreal)2.0;
+    if(m_scale < (qreal)0.5) m_scale = (qreal)0.5;
+    setupMatrix();
+}
+
+//缩小
+void HGraphEditorOp::zoomOut()
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorView())
+        return;
+    m_scale += (qreal)0.2;
+    if(m_scale > (qreal)2.0) m_scale = (qreal)2.0;
+    if(m_scale < (qreal)0.5) m_scale = (qreal)0.5;
+    setupMatrix();
+}
+
+//自由缩放
+void HGraphEditorOp::zoom()
+{
+
+}
+
+//原始大小
+void HGraphEditorOp::zoomSame()
+{
+    if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorView())
+        return;
+    m_scale = (qreal)1.0;
+    setupMatrix();
 }

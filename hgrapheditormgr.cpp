@@ -15,7 +15,7 @@ HGraphEditorMgr::HGraphEditorMgr()
     pGraphEditorDoc = new HGraphEditorDoc(this);
     Q_ASSERT(pGraphEditorDoc);
 
-   // pCommand = new QUndoStack(this);
+    m_pGraphEditorUndoStack = new QUndoStack;
 
     //pTempGraph = new HGraph("");
 
@@ -100,6 +100,11 @@ HGraphEditorView* HGraphEditorMgr::graphEditorView()
 HGraphEditorDoc* HGraphEditorMgr::graphEditorDoc()
 {
     return pGraphEditorDoc;
+}
+
+QUndoStack* HGraphEditorMgr::graphEditorStack()
+{
+    return m_pGraphEditorUndoStack;
 }
 
 //设置逻辑界面大小

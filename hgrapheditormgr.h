@@ -31,6 +31,7 @@ public:
     HGraphEditorView* graphEditorView();
     HGraphEditorDoc* graphEditorDoc();
     HGraphEditorOp* graphEditorOp();
+    QUndoStack* graphEditorStack();
 
 public:
 
@@ -141,7 +142,7 @@ protected:
 
     HGraphEditorView* pGraphEditorView;
 
-    QUndoStack* pCommand;
+    QUndoStack* m_pGraphEditorUndoStack;
 
     HGraphEditorOp* m_pGraphEditorOp;
 private:

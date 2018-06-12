@@ -41,12 +41,16 @@ void HGraphEditorMainWindow::actionExit_clicked()
 //编辑部分
 void HGraphEditorMainWindow::acitonUndo_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorStack())
+        return;
+    pGraphEditorMgr->graphEditorStack()->undo();
 }
 
 void HGraphEditorMainWindow::actionRedo_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorStack())
+        return;
+    pGraphEditorMgr->graphEditorStack()->redo();
 }
 
 void HGraphEditorMainWindow::actionCut_clicked()
@@ -151,21 +155,28 @@ void HGraphEditorMainWindow::actionFlipLeft_clicked()
 {
     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
         return;
-    pGraphEditorMgr->graphEditorOp()->FlipLeft90();
+    pGraphEditorMgr->graphEditorOp()->flipLeft90();
 }
 
 void HGraphEditorMainWindow::actionFlipRight_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->flipRight90();
 }
 
 void HGraphEditorMainWindow::actionFlipHorizon_clicked()
 {
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->flipHorizon();
 }
 
 void HGraphEditorMainWindow::actionFlipVertical_clicked()
 {
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+        return;
+    pGraphEditorMgr->graphEditorOp()->flipVertical();
 }
 
  //字体部分
@@ -292,22 +303,30 @@ void HGraphEditorMainWindow::actionFlipVertical_clicked()
  //缩放
  void HGraphEditorMainWindow::actionZoomin_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->zoomIn();
  }
 
  void HGraphEditorMainWindow::actionZoomout_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->zoomOut();
  }
 
  void HGraphEditorMainWindow::actionZoom_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->zoom();
  }
 
  void HGraphEditorMainWindow::actionZoomSame_clicked()
  {
-
+     if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorOp())
+         return;
+     pGraphEditorMgr->graphEditorOp()->zoomSame();
  }
 
  //等比

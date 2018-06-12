@@ -78,26 +78,40 @@ public:
     void equalAlgorithm();
 
     //逆时针翻转90
-    void FlipLeft90();
+    void flipLeft90();
 
     //顺时针翻转90
-    void FlipRight90();
+    void flipRight90();
 
     //水平翻转
-    void FlipHorizon();
+    void flipHorizon();
 
     //垂直翻转
-    void FlipVertical();
+    void flipVertical();
 
     //旋转算法
     void flipAlgorithm();
 
+    //放大
+    void zoomIn();
+
+    //缩小
+    void zoomOut();
+
+    //自由缩放
+    void zoom();
+
+    //原始大小
+    void zoomSame();
+
+    void setupMatrix();
 
 private:
     HGraphEditorMgr* m_pGraphEditorMgr;
     Qt::Alignment m_Alignment;
     IconSize m_Equalway;
     IconFlip m_Flipway;
+    qreal m_scale;
 
 };
 

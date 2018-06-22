@@ -3,7 +3,7 @@
 #include "hgrapheditordoc.h"
 #include "hicongraphicsitem.h"
 #include "hiconlineitem.h"
-#include "hiconrectitem.h"
+#include "hiconrectangleitem.h"
 #include "hiconellipseitem.h"
 #include "hiconcircleitem.h"
 #include "hiconpolygonitem.h"
@@ -89,31 +89,26 @@ void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
     if(!pGraphEditorMgr)
         return;
-    SELECTMODE selectMode = pGraphEditorMgr->getSelectMode();
+    bLeftShift = true;
+    nSelectMode = pGraphEditorMgr->getSelectMode();
     prePoint = mouseEvent->scenePos();
-    if(selectMode == enumSelect)
+    if(nSelectMode == enumSelect)
     {
         if(!getItemAt(prePoint))
         {
             pGraphEditorMgr->setDrawShape(enumSelection);
-            selectMode = enumDraw;
-        }
-        else
-        {
-            ////pGraphEditorMgr->setDrawShape(enumNo);
-            //nSelectMode = enumSelect;
+            nSelectMode = enumDraw;
         }
 
-        /*
         if(nSelectMode == enumSelect)
         {
-            if(pointInRect(pt) != 0)
+            if(pointInRect(prePoint) != 0)
                 nSelectMode = enumSize;
             else
                 nSelectMode = enumMove;
-        }*/
+        }
     }
-    if(selectMode == enumDraw)
+    if(nSelectMode == enumDraw)
         newIconGraphicsObj();
     QGraphicsScene::mousePressEvent(mouseEvent);
 }
@@ -263,6 +258,18 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         QRectF rectF = select->rect();
         refreshSelectedItemRect(rectF,true);
     }
+
+    //要检查是不是移动过
+    if(nSelectMode == enumMove && bLeftShift)
+    {
+        prepareMoveItem(mouseEvent);
+    }
+    if(nSelectMode == enumSize && bLeftShift)
+    {
+        prepareRezieItem(mouseEvent);
+    }
+    bLeftShift = false;
+
     pGraphEditorMgr->setDrawShape(enumNo);
     pGraphEditorMgr->setSelectMode(enumSelect);
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
@@ -293,8 +300,9 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos)
                 clearSeleteItem();
             }
 
-        }
+        }        
         addItemInScene((HIconGraphicsItem*)item);
+        emit selectItemChanged(SELECT_MODE_SINGLE);
         return true;
     }
     else
@@ -601,6 +609,7 @@ void HGraphEditorScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         if(drawShape == enumComplex && complex != 0)
         {
             complex->getItemObj()->setModify(true);
+            pGraphEditorMgr->addNewCommand(pObj);
             emit itemInserted(complex->type());
             complex = 0;
         }
@@ -620,13 +629,14 @@ void HGraphEditorScene::newIconGraphicsObj()
     case enumLine:
     {
         HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumLine);
-        HLine* pObj1 = (HLine*)pObj;
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
+        HLine* pObj1 = (HLine*)pObj;
         pObj1->setHeadPoint(prePoint);
         pObj1->setTailPoint(prePoint);
-        line = new HIconLineItem(QLineF(prePoint,prePoint));
+        line = new HIconLineItem(pObj1);
         line->setItemObj(pObj);
         line->getItemObj()->setModify(true);
+        pGraphEditorMgr->addNewCommand(pObj);
         addItem(line);
 
     }
@@ -637,9 +647,10 @@ void HGraphEditorScene::newIconGraphicsObj()
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
         HRectangle* pObj1 = (HRectangle*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
-        rectangle = new HIconRectItem(pObj1->getObjRect());
+        rectangle = new HIconRectangleItem(pObj1);
         rectangle->setItemObj(pObj);
         rectangle->getItemObj()->setModify(true);
+        pGraphEditorMgr->addNewCommand(pObj);
         addItem(rectangle);
     }
         break;
@@ -649,9 +660,10 @@ void HGraphEditorScene::newIconGraphicsObj()
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
         HEllipse* pObj1 = (HEllipse*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
-        ellipse = new HIconEllipseItem(pObj1->getObjRect());
+        ellipse = new HIconEllipseItem(pObj1);
         ellipse->setItemObj(pObj);
         ellipse->getItemObj()->setModify(true);
+        pGraphEditorMgr->addNewCommand(pObj);
         addItem(ellipse);
 
     }
@@ -662,9 +674,10 @@ void HGraphEditorScene::newIconGraphicsObj()
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
         HCircle* pObj1 = (HCircle*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
-        circle = new HIconCircleItem(pObj1->getObjRect());
+        circle = new HIconCircleItem(pObj1);
         circle->setItemObj(pObj);
         circle->getItemObj()->setModify(true);
+        pGraphEditorMgr->addNewCommand(pObj);
         addItem(circle);
     }
         break;
@@ -674,9 +687,10 @@ void HGraphEditorScene::newIconGraphicsObj()
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
         HArc* pObj1 = (HArc*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
-        arc = new HIconArcItem(pObj1->getObjRect());
+        arc = new HIconArcItem(pObj1);
         arc->setItemObj(pObj);
         arc->getItemObj()->setModify(true);
+        pGraphEditorMgr->addNewCommand(pObj);
         addItem(arc);
     }
         break;
@@ -686,9 +700,10 @@ void HGraphEditorScene::newIconGraphicsObj()
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
         HPie* pObj1 = (HPie*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
-        pie = new HIconPieItem(pObj1->getObjRect());
+        pie = new HIconPieItem(pObj1);
         pie->setItemObj(pObj);
         pie->getItemObj()->setModify(true);
+        pGraphEditorMgr->addNewCommand(pObj);
         addItem(pie);
 
     }
@@ -701,11 +716,11 @@ void HGraphEditorScene::newIconGraphicsObj()
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
             HPolygon* pObj1 = (HPolygon*)pObj;
             pObj1->pylist<<prePoint<<prePoint;
-            polygon = new HIconPolygonItem(pObj1->pylist);
+            polygon = new HIconPolygonItem(pObj1);
             polygon->setItemObj(pObj);
             polygon->getItemObj()->setModify(true);
             addItem(polygon);
-            //addNewIconCommand(polygon->getItemObj());
+            pGraphEditorMgr->addNewCommand(pObj);
         }
         else
         {
@@ -724,11 +739,11 @@ void HGraphEditorScene::newIconGraphicsObj()
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
             HPolyline* pObj1 = (HPolyline*)pObj;
             pObj1->pylist<<prePoint<<prePoint;
-            polyline = new HIconPolylineItem(pObj1->pylist);
+            polyline = new HIconPolylineItem(pObj1);
             polyline->setItemObj(pObj);
             polyline->getItemObj()->setModify(true);
             addItem(polyline);
-            //addNewIconCommand(polyline->getItemObj());
+            pGraphEditorMgr->addNewCommand(pObj);
         }
         else
         {
@@ -746,9 +761,10 @@ void HGraphEditorScene::newIconGraphicsObj()
         pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
         HText* pObj1 = (HText*)pObj;
         pObj1->setObjRect(QRectF(prePoint,prePoint).normalized());
-        text = new HIconTextItem(pObj1->getObjRect());
+        text = new HIconTextItem(pObj1);
         text->setItemObj(pObj);
         text->getItemObj()->setModify(true);
+        pGraphEditorMgr->addNewCommand(pObj);
         addItem(text);
         break;
     }
@@ -772,7 +788,8 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     int nZValue = pObj->getStackOrder();
     if(drawShape == enumLine)
     {
-        line = new HIconLineItem(QLineF(((HLine*) pObj)->getHeadPoint(),((HLine*)pObj)->getTailPoint()));
+        HLine* pObj1 = (HLine*)pObj;
+        line = new HIconLineItem(pObj1);
         line->setItemObj(pObj);
         line->setZValue(nZValue);
         line->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -782,7 +799,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumRectangle)
     {
         HRectangle* pObj1 = (HRectangle*)pObj;
-        rectangle = new HIconRectItem(pObj1->getObjRect());
+        rectangle = new HIconRectangleItem(pObj1);
         rectangle->setItemObj(pObj);
         rectangle->setZValue(nZValue);
         rectangle->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -791,7 +808,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumEllipse)
     {
         HEllipse* pObj1 = (HEllipse*)pObj;
-        ellipse = new HIconEllipseItem(pObj1->getObjRect());
+        ellipse = new HIconEllipseItem(pObj1);
         ellipse->setItemObj(pObj);
         ellipse->setZValue(nZValue);
         ellipse->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -800,7 +817,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumCircle)
     {
         HCircle* pObj1 = (HCircle*)pObj;
-        circle = new HIconCircleItem(pObj1->getObjRect());
+        circle = new HIconCircleItem(pObj1);
         circle->setItemObj(pObj);
         circle->setZValue(nZValue);
         circle->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -809,7 +826,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumPolygon)
     {
         HPolygon* pObj1 = (HPolygon*)pObj;
-        polygon = new HIconPolygonItem(pObj1->pylist);
+        polygon = new HIconPolygonItem(pObj1);
         polygon->setItemObj(pObj);
         polygon->setZValue(nZValue);
         polygon->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -818,7 +835,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumPolyline)
     {
         HPolyline* pObj1 = (HPolyline*)pObj;
-        polyline = new HIconPolylineItem(pObj1->pylist);
+        polyline = new HIconPolylineItem(pObj1);
         polyline->setItemObj(pObj);
         polyline->setZValue(nZValue);
         polyline->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -827,7 +844,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumArc)
     {
         HArc* pObj1 = (HArc*)pObj;
-        arc = new HIconArcItem(pObj1->getObjRect());
+        arc = new HIconArcItem(pObj1);
         arc->setItemObj(pObj);
         arc->setZValue(nZValue);
         arc->getItemObj()->setModify(true);
@@ -837,7 +854,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumPie)
     {
         HPie* pObj1 = (HPie*)pObj;
-        pie = new HIconPieItem(pObj1->getObjRect());
+        pie = new HIconPieItem(pObj1);
         pie->setItemObj(pObj);
         pie->setZValue(nZValue);
         pie->getItemObj()->setModify(true);
@@ -847,7 +864,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumText)
     {
         HText* pObj1 = (HText*)pObj;
-        text = new HIconTextItem(pObj1->getObjRect());
+        text = new HIconTextItem(pObj1);
         text->setItemObj(pObj);
         text->setZValue(nZValue);
         text->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -856,7 +873,7 @@ HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bd
     else if(drawShape == enumComplex)
     {
         HIconObj* pObj1 = (HIconObj*)pObj;
-        complex = new HIconComplexItem(pObj1->getObjRect().normalized());
+        complex = new HIconComplexItem(pObj1);
         complex->setItemObj(pObj);
         complex->setZValue(nZValue);
         complex->setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -984,4 +1001,103 @@ void HGraphEditorScene::addItemInScene(HIconGraphicsItem *item)
 {
     if(!item) return;
     m_pIconMulSelectItemsList.append(item);
+    //refreshSelectedItemRect();
+}
+
+//如果任一选择对象处于resize状态就返回对应位置,注意每次只能改变一个对象的size
+int HGraphEditorScene::pointInRect(QPointF& pointF)
+{
+    QList<QGraphicsItem*> itemList = selectedItems();
+    foreach(QGraphicsItem*item,itemList)
+    {
+        int location = ((HIconGraphicsItem*)item)->pointInRect(pointF);
+        if(location != 0)
+        {
+            oldPolygonF.clear();
+            getGraphicsItemPointList((HIconGraphicsItem*)item,oldPolygonF);
+            return location;
+        }
+    }
+    return 0;
+}
+
+void HGraphEditorScene::getGraphicsItemPointList(HIconGraphicsItem* item,QList<QPolygonF>& pfList)
+{
+    if(item == NULL) return;
+    pfList.clear();
+    int nDrawShape = item->type();
+    QPolygonF pf;
+    pf.clear();
+    if(nDrawShape == enumLine)
+    {
+        HIconLineItem* pItem = (HIconLineItem*)item;
+        QLineF lineF = pItem->line();
+        pf<<lineF.p1()<<lineF.p2();
+    }
+    else if(nDrawShape == enumRectangle || nDrawShape == enumEllipse || nDrawShape == enumCircle || nDrawShape == enumArc || nDrawShape == enumPie || nDrawShape == enumText)
+    {
+        HIconRectangleItem* pItem = (HIconRectangleItem*)item;
+        QRectF rectF = pItem->rect();
+        pf<<rectF.topLeft()<<rectF.topRight()<<rectF.bottomLeft()<<rectF.bottomRight();
+    }
+    else if(nDrawShape == enumComplex || nDrawShape == enumSelect)
+    {
+        //HIconEllipseItem* pItem = (HIconEllipseItem*)item;
+        QRectF rectF = item->rect();
+        pf<<rectF.topLeft()<<rectF.topRight()<<rectF.bottomLeft()<<rectF.bottomRight();
+    }
+    else if(nDrawShape == enumPolyline)
+    {
+        HIconPolylineItem* pItem = (HIconPolylineItem*)item;
+        pf = pItem->polygon();
+    }
+    else if(nDrawShape == enumPolygon)
+    {
+        HIconPolygonItem* pItem = (HIconPolygonItem*)item;
+        pf = pItem->polygon();
+    }
+    pfList.append(pf);
+}
+
+void HGraphEditorScene::prepareMoveItem(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    if(!pGraphEditorMgr)
+        return;
+    QList<HIconGraphicsItem*> selectedItemList = getSelectedItems();
+    if(selectedItemList.count() == 0) return;
+    QPointF pt = mouseEvent->scenePos();
+    if(fabs(pt.x()-prePoint.x()) < 0.0001 && fabs(pt.y() - prePoint.y()) < 0.0001)
+        return;
+    qreal dx = pt.x() - prePoint.x();
+    qreal dy = pt.y() - prePoint.y();
+    QList<HBaseObj*> objList;
+    for(int i = 0; i < selectedItemList.count();i++)
+    {
+        HIconGraphicsItem* item = (HIconGraphicsItem*)selectedItemList.at(i);
+        if(!item) continue;
+        objList.append(item->getItemObj());
+    }
+    pGraphEditorMgr->addMoveCommand(objList,dx,dy);
+}
+
+void HGraphEditorScene::prepareRezieItem(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    if(!pGraphEditorMgr)
+        return;
+    QList<QGraphicsItem*> itemList = selectedItems();
+    //获取所在item，只要item选择到即可
+    QTransform transform;
+    QPointF pt = mouseEvent->scenePos();
+    QGraphicsItem* item = itemAt(pt,transform);
+    if(itemList.indexOf(item) == -1)
+        return;
+    if(fabs(pt.x()-prePoint.x()) < 0.0001 && fabs(pt.y() - prePoint.y()) < 0.0001)
+        return;
+    newPolygonF.clear();
+    getGraphicsItemPointList((HIconGraphicsItem*)item,newPolygonF);
+    HIconGraphicsItem* iconItem = (HIconGraphicsItem*)item;
+    QList<HBaseObj*> objList;
+    objList.append(iconItem->getItemObj());
+    //每次只能改变一个
+    pGraphEditorMgr->addResizeCommand(objList,oldPolygonF,newPolygonF);
 }

@@ -7,6 +7,7 @@
 #include "hgrapheditordoc.h"
 #include "hgrapheditorscene.h"
 #include "hgrapheditorop.h"
+#include "hgraphundocommand.h"
 #include "hgraph.h"
 //图形文件管理总类
 HGraphEditorMgr::HGraphEditorMgr()
@@ -272,5 +273,67 @@ void HGraphEditorMgr::ObjCreated(HBaseObj* pObj)
     //添加Item之后不能删除，后面还有拖拽移动等操作，等到拖拽释放之后才能删除
     pGraphEditorScene->addIconGraphicsItem(pObj);
 }
+
+void HGraphEditorMgr::addNewCommand(HBaseObj *pObj)
+{
+    if(!m_pGraphEditorUndoStack)
+        return;
+    HGraphNewCommand* newGraphCommand = new HGraphNewCommand(this,pObj);
+    m_pGraphEditorUndoStack->push(newGraphCommand);
+}
+
+void HGraphEditorMgr::addDelCommand(QList<HBaseObj*> pObjs)
+{
+    if(!m_pGraphEditorUndoStack)
+        return;
+    HGraphDelCommand* delGraphCommand = new HGraphDelCommand(this,pObjs);
+    m_pGraphEditorUndoStack->push(delGraphCommand);
+}
+
+void HGraphEditorMgr::addPasteCommand(QList<HBaseObj*> pObjs)
+{
+    if(!m_pGraphEditorUndoStack)
+        return;
+    HGraphPasteCommand* pasteGraphCommand = new HGraphPasteCommand(this,pObjs);
+    m_pGraphEditorUndoStack->push(pasteGraphCommand);
+}
+
+void HGraphEditorMgr::addMoveCommand(QList<HBaseObj*> pObjs,qreal dx,qreal dy)
+{
+    if(!m_pGraphEditorUndoStack)
+        return;
+    HGraphMoveCommand* moveGraphCommand = new HGraphMoveCommand(this,pObjs,dx,dy);
+    m_pGraphEditorUndoStack->push(moveGraphCommand);
+}
+
+void HGraphEditorMgr::addRotateCommand(QList<HBaseObj*> pObjs,float angle)
+{
+    if(!m_pGraphEditorUndoStack)
+        return;
+    HGraphRotateCommand* rotateGraphCommand = new HGraphRotateCommand(this,pObjs,angle);
+    m_pGraphEditorUndoStack->push(rotateGraphCommand);
+}
+
+void HGraphEditorMgr::addTurnCommand(QList<HBaseObj*> pObjs,bool bdirection)
+{
+    if(!m_pGraphEditorUndoStack)
+        return;
+    HGraphTurnCommand* turnGraphCommand = new HGraphTurnCommand(this,pObjs,bdirection);
+    m_pGraphEditorUndoStack->push(turnGraphCommand);
+}
+
+void HGraphEditorMgr::addResizeCommand(QList<HBaseObj*> pObjs,QList<QPolygonF> oldPts,QList<QPolygonF> newPts)
+{
+    if(!m_pGraphEditorUndoStack)
+        return;
+    HGraphResizeCommand* resizeGraphCommand = new HGraphResizeCommand(this,pObjs,oldPts,newPts);
+    m_pGraphEditorUndoStack->push(resizeGraphCommand);
+}
+
+
+
+
+
+
 
 

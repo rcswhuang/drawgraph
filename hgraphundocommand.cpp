@@ -260,7 +260,7 @@ void HGraphMoveCommand::redo()
     }
     //pIconMgr->getIconFrame()->refreshSelected(oldBounding);
    // pIconMgr->getIconFrame()->refreshSelected(newBounding);
-    m_pGraphEditorMgr->graphEditorView()->ensureVisible(newBounding);
+   // m_pGraphEditorMgr->graphEditorView()->ensureVisible(newBounding);
 }
 
 void HGraphMoveCommand::undo()
@@ -276,12 +276,10 @@ void HGraphMoveCommand::undo()
         HIconGraphicsItem* item = obj->getIconGraphicsItem();
         if(!item) continue;
         oldBounding = oldBounding.united(item->boundingRect());
-        newBounding = newBounding.united(item->boundingRect().translated(dxList[i],dyList[i]));
+        newBounding = newBounding.united(item->boundingRect().translated(-dxList[i],-dyList[i]));
         item->moveItemBy(-dxList[i],-dyList[i]);
     }
-    //pIconMgr->getIconFrame()->refreshSelected(oldBounding);
-    //pIconMgr->getIconFrame()->refreshSelected(newBounding);
-    m_pGraphEditorMgr->graphEditorView()->ensureVisible(newBounding);
+    //m_pGraphEditorMgr->graphEditorView()->ensureVisible(newBounding);
 }
 
 

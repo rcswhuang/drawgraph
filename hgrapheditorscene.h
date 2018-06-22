@@ -7,7 +7,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 class HIconLineItem;
-class HIconRectItem;
+class HIconRectangleItem;
 class HIconEllipseItem;
 class HIconCircleItem;
 class HIconPolygonItem;
@@ -42,6 +42,10 @@ public:
     QRectF getMulSelectedItemsRect();
     void refreshSelectedItemRect(const QRectF &rectF = QRectF(0,0,0,0),bool bAreaSelect = false);
     void addItemInScene(HIconGraphicsItem* item);
+    int pointInRect(QPointF& pointF);
+    void getGraphicsItemPointList(HIconGraphicsItem* item,QList<QPolygonF>& pfList);
+    void prepareMoveItem(QGraphicsSceneMouseEvent *mouseEvent);
+    void prepareRezieItem(QGraphicsSceneMouseEvent *mouseEvent);
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -61,12 +65,17 @@ signals:
     void selectItemChanged(int);
 
 public:
+    int nSelectMode;
     QPointF ptStart;
     QPointF prePoint;
     QPointF curPoint;
+    bool bLeftShift;
+    QList<QPolygonF> oldPolygonF;
+    QList<QPolygonF> newPolygonF;
+
     HGraphEditorMgr* pGraphEditorMgr;
     HIconLineItem* line;
-    HIconRectItem* rectangle;
+    HIconRectangleItem* rectangle;
     HIconEllipseItem* ellipse;
     HIconCircleItem* circle;
     HIconPolygonItem* polygon;

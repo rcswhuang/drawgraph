@@ -17,6 +17,7 @@
 #include "hellipse.h"
 #include "hline.h"
 #include "hgraph.h"
+#include "hgroupobj.h"
 HGraphEditorOp::HGraphEditorOp(HGraphEditorMgr* mgr)
     :m_pGraphEditorMgr(mgr)
 {
@@ -135,9 +136,7 @@ void HGraphEditorOp::paste()
          m_pGraphEditorMgr->graphEditorScene()->addItemInScene(item);
     } 
     m_pGraphEditorMgr->graphEditorScene()->refreshSelectedItemRect();
-
-    //HPasteIconCommand* pasteIconCommand = new HPasteIconCommand(pIconMgr,objList);
-    //pIconMgr->getIconUndoStack()->push(pasteIconCommand);
+    m_pGraphEditorMgr->addPasteCommand(objList);
 }
 
 void HGraphEditorOp::del()
@@ -160,6 +159,7 @@ void HGraphEditorOp::del()
         item->setVisible(false);
         objList.append(pObj);
     }
+    m_pGraphEditorMgr->addDelCommand(objList);
     m_pGraphEditorMgr->graphEditorScene()->clearSeleteItem();//必须要清除
     //HDelIconCommand *delIconCommand = new HDelIconCommand(pIconMgr,objList);
     //pIconMgr->getIconUndoStack()->push(delIconCommand);
@@ -271,7 +271,8 @@ void HGraphEditorOp::groupObj()
         }
     }
     //2.增加groupItem
-    HIconItemGroup *itemGroup = new HIconItemGroup(QRectF(0,0,groupRect.width(),groupRect.height()));
+    ((HGroupObj*)pGroupObj)->setObjRect(QRectF(0,0,groupRect.width(),groupRect.height()));
+    HIconItemGroup *itemGroup = new HIconItemGroup(pGroupObj);
     itemGroup->setFlag(QGraphicsItem::ItemIsSelectable,true);
     m_pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pGroupObj);
     itemGroup->setItemObj(pGroupObj);
@@ -985,7 +986,7 @@ void HGraphEditorOp::zoomIn()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorView())
         return;
-    m_scale -= (qreal)0.1;
+    m_scale += (qreal)0.2;
     if(m_scale > (qreal)2.0) m_scale = (qreal)2.0;
     if(m_scale < (qreal)0.5) m_scale = (qreal)0.5;
     setupMatrix();
@@ -996,7 +997,7 @@ void HGraphEditorOp::zoomOut()
 {
     if(!m_pGraphEditorMgr && !m_pGraphEditorMgr->graphEditorView())
         return;
-    m_scale += (qreal)0.2;
+    m_scale -= (qreal)0.1;
     if(m_scale > (qreal)2.0) m_scale = (qreal)2.0;
     if(m_scale < (qreal)0.5) m_scale = (qreal)0.5;
     setupMatrix();

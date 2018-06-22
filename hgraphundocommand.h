@@ -49,7 +49,6 @@ protected:
     HBaseObj* pObj;
 };
 
-
 //删除
 class HGraphDelCommand : public HGraphUndoCommand
 {
@@ -63,7 +62,6 @@ public:
 protected:
     QList<HBaseObj*> pObjList;
 };
-
 
 //粘贴
 class HGraphPasteCommand : public HGraphUndoCommand

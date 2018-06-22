@@ -72,35 +72,6 @@ public:
 
     QString getClipboardFile();
 
-   /* virtual void refresh();
-
-    virtual void reset();
-
-    virtual void print();
-
-    virtual void printPreview();
-
-    virtual void redo();
-
-    virtual void undo();
-
-    virtual void del(QList<HIconGraphicsItem*> &lItem);
-
-    virtual void cut();
-
-    virtual void copy();
-
-    virtual void paste();
-
-    virtual void save();
-
-    virtual void saveAs();
-
-    virtual void initZValue();
-
-    //
-    void reName(const QString& newName);*/
-
     void setDrawShape(DRAWSHAPE ds);
 
     DRAWSHAPE getDrawShape();
@@ -120,8 +91,27 @@ public:
 
 
 
-    //历史
-    //void addCommand(QUndoCommand* pCommand);
+    //增加command
+    void addNewCommand(HBaseObj* pObj);
+
+    //删除
+    void addDelCommand(QList<HBaseObj*> pObjs);
+
+    //粘贴
+    void addPasteCommand(QList<HBaseObj*> pObjs);
+
+    //移动
+    void addMoveCommand(QList<HBaseObj*> pObjs,qreal dx,qreal dy);
+
+    //旋转
+    void addRotateCommand(QList<HBaseObj*> pObjs,float angle);
+
+    //翻转
+    void addTurnCommand(QList<HBaseObj*> pObjs,bool bdirection);
+
+    //改变大小
+    void addResizeCommand(QList<HBaseObj*> pObjs,QList<QPolygonF> oldPts,QList<QPolygonF> newPts);
+
     //设置逻辑界面大小
     void setLogicRect(const QRectF& rect);
 

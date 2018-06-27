@@ -92,9 +92,10 @@ void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     bLeftShift = true;
     nSelectMode = pGraphEditorMgr->getSelectMode();
     prePoint = mouseEvent->scenePos();
+    bool multiSelect = (mouseEvent->modifiers() & Qt::ControlModifier) != 0;
     if(nSelectMode == enumSelect)
     {
-        if(!getItemAt(prePoint))
+        if(!getItemAt(prePoint,multiSelect))
         {
             pGraphEditorMgr->setDrawShape(enumSelection);
             nSelectMode = enumDraw;
@@ -281,15 +282,15 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
  * 为了统一，其他比如组合解除组合，拷贝复制粘贴等其他功能都是用m_pIconMulSelectItemsList来实现
  * 缺点就是m_pIconMulSelectItemsList必须要自己来维护
 */
-bool HGraphEditorScene::getItemAt(const QPointF &pos)
+bool HGraphEditorScene::getItemAt(const QPointF &pos,bool bCtrl)
 {
     //判断当前点位置是否有item被选择
     QTransform transform;
     QGraphicsItem* item = itemAt(pos,transform);
     if(item)//点选择到item,既是一般item也包含select项
     {
-        //如果点落入select所在区域就刷新，否则删除select
-        if(select){
+        //如果点落入select所在区域就刷新，否则删除select  增加一个ctrl判断
+        /*if(select){
             QRectF rectF = select->rect();
             if(rectF.contains(pos))
             {
@@ -297,17 +298,23 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos)
             }
             else
             {
-                clearSeleteItem();
+                clearSelectItem();
             }
 
-        }        
+        }  */
+        //如果没有点ctrl 就要清除掉原来的再增加新的
+        if(!bCtrl)
+        {
+            clearSelectItem();
+            m_pIconMulSelectItemsList.clear();
+        }
         addItemInScene((HIconGraphicsItem*)item);
         emit selectItemChanged(SELECT_MODE_SINGLE);
         return true;
     }
     else
     {
-        clearSeleteItem();
+        clearSelectItem();
     }
     return false;
 }
@@ -317,7 +324,7 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos)
 */
 quint8 HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
 {
-    quint8 nResult = SELECT_MODE_MULTIPLE;
+    quint8 nResult = SELECT_MODE_NO;
     if(bAreaSelect)//区域选择为真，ctrl选择为假
     {
         QPainterPath path;
@@ -336,7 +343,7 @@ quint8 HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
     bool bMulSelected = true;
     if(m_pIconMulSelectItemsList.count() <= 1)
         bMulSelected = false;
-    int nIndex = (int)-1;
+    int nIndex = 0;
     if(select)
         select->clear();
     foreach (HIconGraphicsItem *item,m_pIconMulSelectItemsList)
@@ -351,28 +358,33 @@ quint8 HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         {
             item->bMulSelect = true;
             nIndex++;
-            if(nIndex == 0)
+            if(nIndex == 1)
                 item->bBenchmark = true;
             select->pObjList.append(item->getItemObj());
         }
     }
 
     //so low......
-    if(nIndex == (int)-1)
-    {
-        nResult = SELECT_MODE_NO;
-        emit selectItemChanged(SELECT_MODE_NO);
-    }
-    else if(nIndex == 0)
+    if(nIndex == 1)
     {
         nResult = SELECT_MODE_SINGLE;
         emit selectItemChanged(SELECT_MODE_SINGLE);
     }
-    else if(nIndex == 1)
+    else if(nIndex == 2)
+    {
+        nResult = SELECT_MODE_2MULTIPLE;
         emit selectItemChanged(SELECT_MODE_2MULTIPLE);
-
-    else
+    }
+    else if(nIndex == m_pIconMulSelectItemsList.count() && nIndex > 0)
+    {
+        nResult = SELECT_MODE_MULTIPLE;
         emit selectItemChanged(SELECT_MODE_MULTIPLE);
+    }
+    else
+    {
+        nResult = SELECT_MODE_NO;
+        emit selectItemChanged(SELECT_MODE_NO);
+    }
     return nResult;
 }
 
@@ -402,7 +414,7 @@ void HGraphEditorScene::refreshSelectedItemRect(const QRectF &rectF,bool bAreaSe
     quint8 bResult = calcSelectedItem(rectF,bAreaSelect);
     if(SELECT_MODE_NO == bResult)
     {
-        clearSeleteItem();
+        clearSelectItem();
         return;
     }
     else if(SELECT_MODE_SINGLE == bResult)
@@ -424,7 +436,7 @@ void HGraphEditorScene::refreshSelectedItemRect(const QRectF &rectF,bool bAreaSe
  * 如果在复制粘贴等操作中，将select移到新的区域，此时不需删除select，只要将多选清除掉即可
  * 但在删除过程中，由于对象被删除，此时select已经没有存在的意义，所以释放
 */
-void HGraphEditorScene::clearSeleteItem()
+void HGraphEditorScene::clearSelectItem()
 {
     if(select)
     {
@@ -738,7 +750,9 @@ void HGraphEditorScene::newIconGraphicsObj()
             HBaseObj *pObj = pGraphEditorMgr->graphEditorDoc()->getCurGraph()->newObj(enumPolyline);
             pGraphEditorMgr->graphEditorDoc()->getCurGraph()->addObj(pObj);
             HPolyline* pObj1 = (HPolyline*)pObj;
+            QPolygonF pylist;
             pObj1->pylist<<prePoint<<prePoint;
+            //pObj1->
             polyline = new HIconPolylineItem(pObj1);
             polyline->setItemObj(pObj);
             polyline->getItemObj()->setModify(true);

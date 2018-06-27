@@ -126,7 +126,7 @@ void HGraphEditorOp::paste()
     {
         item->setSelected(false);
     }
-    m_pGraphEditorMgr->graphEditorScene()->clearSeleteItem();
+    m_pGraphEditorMgr->graphEditorScene()->clearSelectItem();
 
     foreach(HIconGraphicsItem* item,copyItemList)//有可能不是同一个画面拷贝，从A画面拷贝到B画面 ---huangw
     {
@@ -160,7 +160,7 @@ void HGraphEditorOp::del()
         objList.append(pObj);
     }
     m_pGraphEditorMgr->addDelCommand(objList);
-    m_pGraphEditorMgr->graphEditorScene()->clearSeleteItem();//必须要清除
+    m_pGraphEditorMgr->graphEditorScene()->clearSelectItem();//必须要清除
     //HDelIconCommand *delIconCommand = new HDelIconCommand(pIconMgr,objList);
     //pIconMgr->getIconUndoStack()->push(delIconCommand);
 }

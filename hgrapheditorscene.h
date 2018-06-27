@@ -34,10 +34,10 @@ public:
     void newIconGraphicsObj();//新建obj
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);
-    bool getItemAt(const QPointF &pos);
+    bool getItemAt(const QPointF &pos,bool bCtrl);
     quint8 calcSelectedItem(const QRectF &rectF,bool bAreaSelect = true);
     void removeItemInScene(HIconGraphicsItem* item);
-    void clearSeleteItem();//清除select操作
+    void clearSelectItem();//清除select操作
     QList<HIconGraphicsItem*> getSelectedItems();//不带选择框
     QRectF getMulSelectedItemsRect();
     void refreshSelectedItemRect(const QRectF &rectF = QRectF(0,0,0,0),bool bAreaSelect = false);

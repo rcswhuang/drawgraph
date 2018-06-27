@@ -72,7 +72,6 @@ void HGraphEditorMgr::setGraphEditorView(HGraphEditorView* view)
 {
     pGraphEditorView = view;
     pGraphEditorView->setScene(pGraphEditorScene);
-    //pGraphEditorScene->setView(pGraphEditorView);
     QRectF rectF(logicRectF);
     pGraphEditorScene->setSceneRect(rectF);
 

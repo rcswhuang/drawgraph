@@ -6,6 +6,7 @@
 #include "hicongraphicsitem.h"
 #include "hiconlineitem.h"
 #include "hgrapheditorview.h"
+#include "hgrapheditorscene.h"
 HGraphUndoCommand::HGraphUndoCommand(HGraphEditorMgr* graphEditorMgr):m_pGraphEditorMgr(graphEditorMgr)
 {
     bFirstTime = true;
@@ -258,6 +259,8 @@ void HGraphMoveCommand::redo()
         newBounding = newBounding.united(item->boundingRect().translated(dxList[i],dyList[i]));
         item->moveItemBy(dxList[i],dyList[i]);
     }
+    //需要把select给删除掉
+    m_pGraphEditorMgr->graphEditorScene()->clearSelectItem();
     //pIconMgr->getIconFrame()->refreshSelected(oldBounding);
    // pIconMgr->getIconFrame()->refreshSelected(newBounding);
    // m_pGraphEditorMgr->graphEditorView()->ensureVisible(newBounding);
@@ -279,6 +282,7 @@ void HGraphMoveCommand::undo()
         newBounding = newBounding.united(item->boundingRect().translated(-dxList[i],-dyList[i]));
         item->moveItemBy(-dxList[i],-dyList[i]);
     }
+    m_pGraphEditorMgr->graphEditorScene()->clearSelectItem();
     //m_pGraphEditorMgr->graphEditorView()->ensureVisible(newBounding);
 }
 

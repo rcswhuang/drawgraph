@@ -103,12 +103,12 @@ void HGraphEditorMainWindow::createActions()
     connect(ui->actionFlipRight,SIGNAL(triggered(bool)),this,SLOT(actionFlipRight_clicked()));
     connect(ui->actionFlipHorizon,SIGNAL(triggered(bool)),this,SLOT(actionFlipHorizon_clicked()));
     connect(ui->actionFlipHorizon,SIGNAL(triggered(bool)),this,SLOT(actionFlipVertical_clicked()));
-    m_pEqualGroup->addAction(ui->actionRotate);
-    m_pEqualGroup->addAction(ui->actionFilpLeft);
-    m_pEqualGroup->addAction(ui->actionFlipRight);
-    m_pEqualGroup->addAction(ui->actionFlipHorizon);
-    m_pEqualGroup->addAction(ui->actionFlipHorizon);
-    m_pEqualGroup->setEnabled(false);
+    m_pFlipGroup->addAction(ui->actionRotate);
+    m_pFlipGroup->addAction(ui->actionFilpLeft);
+    m_pFlipGroup->addAction(ui->actionFlipRight);
+    m_pFlipGroup->addAction(ui->actionFlipHorizon);
+    m_pFlipGroup->addAction(ui->actionFlipVertical);
+    m_pFlipGroup->setEnabled(false);
 
 
     //字体部分的actions()

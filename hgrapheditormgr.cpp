@@ -172,6 +172,13 @@ bool HGraphEditorMgr::Open(const QString& graphName,int id)
     return pGraphEditorDoc->openGraph(graphName,id);
 }
 
+void HGraphEditorMgr::Save()
+{
+    if(!pGraphEditorDoc)
+        return;
+    return pGraphEditorDoc->saveCurGraph();
+}
+
 bool HGraphEditorMgr::Del(const QString& graphName,int id)
 {
     if(!pGraphEditorDoc)

@@ -46,6 +46,7 @@ public:
     void getGraphicsItemPointList(HIconGraphicsItem* item,QList<QPolygonF>& pfList);
     void prepareMoveItem(QGraphicsSceneMouseEvent *mouseEvent);
     void prepareRezieItem(QGraphicsSceneMouseEvent *mouseEvent);
+    void updateScene();//当画面背景等改变后进行更新
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);

@@ -57,6 +57,8 @@ public:
 
     bool Open(const QString&,int);
 
+    void Save();
+
     bool Del(const QString&,int);
 
     int ImportFile(const QString&);

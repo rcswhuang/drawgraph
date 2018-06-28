@@ -74,7 +74,7 @@ public:
     void copyGraph(HGraph* graph);
 
     //保存画面
-    void saveGraph(HGraph* graph,QString& path);
+    void saveCurGraph();
 
     //导入画面
     int importGraph(const QString& name);

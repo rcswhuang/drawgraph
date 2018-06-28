@@ -286,10 +286,10 @@ void HGraphEditorMainWindow::Open(const QString& name,const int id)
     //如果有修改的
     if(pGraphEditorMgr->isGraphModify())
     {
-        if(QMessageBox::Ok == QMessageBox::information(NULL,QStringLiteral("提醒"),QStringLiteral("需要保存当前的画面文件吗？"),QMessageBox::Yes|QMessageBox::No))
+        if(QMessageBox::Yes == QMessageBox::information(NULL,QStringLiteral("提醒"),QStringLiteral("需要保存当前的画面文件吗？"),QMessageBox::Yes|QMessageBox::No))
         {
 
-             //Save();
+             pGraphEditorMgr->Save();
         }
     }
 

@@ -23,6 +23,7 @@
 #include "hrelaypage.h"
 #include "hiconproperty.h"
 #include "hgraphpage.h"
+#include "hgrapheditorview.h"
 #include <QMimeData>
 #include <QDebug>
 
@@ -469,7 +470,8 @@ void HGraphEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEve
         {
             HGraph* graph = pGraphEditorMgr->graphEditorDoc()->getCurGraph();
             HGraphPage page(graph);
-            page.exec();
+            if(QDialog::Accepted == page.exec())
+                updateScene();
         }
     }
     QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
@@ -562,7 +564,8 @@ void HGraphEditorScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     dragMoveItems.clear();
     QPointF point = event->scenePos();
-
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorDoc() || !pGraphEditorMgr->graphEditorDoc()->getCurGraph())
+        return;
     if(event->mimeData()->hasFormat("DragIcon"))
     {
         ptStart = point;
@@ -589,6 +592,8 @@ void HGraphEditorScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 
 void HGraphEditorScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorDoc() || !pGraphEditorMgr->graphEditorDoc()->getCurGraph())
+        return;
     QPointF pointF = event->scenePos();
     if(event->mimeData()->hasFormat("DragIcon"))
     {
@@ -613,6 +618,8 @@ void HGraphEditorScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void HGraphEditorScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorDoc() || !pGraphEditorMgr->graphEditorDoc()->getCurGraph())
+        return;
     if(event->mimeData()->hasFormat("DragIcon"))
     {
         HBaseObj * pObj = complex->getItemObj();
@@ -1114,4 +1121,22 @@ void HGraphEditorScene::prepareRezieItem(QGraphicsSceneMouseEvent *mouseEvent)
     objList.append(iconItem->getItemObj());
     //每次只能改变一个
     pGraphEditorMgr->addResizeCommand(objList,oldPolygonF,newPolygonF);
+}
+
+void HGraphEditorScene::updateScene()
+{
+    if(!pGraphEditorMgr || !pGraphEditorMgr->graphEditorDoc() ||!pGraphEditorMgr->graphEditorView())
+        return;
+    HGraph* pGraph = pGraphEditorMgr->graphEditorDoc()->getCurGraph();
+    if(!pGraph) return;
+    QRectF logicRectF;
+    int width = pGraph->getGraphWidth();
+    int height = pGraph->getGraphHeight();
+    logicRectF.setX(0-(width-2)/2);
+    logicRectF.setY(0-(height-100)/2);
+    logicRectF.setWidth(width-2);
+    logicRectF.setHeight(height-100/2);
+    pGraphEditorMgr->setLogicRect(logicRectF);
+    setSceneRect(logicRectF);
+    pGraphEditorMgr->graphEditorView()->refresh();
 }

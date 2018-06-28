@@ -157,26 +157,18 @@ void HGraphEditorDoc::saveAllGraph()
     HGraphHelper::Instance()->saveAllGraph(&pGraphList,getCurGraph());
 }
 
-void HGraphEditorDoc::saveGraph(HGraph* graph,QString& path)
+void HGraphEditorDoc::saveCurGraph()
 {
-    if(NULL == graph)
-        return;
-    if(pCurGraph)
-    {
-        if(pCurGraph->getGraphID() == graph->getGraphID())
-            pCurGraph->copyTo(graph);
-    }
 
-    QDir dirIconsFilePath(path);
-    if(!dirIconsFilePath.exists())
-        return;
-    QString strFileName = path + "/" +  "0.grf";
-    //如果有文件存在 就删除
-    if(QFile::exists(strFileName))
+    if(!pCurGraph)
     {
-        QFile::remove(strFileName);
+        return;
     }
-    graph->writeXmlFile(strFileName);
+    HGraph* graph = findGraph(pCurGraph->getGraphID());
+    if(!graph)
+        return;
+    pCurGraph->copyTo(graph);
+    HGraphHelper::Instance()->saveGraph(graph);
 }
 
 int HGraphEditorDoc::importGraph(const QString& name)
@@ -285,6 +277,7 @@ HGraph* HGraphEditorDoc::findGraph(const QString& graphName)
 //新建画面
 HGraph* HGraphEditorDoc::addGraph(const QString& name)
 {
+    if(!pGraphEditorMgr) return NULL;
     if(pCurGraph)
     {
         pCurGraph->clear();
@@ -293,6 +286,8 @@ HGraph* HGraphEditorDoc::addGraph(const QString& name)
     }
     HGraph* newGraph = new HGraph(name);
     newGraph->setGraphID(getGraphID());
+    newGraph->setGraphHeight(pGraphEditorMgr->getLogicRect().height());
+    newGraph->setGraphWidth(pGraphEditorMgr->getLogicRect().width());
     pGraphList.append(newGraph);
 
     pCurGraph = new HGraph("tempGraph");

@@ -65,6 +65,22 @@ win32{
         ../lib/H5IconHelp.lib \
         ../lib/datafile.lib
 }
+
+LIBS += -L../lib -lH5IconGui -lH5IconHelp -ldatafile
+unix{
+    UI_DIR = temp/ui
+    MOC_DIR = temp/moc
+    OBJECTS_DIR	= temp/obj
+    LIBS += \
+
+}
+
+win32{
+    UI_DIR = temp/ui
+    MOC_DIR = temp/moc
+    OBJECTS_DIR	= temp/obj
+    LIBS += \
+}
 QT += gui
 QT += widgets
 QT += xml

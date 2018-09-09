@@ -159,7 +159,6 @@ void HGraphEditorDoc::saveAllGraph()
 
 void HGraphEditorDoc::saveCurGraph()
 {
-
     if(!pCurGraph)
     {
         return;
@@ -173,13 +172,9 @@ void HGraphEditorDoc::saveCurGraph()
 
 int HGraphEditorDoc::importGraph(const QString& name)
 {
-    QString graphsPath = QString(getenv("wfsystem_dir"));;
-#ifdef WIN32
-    graphsPath = QProcessEnvironment::systemEnvironment().value("wfsystem_dir");
-#else
-    iconsPath = "/users/huangw";
-#endif
-    graphsPath.append("/graph");
+    char szGraphPath[128];
+    getDataFilePath(DFPATH_GRAPH,szGraphPath);
+    QString graphsPath = QString(szGraphPath);
     //需要判一下 这个文件是否已经在graph里面了
     bool bFind = false;
     QString strNewFile = name;

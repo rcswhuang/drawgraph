@@ -185,7 +185,7 @@ void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if(mouseEvent->button() != Qt::LeftButton)
+     if(mouseEvent->button() != Qt::LeftButton)
         return;
     if(!pGraphEditorMgr)
         return;
@@ -199,10 +199,16 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             newIconGraphicsObj();
         }
         QGraphicsScene::mouseReleaseEvent(mouseEvent);
+        //备注1 可以通过selectedItem来获取选择区域
         refreshSelectedItemRect();
         pGraphEditorMgr->setSelectMode(enumSelect);
         pGraphEditorMgr->setDrawShape(enumNo);
         return;
+    }
+    else
+    {
+        clearSelectItem();
+        m_pIconMulSelectItemsList.clear();
     }
     DRAWSHAPE drawShape = pGraphEditorMgr->getDrawShape();
     if(drawShape == enumLine && line != 0)
@@ -279,7 +285,7 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 /*
  * m_pIconMulSelectItemsList 说明:scene自带的selectedItems没有顺序
- * 为了对齐，大小等功能必须有一个带顺序的(有一个标杆，其他参考这个标杆)
+ * 为了对齐，大小等功能必须有一个带顺序的(有一个标杆，其他参考这个标杆，qt没有办法选择标杆的)
  * 为了统一，其他比如组合解除组合，拷贝复制粘贴等其他功能都是用m_pIconMulSelectItemsList来实现
  * 缺点就是m_pIconMulSelectItemsList必须要自己来维护
 */
@@ -304,13 +310,16 @@ bool HGraphEditorScene::getItemAt(const QPointF &pos,bool bCtrl)
 
         }  */
         //如果没有点ctrl 就要清除掉原来的再增加新的
-        if(!bCtrl)
+        if(!bCtrl || item->isSelected())
         {
             clearSelectItem();
             m_pIconMulSelectItemsList.clear();
         }
-        addItemInScene((HIconGraphicsItem*)item);
-        emit selectItemChanged(SELECT_MODE_SINGLE);
+        else
+        {
+            addItemInScene((HIconGraphicsItem*)item);
+            emit selectItemChanged(SELECT_MODE_SINGLE);
+        }
         return true;
     }
     else
@@ -349,6 +358,7 @@ quint8 HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         select->clear();
     foreach (HIconGraphicsItem *item,m_pIconMulSelectItemsList)
     {
+        qDebug()<<"count:"<<m_pIconMulSelectItemsList.count();
         if(!bMulSelected)
         {
             item->bMulSelect = false;

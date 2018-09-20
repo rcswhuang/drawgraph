@@ -31,7 +31,7 @@ public:
     void openGraphEditorSceneItems();
     void delGraphEditorSceneItems();
     HIconGraphicsItem* addIconGraphicsItem(HBaseObj* pObj,bool del = false);//obj->item
-    void newIconGraphicsObj();//新建obj
+
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);
     bool getItemAt(const QPointF &pos,bool bCtrl);
@@ -47,6 +47,13 @@ public:
     void prepareMoveItem(QGraphicsSceneMouseEvent *mouseEvent);
     void prepareRezieItem(QGraphicsSceneMouseEvent *mouseEvent);
     void updateScene();//当画面背景等改变后进行更新
+
+public:
+    //鼠标操作类
+    void newIconGraphicsObj();//新建obj
+    void onMousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void onMouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void onMouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);

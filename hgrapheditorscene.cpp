@@ -111,7 +111,7 @@ void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
     }
     if(nSelectMode == enumDraw)
-        onMousePressEvent(mouseEvent);
+        newIconGraphicsObj();
     QGraphicsScene::mousePressEvent(mouseEvent);
 }
 
@@ -123,7 +123,7 @@ void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     //创建时候的移动
     if(nSelectMode == enumDraw)
     {
-        newIconGraphicsObj();
+        onMouseMoveEvent(mouseEvent);
     }
     //判断当前是否处于选择状态
     else
@@ -154,18 +154,18 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 pGraphEditorMgr->setDrawShape(enumSelection);
                 newIconGraphicsObj();
             }
-            QGraphicsScene::mouseReleaseEvent(mouseEvent);
-            //备注1 可以通过selectedItem来获取选择区域
-            refreshSelectedItemRect();
-            pGraphEditorMgr->setSelectMode(enumSelect);
-            pGraphEditorMgr->setDrawShape(enumNo);
-            return;
         }
         else
         {
             curPoint = mouseEvent->scenePos();
             getItemAt(curPoint,multiSelect);
         }
+        QGraphicsScene::mouseReleaseEvent(mouseEvent);
+        //备注1 可以通过selectedItem来获取选择区域
+        refreshSelectedItemRect();
+        pGraphEditorMgr->setSelectMode(enumSelect);
+        pGraphEditorMgr->setDrawShape(enumNo);
+        return;
     }
 
     //要检查是不是移动过

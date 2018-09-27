@@ -168,7 +168,6 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         pGraphEditorMgr->setSelectMode(enumSelect);
         pGraphEditorMgr->setDrawShape(enumNo);
         return;
-
     }
 
     //要检查是不是移动过
@@ -1067,8 +1066,11 @@ void HGraphEditorScene::removeItemInScene(HIconGraphicsItem* item)
 void HGraphEditorScene::addItemInScene(HIconGraphicsItem *item)
 {
     if(!item) return;
+
     if (item->flags() & QGraphicsItem::ItemIsSelectable)
         item->setSelected(true);
+    if(m_pIconMulSelectItemsList.indexOf(item) != (int)-1)
+        return;
     m_pIconMulSelectItemsList.append(item);
     //refreshSelectedItemRect();
 }

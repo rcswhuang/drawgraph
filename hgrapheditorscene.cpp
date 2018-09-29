@@ -150,12 +150,12 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         bool multiSelect = (mouseEvent->modifiers() & Qt::ControlModifier) != 0;
         if(multiSelect)
         {
-            if(!select)
+            /*if(!select)
             {
                 pGraphEditorMgr->setSelectMode(enumDraw);
                 pGraphEditorMgr->setDrawShape(enumSelection);
                 newIconGraphicsObj();
-            }     
+            }*/
         }
         else
         {
@@ -240,15 +240,21 @@ quint8 HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         path.addRect(rectF);
         QTransform transform;
         setSelectionArea(path,Qt::ContainsItemShape,transform);
+        foreach(HIconGraphicsItem *item, getSelectedItems())
+        {
+            HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
+            if(m_pIconMulSelectItemsList.indexOf(pItem)>=0) continue;
+            m_pIconMulSelectItemsList.append(pItem);
+        }
     }
 
     //m_pIconMulSelectItemsList.clear();//主要是手动选择标杆的问题,和组合的问题
-    foreach(HIconGraphicsItem *item, getSelectedItems())
+    /*foreach(HIconGraphicsItem *item, getSelectedItems())
     {
         HIconGraphicsItem* pItem = qgraphicsitem_cast<HIconGraphicsItem*>(item);
         if(m_pIconMulSelectItemsList.indexOf(pItem)>=0) continue;
         m_pIconMulSelectItemsList.append(pItem);
-    }
+    }*/
     bool bMulSelected = true;
     if(m_pIconMulSelectItemsList.count() <= 1)
         bMulSelected = false;
@@ -257,7 +263,6 @@ quint8 HGraphEditorScene::calcSelectedItem(const QRectF &rectF,bool bAreaSelect)
         select->clear();
     foreach (HIconGraphicsItem *item,m_pIconMulSelectItemsList)
     {
-        qDebug()<<"count:"<<m_pIconMulSelectItemsList.count();
         if(!bMulSelected)
         {
             item->bMulSelect = false;

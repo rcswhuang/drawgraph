@@ -161,8 +161,6 @@ void HGraphEditorOp::del()
     }
     m_pGraphEditorMgr->addDelCommand(objList);
     m_pGraphEditorMgr->graphEditorScene()->clearSelectItem();//必须要清除
-    //HDelIconCommand *delIconCommand = new HDelIconCommand(pIconMgr,objList);
-    //pIconMgr->getIconUndoStack()->push(delIconCommand);
 }
 
 QString HGraphEditorOp::getClipboardFile()

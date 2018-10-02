@@ -114,6 +114,7 @@ void HGraphEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     if(nSelectMode == enumDraw)
         newIconGraphicsObj();
+    pGraphEditorMgr->setSelectMode(nSelectMode);
     QGraphicsScene::mousePressEvent(mouseEvent);
 }
 
@@ -130,7 +131,7 @@ void HGraphEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     //判断当前是否处于选择状态
     else
     {
-        //setItemCursor(mouseEvent);
+        setItemCursor(mouseEvent);
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
@@ -143,21 +144,22 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
     if(nSelectMode == enumDraw)
     {
-        onMouseReleaseEvent(mouseEvent);
+        DRAWSHAPE drawShape = pGraphEditorMgr->getDrawShape();
+        if(drawShape == enumPolygon && polygon != 0)
+        {
+            return QGraphicsScene::mouseReleaseEvent(mouseEvent);
+        }
+        else if(drawShape == enumPolyline && polyline !=0)
+        {
+            return QGraphicsScene::mouseReleaseEvent(mouseEvent);
+        }
+        else
+            onMouseReleaseEvent(mouseEvent);
     }
     else if(nSelectMode == enumSelect)
     {
         bool multiSelect = (mouseEvent->modifiers() & Qt::ControlModifier) != 0;
-        if(multiSelect)
-        {
-            /*if(!select)
-            {
-                pGraphEditorMgr->setSelectMode(enumDraw);
-                pGraphEditorMgr->setDrawShape(enumSelection);
-                newIconGraphicsObj();
-            }*/
-        }
-        else
+        if(!multiSelect)
         {
             curPoint = mouseEvent->scenePos();
             getItemAt(curPoint,multiSelect);
@@ -169,13 +171,11 @@ void HGraphEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         pGraphEditorMgr->setDrawShape(enumNo);
         return;
     }
-
-    //要检查是不是移动过
-    if(nSelectMode == enumMove && bLeftShift)
+    else if(nSelectMode == enumMove)
     {
         prepareMoveItem(mouseEvent);
     }
-    if(nSelectMode == enumSize && bLeftShift)
+    else if(nSelectMode == enumSize)
     {
         prepareRezieItem(mouseEvent);
     }
@@ -849,7 +849,6 @@ void HGraphEditorScene::onMouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent
         QRectF rectF = select->rect();
         refreshSelectedItemRect(rectF,true);
     }
-
 }
 
 HIconGraphicsItem* HGraphEditorScene::addIconGraphicsItem(HBaseObj* pObj,bool bdel)

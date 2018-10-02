@@ -6,6 +6,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include "hiconapi.h"
 class HIconLineItem;
 class HIconRectangleItem;
 class HIconEllipseItem;
@@ -31,17 +32,23 @@ public:
     void openGraphEditorSceneItems();
     void delGraphEditorSceneItems();
     HIconGraphicsItem* addIconGraphicsItem(HBaseObj* pObj,bool del = false);//obj->item
+    void removeItemInScene(HIconGraphicsItem* item);
 
     void setItemCursor(QGraphicsSceneMouseEvent *mouseEvent);
     void setItemProperty(QGraphicsItem* item);
     bool getItemAt(const QPointF &pos,bool bCtrl);
-    quint8 calcSelectedItem(const QRectF &rectF,bool bAreaSelect = true);
-    void removeItemInScene(HIconGraphicsItem* item);
-    void clearSelectItem();//清除select操作
+
+
+
     QList<HIconGraphicsItem*> getSelectedItems();//不带选择框
     QRectF getMulSelectedItemsRect();
     void refreshSelectedItemRect(const QRectF &rectF = QRectF(0,0,0,0),bool bAreaSelect = false);
     void addItemInScene(HIconGraphicsItem* item);
+    quint8 calcSelectedItem(const QRectF &rectF,bool bAreaSelect = true);
+    void clearSelectItem();//清除select操作
+    void clearMulSelectItems();
+
+
     int pointInRect(QPointF& pointF);
     void getGraphicsItemPointList(HIconGraphicsItem* item,QList<QPolygonF>& pfList);
     void prepareMoveItem(QGraphicsSceneMouseEvent *mouseEvent);
@@ -73,7 +80,7 @@ signals:
     void selectItemChanged(int);
 
 public:
-    int nSelectMode;
+    SELECTMODE nSelectMode;
     QPointF ptStart;
     QPointF prePoint;
     QPointF curPoint;
